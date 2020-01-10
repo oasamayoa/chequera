@@ -1,0 +1,101 @@
+{%extends 'base/base.html' %}
+
+{%block page_content %}
+<br>
+<br>
+<br>
+<form class="form-inline" action="." method="GET" autocomplete="off">
+<span>Fecha Inicial</span>
+<input class="form-control mr-sm-2" type="date"  name="q" size=50% value="{{query1|escape}}">
+
+<span>Fecha Final</span>
+	<input class="form-control mr-sm-2" type="date"  name="p" size=50% value="{{query2|escape}}">
+
+	<div class="form-group col-md-4">
+		<label>Banco</label>
+		<select class="form-control" name="cuenta">
+			<option selected>Choose...</option>
+			{% for cheque in cheques %}
+			<option value="{{ cheques.cuenta }}">{{ Cheques.cuenta }}</option>
+			{% endfor %}
+		</select>
+	</div>
+
+
+	<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
+</form>
+  <br>
+					{% if query1 %}
+					<br>
+					<br>
+			<div class="">
+				<hr>
+				<br>
+				<br>
+			  		<table class="table table-striped table-hover dt-responsive nowrap" style="width:100%">
+			      <thead>
+			      <tr>
+			        <th>No. Cheque</th>
+							<th>Imagen</th>
+							<th>Cantidad</th>
+							<th>Fch. P.</th>
+							<th>Pagar a:</th>
+							<th>Cuenta</th>
+							<th></th>
+			      </tr>
+			    	</thead>
+						<tbody>
+				   {%for cheques in cheque%}
+			      <tr>
+							<td>{{cheques.no_cheque}}</td>
+							{% if cheques.imagen %}
+							<td>
+							<img src="{{cheques.imagen.url}}" width="300" height="200""/>
+							</td>
+							{%endif%}
+							<td>{{cheques.cantidad}}</td>
+							<td>{{cheques.fecha_pagar|date:"l, d M Y"}}</td>
+							<td>{{cheques.proveedor}}</td>
+							<td>{{cheques.cuenta}}</td>
+							<td><a class="btn btn-primary" href="{% url "che:detail_cheque" cheques.id%}">D</a> </td>
+			      </tr>
+					{%endfor%}
+				</tbody>
+			  </table>
+				</div>
+				{%endif%}
+
+{%endblock%}
+{% block js_page %}
+<script>
+ // Call the dataTables jQuery plugin
+$(document).ready(function() {
+	$('.table').DataTable({
+		"language": {
+			"sProcessing": "Procesando...",
+			"sLengthMenu": "Mostrar _MENU_ registros",
+			"sZeroRecords": "No se encontraron resultados",
+			"sEmptyTable": "Ningún dato disponible en esta tabla",
+			"sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+			"sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+			"sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+			"sInfoPostFix": "",
+			"sSearch": "Buscar:",
+			"sUrl": "",
+			"sInfoThousands": ",",
+			"sLoadingRecords": "Cargando...",
+			  "oPaginate": {
+			    "sFirst": "<span class='fa fa-angle-double-left'></span>",
+			     "sLast": "<span class='fa fa-angle-double-right'></span>",
+			     "sNext": "<span class='fa fa-angle-right'></span>",
+			     "sPrevious": "<span class='fa fa-angle-left'></span>"
+			   },
+			   "oAria": {
+			     "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+			     "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+			   }
+		}
+	});
+});
+</script>
+{% endblock %}
