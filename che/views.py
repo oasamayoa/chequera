@@ -133,33 +133,60 @@ class ChequeDetailView(SinPrivilegios, generic.DetailView):
     queryset = Cheque.objects.all()
     context_object_name = 'cheque'
 
-@login_required(login_url='/login/')
-@permission_required('che.change_marca', login_url='bases:sin_privilegios')
-def filter_banco(request):
-    q = Cuenta.objects.all()
-    query1 = request.GET.get('q', '')
-    query2 = request.GET.get('p', 'p')
-    cuenta = request.GET.get('cuenta', '')
-    if query1:
 
-        if cuenta:
-            q = (
-                Q(cuenta__icontain=cuenta)
-                )
-
-        if query2:
-            inicio = datetime.strptime(query1, '%Y-%m-%d')
-            final = datetime.strptime(query2, '%Y-%m-%d')
-
-            cheque = Cheque.objects.filter(fecha_creado__range =[inicio , final]).order_by('-fecha_creado')
-        else :
-            cheque = []
-            inicio = []
-            cuenta = []
-    else :
-        final = []
-        cheque = []
-        cuenta = []
+def is_valid_queryparam(param):
+    return param != '' and param is not None
 
 
-    return render(request , 'che/search_banco.html' , {'query1': query1 , 'query2' : query2 , 'cheque': cheque})
+def Bancofilter(request):
+    qs = Cheque.objects.all()
+    proveedor = Provedor.objects.all()
+    no_cheque_query = request.GET.get('no_cheque_query')
+    cantidad_query = request.GET.get('cantidad_query')
+    fecha_pagar_query = request.GET.get('fecha_pagar_query')
+    no_fac_query = request.GET.get('no_fac_query')
+    date_min = request.GET.get('date_min')
+    date_max = request.GET.get('date_max')
+    imagen_query = request.GET.get('imagen_query')
+    cuenta_query = request.GET.get('cuenta_query')
+    category = request.GET.get('category')
+
+
+    if is_valid_queryparam(no_cheque_query):
+            qs = qs.filter(no_cheque__icontains=no_cheque_query)
+
+    if is_valid_queryparam(cantidad_query):
+        qs = qs.filter(cantidad__icontains=cantidad_query)
+
+
+    if is_valid_queryparam(fecha_pagar_query):
+        qs = qs.filter(fecha_pagar__lt=fecha_pagar_query)
+
+    if is_valid_queryparam(no_fac_query):
+        qs = qs.filter(no_fac__icontains=no_fac_query)
+
+    if is_valid_queryparam(date_min):
+        qs = qs.filter(fecha_creado__gte=date_min)
+
+    if is_valid_queryparam(date_max):
+        qs = qs.filter(fecha_creado__lt=date_max)
+
+    if is_valid_queryparam(category) and category != 'Choose...':
+        qs = qs.filter(proveedor_id=category)
+
+    if is_valid_queryparam(imagen_query):
+        qs = qs.filter(imagen__icontains=imagen_query)
+
+    if is_valid_queryparam(cuenta_query):
+        qs = qs.filter(cuenta__icontains=cuenta_query)
+
+
+    return qs
+
+def BancoFilterView(request):
+    qs = Bancofilter(request)
+    context = {
+        'queryset': qs,
+        'proveedor': Provedor.objects.all()
+    }
+    return render(request, "che/search_banco.html", context)

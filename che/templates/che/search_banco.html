@@ -6,17 +6,17 @@
 <br>
 <form class="form-inline" action="." method="GET" autocomplete="off">
 <span>Fecha Inicial</span>
-<input class="form-control mr-sm-2" type="date"  name="q" size=50% value="{{query1|escape}}">
+<input class="form-control mr-sm-2" type="date"  name="date_min" size=50% >
 
 <span>Fecha Final</span>
-	<input class="form-control mr-sm-2" type="date"  name="p" size=50% value="{{query2|escape}}">
+	<input class="form-control mr-sm-2" type="date"  name="date_max" size=50% >
 
 	<div class="form-group col-md-4">
-		<label>Banco</label>
-		<select class="form-control" name="cuenta">
+		<label for="category">Proveedor</label>
+		<select id="category" class="form-control" name="category">
 			<option selected>Choose...</option>
-			{% for cheque in cheques %}
-			<option value="{{ cheques.cuenta }}">{{ Cheques.cuenta }}</option>
+			{% for cat in proveedor %}
+			<option value="{{ cat }}">{{ cat }}</option>
 			{% endfor %}
 		</select>
 	</div>
@@ -25,7 +25,7 @@
 	<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
 </form>
   <br>
-					{% if query1 %}
+					{% if queryset %}
 					<br>
 					<br>
 			<div class="">
@@ -41,25 +41,23 @@
 							<th>Fch. P.</th>
 							<th>Pagar a:</th>
 							<th>Cuenta</th>
-							<th></th>
 			      </tr>
 			    	</thead>
 						<tbody>
-				   {%for cheques in cheque%}
+							{% for cheque in queryset %}
 			      <tr>
-							<td>{{cheques.no_cheque}}</td>
-							{% if cheques.imagen %}
+							<td>{{cheque.no_cheque}}</td>
+							{% if cheque.imagen %}
 							<td>
 							<img src="{{cheques.imagen.url}}" width="300" height="200""/>
 							</td>
 							{%endif%}
-							<td>{{cheques.cantidad}}</td>
-							<td>{{cheques.fecha_pagar|date:"l, d M Y"}}</td>
-							<td>{{cheques.proveedor}}</td>
-							<td>{{cheques.cuenta}}</td>
-							<td><a class="btn btn-primary" href="{% url "che:detail_cheque" cheques.id%}">D</a> </td>
+							<td>{{cheque.cantidad}}</td>
+							<td>{{cheque.fecha_pagar|date:"l, d M Y"}}</td>
+							<td>{{cheque.proveedor.all}}</td>
+							<td>{{cheque.cuenta}}</td>
 			      </tr>
-					{%endfor%}
+							{% endfor %}
 				</tbody>
 			  </table>
 				</div>
