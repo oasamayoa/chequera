@@ -1,7 +1,7 @@
 from django.urls import path
 from django_filters.views import FilterView
 from django.contrib.auth import views as auth_views
-from .views import ChequeView, ChequeNew, ChequeEdit, ChequeGeneratePDF,  filter, ChequeDetailView, BancoFilterView
+from .views import ChequeView, ChequeNew, ChequeEdit, ChequeGeneratePDF,  filter, ChequeDetailView, BancoFilterView,ProveedorFilterView
 from .models import Cheque
 
 
@@ -17,6 +17,7 @@ urlpatterns = [
 
         path('reporte/fecha/',filter, name = 'search_che'),
         path('reporte/banco/',BancoFilterView, name = 'search_banco'),
+        path('reporte/proveedor/',ProveedorFilterView, name = 'search_proveedor'),
 
 
         path('detalle/cheque/<int:id>' , ChequeDetailView.as_view() , name='detail_cheque'),

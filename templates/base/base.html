@@ -114,7 +114,10 @@
             <a class="collapse-item" href="{% url 'che:search_che' %}">Busqueda por fecha</a>
             {% endif %}
             {% if perms.che.filter %}
-            <a class="collapse-item" href="{% url 'che:search_banco' %}">Busqueda por banco</a>
+            <a class="collapse-item" href="{% url 'che:search_banco' %}">Busqueda por Proveedor</a>
+            {% endif %}
+            {% if perms.che.filter %}
+            <a class="collapse-item" href="{% url 'che:search_proveedor' %}">Busqueda por Banco</a>
             {% endif %}
           </div>
         </div>

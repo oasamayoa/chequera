@@ -141,6 +141,8 @@ def is_valid_queryparam(param):
 def Bancofilter(request):
     qs = Cheque.objects.all()
     proveedor = Provedor.objects.all()
+    institucion = Cuenta.objects.all()
+    bancario = Banco.objects.all()
     no_cheque_query = request.GET.get('no_cheque_query')
     cantidad_query = request.GET.get('cantidad_query')
     fecha_pagar_query = request.GET.get('fecha_pagar_query')
@@ -150,6 +152,8 @@ def Bancofilter(request):
     imagen_query = request.GET.get('imagen_query')
     cuenta_query = request.GET.get('cuenta_query')
     category = request.GET.get('category')
+    categoria = request.GET.get('categoria')
+    banco_query = request.GET.get('banco_query')
 
 
     if is_valid_queryparam(no_cheque_query):
@@ -172,7 +176,11 @@ def Bancofilter(request):
         qs = qs.filter(fecha_creado__lt=date_max)
 
     if is_valid_queryparam(category) and category != 'Choose...':
-        qs = qs.filter(proveedor_id=category)
+        qs = qs.filter(proveedor__nombre=category)
+
+    elif is_valid_queryparam(categoria) and categoria != 'Choose...':
+        qs = qs.filter(cuenta__banco_id__nombre=categoria).values_list('pk', flat=True)
+
 
     if is_valid_queryparam(imagen_query):
         qs = qs.filter(imagen__icontains=imagen_query)
@@ -187,6 +195,65 @@ def BancoFilterView(request):
     qs = Bancofilter(request)
     context = {
         'queryset': qs,
-        'proveedor': Provedor.objects.all()
+        'proveedor': Provedor.objects.all(),
+        'bancario': Banco.objects.all()
     }
     return render(request, "che/search_banco.html", context)
+
+
+# def Proveedorfilter(request):
+#     qs = Cheque.objects.all()
+#     cuenta = Cuenta.objects.all()
+#     no_cheque_query = request.GET.get('no_cheque_query')
+#     cantidad_query = request.GET.get('cantidad_query')
+#     fecha_pagar_query = request.GET.get('fecha_pagar_query')
+#     no_fac_query = request.GET.get('no_fac_query')
+#     date_minn = request.GET.get('date_minn')
+#     date_maxx = request.GET.get('date_maxx')
+#     imagen_query = request.GET.get('imagen_query')
+#     proveedor_query = request.GET.get('cuenta_query')
+#     categoryy = request.GET.get('categoryy')
+#
+#
+#
+#     if is_valid_queryparam(no_cheque_query):
+#             qs = qs.filter(no_cheque__icontains=no_cheque_query)
+#
+#     if is_valid_queryparam(cantidad_query):
+#         qs = qs.filter(cantidad__icontains=cantidad_query)
+#
+#
+#     if is_valid_queryparam(fecha_pagar_query):
+#         qs = qs.filter(fecha_pagar__lt=fecha_pagar_query)
+#
+#     if is_valid_queryparam(no_fac_query):
+#         qs = qs.filter(no_fac__icontains=no_fac_query)
+#
+#     if is_valid_queryparam(date_minn):
+#         qs = qs.filter(fecha_creado__gte=date_minn)
+#
+#     if is_valid_queryparam(date_maxx):
+#         qs = qs.filter(fecha_creado__lt=date_maxx)
+#
+#     if is_valid_queryparam(categoryy) and categoryy != 'Choose...':
+#         qs = qs.filter(cuenta__nombre=categoryy)
+#
+#
+#     if is_valid_queryparam(imagen_query):
+#         qs = qs.filter(imagen__icontains=imagen_query)
+#
+#     if is_valid_queryparam(proveedor_query):
+#         qs = qs.filter(proveedor__icontains=proveedor_query)
+#
+#
+#     return qs
+
+def ProveedorFilterView(request):
+    qs = Bancofilter(request)
+    template='%(function)s(%(all_values)s%(expressions)s)'
+    context = {
+        'queryset': qs,
+        'institucion': Cuenta.objects.all(),
+        'bancario': Banco.objects.all()
+    }
+    return render(request, "che/search_proveedor.html", context)
