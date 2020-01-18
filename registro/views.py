@@ -116,7 +116,7 @@ class CuentaView(SinPrivilegios, generic.ListView):
     context_object_name = "obj"
 
 
-class CuentaNew(SuccessMessageMixin,SinPrivilegios, generic.CreateView):
+class CuentaNew(SuccessMessageMixin,MixinFormInvalid,SinPrivilegios, generic.CreateView):
     permission_required = "registro.add_cuenta"
     model=Cuenta
     template_name="registro/cuenta_form.html"
@@ -129,7 +129,7 @@ class CuentaNew(SuccessMessageMixin,SinPrivilegios, generic.CreateView):
         form.instance.uc = self.request.user
         return super().form_valid(form)
 
-class CuentaEdit(SuccessMessageMixin,SinPrivilegios, generic.UpdateView):
+class CuentaEdit(SuccessMessageMixin,MixinFormInvalid,SinPrivilegios, generic.UpdateView):
     permission_required = "registro.edit_cuenta"
     model=Cuenta
     template_name="registro/cuenta_form.html"
