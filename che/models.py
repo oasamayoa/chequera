@@ -2,14 +2,16 @@ from django.db import models
 from bases.models import ClaseModelo
 from registro.models import Cuenta, Provedor
 
+
 class Cheque(ClaseModelo):
 
     no_cheque = models.CharField(max_length=200)
+    estado_che = models.BooleanField(default=False)
     cantidad = models.FloatField(default=0)
-    fecha_pagar = models.DateField()
-    fecha_creado = models.DateField()
+    fecha_pagar = models.DateField(blank=True)
+    fecha_creado = models.DateField('feche creado',  auto_now = False)
     no_fac = models.CharField(max_length=20)
-    imagen = models.ImageField(upload_to='cheques/')
+    imagen = models.ImageField(upload_to='cheques/' , null=True, blank=True)
 
     cuenta = models.ForeignKey(Cuenta, on_delete=models.CASCADE)
     proveedor = models.ForeignKey(Provedor, on_delete=models.CASCADE)

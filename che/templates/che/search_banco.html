@@ -1,5 +1,5 @@
 {%extends 'base/base.html' %}
-
+{%load static%}
 {%block page_content %}
 <br>
 <br>
@@ -20,7 +20,15 @@
 			{% endfor %}
 		</select>
 	</div>
-
+	<div class="form-group col-md-4">
+		<label for="categoria">Cuentas</label>
+		<select id="categoria" class="form-control" name="categoria">
+			<option selected>Choose...</option>
+			{% for cat in institucion %}
+			<option value="{{ cat.nombre }}">{{ cat }}</option>
+			{% endfor %}
+		</select>
+	</div>
 
 	<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
 </form>
@@ -51,6 +59,10 @@
 							<td>
 							<img src="{{cheque.imagen.url}}" width="300" height="200""/>
 							</td>
+							{% else %}
+							<td>
+							<img src="{%static "che/img/default.png" %}" align="center" height="200" width="300"/>
+							</td>
 							{%endif%}
 							<td>{{cheque.cantidad}}</td>
 							<td>{{cheque.fecha_pagar|date:"l, d M Y"}}</td>
@@ -59,6 +71,9 @@
 									{% for cat in cheque.proveedor.all %}
 									<td>{{ cat }}</td>
 							  	{% endfor %}
+									{% for cat in cheque.cuenta.all %}
+									<td>{{ nombre }}</td>
+									{% endfor %}
 			      </tr>
 							{% endfor %}
 				</tbody>

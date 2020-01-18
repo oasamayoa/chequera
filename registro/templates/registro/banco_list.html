@@ -11,7 +11,7 @@
       </a>
       <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
         <div class="dropdown-header">Acciones:</div>
-        <a class="dropdown-item" href="{% url 'registro:banco_new' %}"><i class="far fa-calendar-plus"></i> Nueva</a>
+        <a class="dropdown-item" onclick="return abrir_modal('{% url 'registro:banco_new' %}')" href="#"><i class="far fa-calendar-plus"></i> Nuevo</a>
       </div>
     </div>
   </div>
@@ -38,8 +38,10 @@
           <td>{{ item.fc|date:"d/m/Y H:i:s" }}</td>
           <td>{{ item.fm|date:"d/m/Y H:i:s"}}</td>
           <td>
-            <a href="{% url 'registro:banco_edit' item.id %}" class="btn btn-warning btn-circle" role="button"><i class="far fa-edit"></i></a> 
-            <a href="{% url 'registro:banco_del' item.id %}" class="btn btn-danger btn-circle" role="button"><i class="far fa-thumbs-down"></i></a>
+            <button class="btn btn-warning btn-circle" onclick="return abrir_modal('{% url 'registro:banco_edit' item.id %}')">
+                <i class="far fa-edit"></i></button>
+            <button class="btn btn-danger btn-circle" onclick="return abrir_modal('{% url 'registro:banco_del' item.id %}')">
+                <i class="far fa-thumbs-down"></i></button>
           </td>
         </tr>
         {% endfor %}

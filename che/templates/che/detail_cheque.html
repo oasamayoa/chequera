@@ -1,5 +1,5 @@
 {%extends 'base/base.html' %}
-
+{% load static %}
 
 {%block page_content %}
 <div class="row clearfix">
@@ -9,6 +9,8 @@
       <div class="row">
         {% if cheque.imagen %}
         <img class="rounded" src="{{cheque.imagen.url}}" width="800px" height="450px" />
+        {% else %}
+        <img src="{%static "che/img/default.png" %}" align="center" height="200" width="300"/>
         {%endif%}
       </div>
 <br><br>

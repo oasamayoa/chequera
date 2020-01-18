@@ -59,24 +59,42 @@ class BancoEdit(SuccessMessageMixin,MixinFormInvalid,SinPrivilegios, generic.Upd
 @login_required(login_url='/login/')
 @permission_required('registro.change_marca', login_url='bases:sin_privilegios')
 def banco_inactivar(request, id):
-    banco = Banco.objects.filter(pk=id).first()
-    contexto = {}
-    template_name="registro/catalogos_del.html"
+    template_name='registro/inactivar_banco.html'
+    contexto={}
+    pro = Banco.objects.filter(pk=id).first()
 
-
-    if not banco:
-        return redirect("registro:banco_list")
+    if not pro:
+        return HttpResponse('Banco no existe ' + str(id))
 
     if request.method=='GET':
-        contexto={'obj':banco}
+        contexto={'obj':pro}
 
     if request.method=='POST':
-        banco.estado=False
-        banco.save()
-        messages.success(request, 'Banco inactivado.')
-        return redirect("registro:banco_list")
+        pro.estado=False
+        pro.save()
+        contexto={'obj':'OK'}
+        return HttpResponse('Banco Inactivado')
 
-    return render(request, template_name, contexto)
+    return render(request,template_name,contexto)
+
+def proveedor_inactivar(request,id):
+    template_name='registro/inactivar_pro.html'
+    contexto={}
+    pro = Provedor.objects.filter(pk=id).first()
+
+    if not pro:
+        return HttpResponse('Proveedor no existe ' + str(id))
+
+    if request.method=='GET':
+        contexto={'obj':pro}
+
+    if request.method=='POST':
+        pro.estado=False
+        pro.save()
+        contexto={'obj':'OK'}
+        return HttpResponse('Proveedor Inactivado')
+
+    return render(request,template_name,contexto)
 
 # este es para cuando deso borrar un dato por completo de la base de datos
 # class CategoriaDel(LoginRequiredMixin, generic.DeleteView):
@@ -139,24 +157,23 @@ class CuentaEdit(SuccessMessageMixin,SinPrivilegios, generic.UpdateView):
 @login_required(login_url='/login/')
 @permission_required('registro.change_marca', login_url='bases:sin_privilegios')
 def cuenta_inactivar(request, id):
-    cuenta = Cuenta.objects.filter(pk=id).first()
-    contexto = {}
-    template_name="registro/catalogos_del.html"
+    template_name='registro/inactivar_cuenta.html'
+    contexto={}
+    pro = Cuenta.objects.filter(pk=id).first()
 
-
-    if not cuenta:
-        return redirect("registro:cuenta_list")
+    if not pro:
+        return HttpResponse('Cuenta no existe ' + str(id))
 
     if request.method=='GET':
-        contexto={'obj':cuenta}
+        contexto={'obj':pro}
 
     if request.method=='POST':
-        cuenta.estado=False
-        cuenta.save()
-        messages.success(request, 'Cuenta inactivado.')
-        return redirect("registro:cuenta_list")
+        pro.estado=False
+        pro.save()
+        contexto={'obj':'OK'}
+        return HttpResponse('Cuenta Inactivada')
 
-    return render(request, template_name, contexto)
+    return render(request,template_name,contexto)
 
 class ProveedorView(SinPrivilegios, generic.ListView):
     permission_required = "registro.view_provedor"

@@ -1,78 +1,73 @@
-{% extends 'base/base.html' %}
-
-{% block page_content %}
-<form method="POST" class="form-inline">
-    {% csrf_token %}
-        <div class="col-xl-6 col-md-6 mb-6">
+<div class="modal-dialog modal-lg">
+        <div class="modal-content">
             {% if obj %}
-            <div class="card border-left-warning shadow h-100 py-2">
+            <form method="POST" role="form" class="form-inline" action="{% url 'registro:banco_edit' obj.pk %}" >
             {% else %}
-            <div class="card border-left-success shadow h-100 py-2"></div>
+            <form method="POST" role="form" class="form-inline" action="{% url 'registro:banco_new' %}" >
             {% endif %}
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                            {% if obj %} Editar {% else %} Nuevo {% endif %} Banco
-                        </div>
-                        <div class="row">
-                            <div class="input-group">
-                                <input type="text" name="nombre" maxlength="150" class="form-control" required id="id_nombre" placeholder="Nombre" value="{% if obj %} {{ obj.nombre }} {% endif %}">
+                <div class="col-xl-12 col-md-12 mb-12">
+                    {% if obj %}
+                    <div class="card border-left-warning shadow h-100 py-2">
+                    {% else %}
+                    <div class="card border-left-success shadow h-100 py-2">
+                    {% endif %}
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                {% if obj %} Editar {% else %} Nueva {% endif %} Banco
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            {% csrf_token %}
+                            <div class="row">
+                                {{ form.as_p }}
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <div class="row">
+                                <div class="col">
+                                    <button type="submit" class="btn btn-danger"><span class="fa fa-save"></span> Guardar</button>
+                                    <button type="button" class="btn btn-success" onclick="return cerrar_modal()">
+                                        Cancelar
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                        <div class="clo=2">
-                            <div class="form-group">
-                                <label for="id_estado">Estado</label>
-                                <input type="checkbox" name="estado" class="form-control" id="id_estado"
-                                {% if obj.estado %} checked {% endif %}>
-
-                            </div>
-
+                        <div class="col-auto">
+                            <i class="far fa-calendar-plus fa-2x text-gray-300"></i>
                         </div>
-                        <div class="dropdown-divider"></div>
-                        <div class="row">
-                            <div class="col">
-                                <button type="submit" class="btn btn-danger"><span class="fa fa-save"></span>Guardar</button>
-                                <a href="{% url 'registro:banco_list' %}" class="btn btn-success"><span class="fa fa-undo"></span>Cancelar</a>
-                            </div>
                         </div>
-
                     </div>
-
                     </div>
                 </div>
-                </div>
-            </div>
+            </form>
+        </div>
+    </div>
+    <script>
+    $(function(){
 
-{% endblock %}
-{% block js_page %}
-<script>
-$(function(){
+      var url = $("form").attr("action");
+      var token = jQuery("[name=csrfmiddlewaretoken]").val();
 
-  var url = $("form").attr("action");
-  var token = jQuery("[name=csrfmiddlewaretoken]").val();
+      $("form").submit(function(e){
+        e.preventDefault();
+        var formData = $("form").serializeArray();
+        $.ajax({
+          url:url,
+          method:"POST",
+          headers: {"X-CSRFToken": token},
+          data: formData
+        })
+        .done(function(r,textStatus,xhr){
+          if(xhr.status=200){
+            location.reload(true);
+          }
+          else{
+            mensaje(textStatus);
+          }
+        }).fail(function (error){
+                mensaje(error.responseText);
+            });
+      });
+    });
 
-  $("form").submit(function(e){
-    e.preventDefault();
-    var formData = $("form").serializeArray();
-    $.ajax({
-      url:url,
-      method:"POST",
-      headers: {"X-CSRFToken": token},
-      data: formData
-    })
-    .done(function(r,textStatus,xhr){
-      if(xhr.status=200){
-        location.reload(true);
-      }
-      else{
-        mensaje(textStatus);
-      }
-    }).fail(function (error){
-            mensaje(error.responseText);
-        });
-  });
-});
-
-</script>
-{% endblock %}
+    </script>

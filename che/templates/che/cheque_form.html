@@ -1,9 +1,9 @@
 <div class="modal-dialog modal-lg">
         <div class="modal-content">
             {% if obj %}
-            <form method="POST" role="form" class="form-inline" action="{% url 'che:cheque_edit' obj.pk %}" enctype="multipart/form-data" >
+            <form method="POST" role="form" class="form-inline" action="{% url 'che:cheque_edit' obj.pk %}" >
             {% else %}
-            <form method="POST" role="form" class="form-inline" action="{% url 'che:cheque_new' %}" enctype="multipart/form-data" >
+            <form method="POST" role="form" class="form-inline" action="{% url 'che:cheque_new' %}" >
             {% endif %}
                 <div class="col-xl-12 col-md-12 mb-12">
                     {% if obj %}
@@ -19,11 +19,9 @@
                             </div>
                             <div class="dropdown-divider"></div>
                             {% csrf_token %}
-
                             <div class="row">
                                 {{ form.as_p }}
                             </div>
-
                             <div class="dropdown-divider"></div>
                             <div class="row">
                                 <div class="col">

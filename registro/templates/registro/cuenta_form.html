@@ -1,21 +1,24 @@
-{% extends 'base/base.html' %}
-
-{% block page_content %}
-<form method="POST" class="form-inline">
-    {% csrf_token %}
-        <div class="col-xl-12 col-md-12 mb-12">
+<div class="modal-dialog modal-lg">
+        <div class="modal-content">
             {% if obj %}
-            <div class="card border-left-warning shadow h-100 py-2">
+            <form method="POST" role="form" class="form-inline" action="{% url 'registro:cuenta_edit' obj.pk %}" >
             {% else %}
-            <div class="card border-left-success shadow h-100 py-2"></div>
+            <form method="POST" role="form" class="form-inline" action="{% url 'registro:cuenta_new' %}" >
             {% endif %}
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                            {% if obj %} Editar {% else %} Nuevo {% endif %} Cuentas
-                        </div>
+                <div class="col-xl-12 col-md-12 mb-12">
+                    {% if obj %}
+                    <div class="card border-left-warning shadow h-100 py-2">
+                    {% else %}
+                    <div class="card border-left-success shadow h-100 py-2">
+                    {% endif %}
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                {% if obj %} Editar {% else %} Nueva {% endif %} Cuenta
+                            </div>
                         <div class="dropdown-divider"></div>
+                        {% csrf_token %}
                         <div class="row">
                         <div class="clo=5">
                             <div class="input-group">
@@ -29,29 +32,28 @@
                                     {{ form.nombre }}
                                 </div>
                             </div>
-                        <div class="clo=3">
+                        <div class="clo=4">
                             <!-- <div class="form-group">
                                 <label for="id_estado">Estado</label>
                                 <input type="checkbox" name="estado" class="form-control" id="id_estado"
                                 {% if obj.estado %} checked {% endif %}> -->
                                 {{ form.estado }}
-                                
+
                             </div>
                         </div>
                         <div class="dropdown-divider"></div>
                         <div class="row">
                             <div class="col">
-                                <button type="submit" class="btn btn-danger"><span class="fa fa-save"></span>Guardar</button>
-                                <a href="{% url 'registro:cuenta_list' %}" class="btn btn-success"><span class="fa fa-undo"></span>Cancelar</a>
+                                <button type="submit" class="btn btn-danger"><span class="fa fa-save"></span> Guardar</button>
+                                <button type="button" class="btn btn-success" onclick="return cerrar_modal()">
+                                    Cancelar
+                                </button>
                             </div>
                         </div>
-                    
+
                     </div>
-                
+
                     </div>
                 </div>
                 </div>
             </div>
-
-{% endblock %}
-{% block js_page %} {% endblock %}

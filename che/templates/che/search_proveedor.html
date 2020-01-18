@@ -1,5 +1,5 @@
 {%extends 'base/base.html' %}
-
+{%load static%}
 {%block page_content %}
 <br>
 <br>
@@ -12,15 +12,14 @@
 	<input class="form-control mr-sm-2" type="date"  name="date_max" size=50% >
 
 	<div class="form-group col-md-4">
-		<label for="category">Cuentas</label>
-		<select id="categoria" class="form-control" name="categoria">
+		<label for="category">Proveedor</label>
+		<select id="category" class="form-control" name="category">
 			<option selected>Choose...</option>
-			{% for nombre in institucion %}
-			<option value="{{ nombre }}">{{ nombre }}</option>
+			{% for cat in proveedor %}
+			<option value="{{ cat }}">{{ cat }}</option>
 			{% endfor %}
 		</select>
 	</div>
-
 
 	<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
 </form>
@@ -51,14 +50,19 @@
 							<td>
 							<img src="{{cheque.imagen.url}}" width="300" height="200""/>
 							</td>
+							{% else %}
+							<td>
+							<img src="{%static "che/img/default.png" %}" align="center" height="200" width="300"/>
+							</td>
 							{%endif%}
 							<td>{{cheque.cantidad}}</td>
 							<td>{{cheque.fecha_pagar|date:"l, d M Y"}}</td>
 							<td>{{cheque.proveedor}}</td>
 							<td>{{cheque.cuenta}}</td>
-									{% for nombre in cheque.institucion.all %}
-										{{ nombre }}
-								  {% endfor %}
+									{% for cat in cheque.proveedor.all %}
+									<td>{{ cat }}</td>
+							  	{% endfor %}
+			      </tr>
 							{% endfor %}
 				</tbody>
 			  </table>
