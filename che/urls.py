@@ -1,7 +1,7 @@
 from django.urls import path
 from django_filters.views import FilterView
 from django.contrib.auth import views as auth_views
-from .views import ChequeView, Cheque_inactivar,  ChequeNew, ChequeEdit, ChequeGeneratePDF,  filter, ChequeDetailView, BancoFilterView,ProveedorFilterView
+from .views import ChequeView, Cheque_inactivar,  ChequeNew, ChequeEdit, ChequeGeneratePDF,  filter, ChequeDetailView, BancoFilterView,ProveedorFilterView, imprimir_cheque_list
 from .models import Cheque
 
 
@@ -15,6 +15,7 @@ urlpatterns = [
         path('cheque/estado/<int:id>', Cheque_inactivar, name='cheque_inactivar'),
 
         path('cheques/listado',ChequeGeneratePDF.as_view(), name='cheque_print_all'),
+        path('cheques/imprimir-todas/<str:date_min>/<str:date_max>' , imprimir_cheque_list, name='cheque_print_all'),
 
         path('reporte/fecha/',filter, name = 'search_che'),
         path('reporte/banco/',BancoFilterView, name = 'search_banco'),
@@ -22,6 +23,8 @@ urlpatterns = [
 
 
         path('detalle/cheque/<int:id>' , ChequeDetailView.as_view() , name='detail_cheque'),
+
+
 
 
 ]

@@ -6,10 +6,10 @@
 <br>
 <form class="form-inline" action="." method="GET" autocomplete="off">
 <span>Fecha Inicial</span>
-<input class="form-control mr-sm-2" type="date"  name="date_min" size=50% >
+<input class="form-control mr-sm-2" type="date"  name="date_min" id="date_min" size=50% >
 
 <span>Fecha Final</span>
-	<input class="form-control mr-sm-2" type="date"  name="date_max" size=50% >
+	<input class="form-control mr-sm-2" type="date"  name="date_max" id="date_max" size=50% >
 
 	<div class="form-group col-md-4">
 		<label for="category">Proveedor</label>
@@ -19,9 +19,11 @@
 			<option value="{{ cat }}">{{ cat }}</option>
 			{% endfor %}
 		</select>
+		<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
 	</div>
-
-	<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
+	<div class="form-group col-md-4">
+		<button class="btn btn-warning" type="submit" id="btnPrint">Imprimir</button>
+	</div>
 </form>
   <br>
 					{% if queryset %}
@@ -99,6 +101,23 @@ $(document).ready(function() {
 			     "sSortDescending": ": Activar para ordenar la columna de manera descendente"
 			   }
 		}
+	});
+	$("#btnPrint").click(function(e){
+		e.preventDefault();
+		var date_min,date_max;
+		date_min = $("#date_min").val();
+		date_max = $("#date_max").val();
+		if(date_min=="" || date_min==null){
+			date_min="2019-06-01";
+		}
+		if(date_max=="" || date_max==null){
+			var d = new Date();
+			var date_max = d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate();
+		}
+
+		var url = "che/imprimir-todas/" + date_min + "/" + date_max;
+
+		window.open(url,'cheques');
 	});
 });
 </script>

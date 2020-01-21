@@ -23,14 +23,14 @@ class MixinFormInvalid:
             return response
 
 
-class BancoView(SinPrivilegios, generic.ListView):
+class BancoView(SuccessMessageMixin,SinPrivilegios, generic.ListView):
     permission_required = "registro.view_banco"
     model = Banco
     template_name = "registro/banco_list.html"
     context_object_name = "obj"
 
 
-class BancoNew(SuccessMessageMixin,MixinFormInvalid,SinPrivilegios,generic.CreateView):
+class BancoNew(SuccessMessageMixin, MixinFormInvalid, SinPrivilegios, generic.CreateView):
     permission_required = "registro.add_banco"
     model=Banco
     template_name="registro/banco_form.html"
@@ -44,7 +44,7 @@ class BancoNew(SuccessMessageMixin,MixinFormInvalid,SinPrivilegios,generic.Creat
         return super().form_valid(form)
 
 class BancoEdit(SuccessMessageMixin,MixinFormInvalid,SinPrivilegios, generic.UpdateView):
-    permission_required = "registro.edit_banco"
+    permission_required = "registro.change_banco"
     model=Banco
     template_name="registro/banco_form.html"
     context_object_name = "obj"
@@ -57,7 +57,7 @@ class BancoEdit(SuccessMessageMixin,MixinFormInvalid,SinPrivilegios, generic.Upd
         return super().form_valid(form)
 
 @login_required(login_url='/login/')
-@permission_required('registro.change_marca', login_url='bases:sin_privilegios')
+@permission_required('registro.change_banco', login_url='bases:sin_privilegios')
 def banco_inactivar(request, id):
     template_name='registro/inactivar_banco.html'
     contexto={}
@@ -77,24 +77,6 @@ def banco_inactivar(request, id):
 
     return render(request,template_name,contexto)
 
-def proveedor_inactivar(request,id):
-    template_name='registro/inactivar_pro.html'
-    contexto={}
-    pro = Provedor.objects.filter(pk=id).first()
-
-    if not pro:
-        return HttpResponse('Proveedor no existe ' + str(id))
-
-    if request.method=='GET':
-        contexto={'obj':pro}
-
-    if request.method=='POST':
-        pro.estado=False
-        pro.save()
-        contexto={'obj':'OK'}
-        return HttpResponse('Proveedor Inactivado')
-
-    return render(request,template_name,contexto)
 
 # este es para cuando deso borrar un dato por completo de la base de datos
 # class CategoriaDel(LoginRequiredMixin, generic.DeleteView):
@@ -130,7 +112,7 @@ class CuentaNew(SuccessMessageMixin,MixinFormInvalid,SinPrivilegios, generic.Cre
         return super().form_valid(form)
 
 class CuentaEdit(SuccessMessageMixin,MixinFormInvalid,SinPrivilegios, generic.UpdateView):
-    permission_required = "registro.edit_cuenta"
+    permission_required = "registro.change_cuenta"
     model=Cuenta
     template_name="registro/cuenta_form.html"
     context_object_name = "obj"
@@ -155,7 +137,7 @@ class CuentaEdit(SuccessMessageMixin,MixinFormInvalid,SinPrivilegios, generic.Up
 #         return super().form_valid(form)
 
 @login_required(login_url='/login/')
-@permission_required('registro.change_marca', login_url='bases:sin_privilegios')
+@permission_required('registro.change_cuenta', login_url='bases:sin_privilegios')
 def cuenta_inactivar(request, id):
     template_name='registro/inactivar_cuenta.html'
     contexto={}
@@ -195,7 +177,7 @@ class ProveedorNew(SinPrivilegios,MixinFormInvalid, generic.CreateView):
 
 
 class ProveedorEdit(SinPrivilegios,MixinFormInvalid, generic.UpdateView):
-    permission_required = "registro.edit_provedor"
+    permission_required = "registro.change_provedor"
     model=Provedor
     template_name="registro/provedor_form.html"
     context_object_name = "obj"
@@ -207,7 +189,7 @@ class ProveedorEdit(SinPrivilegios,MixinFormInvalid, generic.UpdateView):
         return super().form_valid(form)
 
 @login_required(login_url='/login/')
-@permission_required('inv.change_marca', login_url='bases:sin_privilegios')
+@permission_required('registro.change_provedor', login_url='bases:sin_privilegios')
 def proveedor_inactivar(request,id):
     template_name='registro/inactivar_pro.html'
     contexto={}

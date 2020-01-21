@@ -110,9 +110,15 @@
         <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Menu</h6>
+            {% if perms.che.view_cheque %}
             <a class="collapse-item" href="{% url 'che:search_che' %}">Busqueda por fecha</a>
+            {% endif %}
+            {% if perms.che.view_cheque %}
             <a class="collapse-item" href="{% url 'che:search_banco' %}">Busqueda por Banco</a>
+            {% endif %}
+            {% if perms.che.view_cheque %}
             <a class="collapse-item" href="{% url 'che:search_proveedor' %}">Busqueda por Proveedor</a>
+            {% endif %}
           </div>
         </div>
       </li>
@@ -255,11 +261,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js"></script>
 
 
-  <script>
+  <!-- <script>
     $(document).ready(function () {
       jQuery.datetimepicker.setLocale('es');
     });
-</script>
+</script> -->
 
   {% block control_modal%}
   <meta charset="utf-8">

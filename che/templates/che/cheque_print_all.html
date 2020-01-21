@@ -55,6 +55,7 @@
         }
 </style>
 </head>
+<body>
   <head>
     <meta charset="utf-8">
     <table>
@@ -63,8 +64,39 @@
         </tr>
     </table>
   </head>
-  <body>
+  {% if queryset %}
+  <br>
+<div class="">
+<hr>
+<br>
+<br>
+    <table>
+    <thead>
+    <tr>
+      <th>No. Cheque</th>
+      <th>Cantidad</th>
+      <th>Fch. P.</th>
+      <th>Pagar a:</th>
+      <th>Cuenta</th>
+    </tr>
+    </thead>
+    <tbody>
+      {% for cheque in queryset %}
+    <tr>
+      <td>{{cheque.no_cheque}}</td>
+      <td>{{cheque.cantidad}}</td>
+      <td>{{cheque.fecha_pagar|date:"l, d M Y"}}</td>
+      <td>{{cheque.proveedor}}</td>
+      <td>{{cheque.cuenta}}</td>
+          {% for cat in cheque.proveedor.all %}
+          <td>{{ cat }}</td>
+          {% endfor %}
+    </tr>
+      {% endfor %}
+</tbody>
+</table>
+</div>
+{%endif%}
 
-  </main>
   </body>
 </html>

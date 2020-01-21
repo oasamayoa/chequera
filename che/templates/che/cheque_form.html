@@ -1,9 +1,9 @@
 <div class="modal-dialog modal-lg">
         <div class="modal-content">
             {% if obj %}
-            <form method="POST" role="form" class="form-inline" action="{% url 'che:cheque_edit' obj.pk %}" >
+            <form method="POST" role="form" class="form-inline" action="{% url 'che:cheque_edit' obj.pk %}" enctype="multipart/form-data" >
             {% else %}
-            <form method="POST" role="form" class="form-inline" action="{% url 'che:cheque_new' %}" >
+            <form method="POST" role="form" class="form-inline" action="{% url 'che:cheque_new' %}" enctype="multipart/form-data" >
             {% endif %}
                 <div class="col-xl-12 col-md-12 mb-12">
                     {% if obj %}

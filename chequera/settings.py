@@ -25,7 +25,7 @@ SECRET_KEY = 's=l1-m%49g%d)%ks^thkak99jx@=%lajjh5@2ukry)i&vph_4w'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -87,6 +87,18 @@ DATABASES = {
         'PORT': '5432' ,
     }
 }
+
+## base de datos de farmacia
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'chequera',
+#         'HOST': 'localhost' ,
+#         'USER': 'postgres' ,
+#         'PASSWORD': 'Alejandro214.' ,
+#         'PORT': '5432' ,
+#     }
+# }
 
 
 # Password validation

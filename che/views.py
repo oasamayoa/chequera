@@ -27,13 +27,13 @@ from datetime import *
 from .filter import ChequeFilter
 
 
-class ChequeView(SinPrivilegios, generic.ListView):
+class ChequeView(SuccessMessageMixin,SinPrivilegios, generic.ListView):
     permission_required = "che.view_cheque"
     model = Cheque
     template_name = "che/cheque_list.html"
     context_object_name = "obj"
 
-class ChequeNew(SinPrivilegios, generic.CreateView):
+class ChequeNew(SuccessMessageMixin,SinPrivilegios, generic.CreateView):
     permission_required = "che.add_cheque"
     model=Cheque
     template_name="che/cheque_form.html"
@@ -45,8 +45,8 @@ class ChequeNew(SinPrivilegios, generic.CreateView):
         form.instance.uc = self.request.user
         return super().form_valid(form)
 
-class ChequeEdit(SinPrivilegios, generic.UpdateView):
-    permission_required = "che.edit_cheque"
+class ChequeEdit(SuccessMessageMixin,SinPrivilegios, generic.UpdateView):
+    permission_required = "che.change_cheque"
     model=Cheque
     template_name="che/cheque_form.html"
     context_object_name = "obj"
@@ -58,7 +58,7 @@ class ChequeEdit(SinPrivilegios, generic.UpdateView):
         return super().form_valid(form)
 
 @login_required(login_url='/login/')
-@permission_required('inv.change_marca', login_url='bases:sin_privilegios')
+@permission_required('che.change_cheque', login_url='bases:sin_privilegios')
 def Cheque_inactivar(request,id):
     cheque = Cheque.objects.filter(pk=id).first()
 
@@ -72,7 +72,7 @@ def Cheque_inactivar(request,id):
     return HttpResponse("FAIL")
 
 
-class ChequeDetailView(SinPrivilegios, generic.DetailView):
+class ChequeDetailView(SuccessMessageMixin,SinPrivilegios, generic.DetailView):
     permission_required = "che.detail_cheque"
     redirect_field_name = 'redirect_to'
     template_name = 'che/detail_cheque.html'
@@ -142,7 +142,7 @@ def Bancofilter(request):
 
 
 @login_required(login_url='/login/')
-@permission_required('che.change_marca', login_url='bases:sin_privilegios')
+@permission_required('che.change_cheque', login_url='bases:sin_privilegios')
 def BancoFilterView(request):
     qs = Bancofilter(request)
     context = {
@@ -153,7 +153,7 @@ def BancoFilterView(request):
     return render(request, "che/search_banco.html", context)
 
 @login_required(login_url='/login/')
-@permission_required('che.change_marca', login_url='bases:sin_privilegios')
+@permission_required('che.change_cheque', login_url='bases:sin_privilegios')
 def ProveedorFilterView(request):
     qs = Bancofilter(request)
     context = {
@@ -164,7 +164,7 @@ def ProveedorFilterView(request):
     return render(request, "che/search_proveedor.html", context)
 
 @login_required(login_url='/login/')
-@permission_required('che.change_marca', login_url='bases:sin_privilegios')
+@permission_required('che.change_cheque', login_url='bases:sin_privilegios')
 def filter(request):
     query1 = request.GET.get('q', '')
     query2 = request.GET.get('p', 'p')
@@ -203,3 +203,19 @@ class ChequeGeneratePDF(View):
             response['Content-Disposition'] = content
             return response
         return HttpResponse("Not found")
+
+def imprimir_cheque_list(request, date_min, date_max):
+    qs = Bancofilter(request)
+    date_min=parse_date(date_min)
+    date_max=parse_date(date_max)
+    enc = Cheque.objects.filter(fecha__gte=date_min,fecha__lt=date_max)
+    context = {
+        'queryset': qs,
+        'proveedor': Provedor.objects.all(),
+        'institucion': Cuenta.objects.all(),
+        'date_min':date_min,
+        'date_max':date_max,
+        'enc':enc
+
+    }
+    return render(request, "che/cheque_print_all.html", context)
