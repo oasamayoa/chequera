@@ -36,7 +36,8 @@
         </table>
         </div>
         <div class="row">
-          <a class="btn btn-info" type="submit" href="{%url "che:search_che"%}">Regresar</a>.
+          <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-success"><span class="fa fa-undo"></span>Regresar</a>
+          <!-- <a class="btn btn-info" type="submit" href="{#}">Regresar</a>. -->
         </div>
       </div>
     </div>
@@ -45,3 +46,4 @@
 
 {%endblock%}
 {% block footer %}{% endblock %}
+d

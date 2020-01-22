@@ -1,7 +1,9 @@
 {%extends 'base/base.html' %}
 {%load static%}
 {%block page_content %}
-<br>
+<font color="blue" face="TimensRouw">
+<h2 align="center">Buscador por Bancos </h2>
+</font>
 <br>
 <br>
 <form class="form-inline" action="." method="GET" autocomplete="off">
@@ -12,18 +14,9 @@
 	<input class="form-control mr-sm-2" type="date"  name="date_max" size=50% >
 
 	<div class="form-group col-md-4">
-		<label for="category">Proveedor</label>
-		<select id="category" class="form-control" name="category">
-			<option selected>Choose...</option>
-			{% for cat in proveedor %}
-			<option value="{{ cat }}">{{ cat }}</option>
-			{% endfor %}
-		</select>
-	</div>
-	<div class="form-group col-md-4">
 		<label for="categoria">Cuentas</label>
 		<select id="categoria" class="form-control" name="categoria">
-			<option selected>Choose...</option>
+			<option selected>Buscar...</option>
 			{% for cat in institucion %}
 			<option value="{{ cat.nombre }}">{{ cat }}</option>
 			{% endfor %}
@@ -34,38 +27,26 @@
 </form>
   <br>
 					{% if queryset %}
-					<br>
-					<br>
+
 			<div class="">
-				<hr>
-				<br>
-				<br>
-			  		<table class="table table-striped table-hover dt-responsive nowrap" style="width:100%">
+
+			  		<table class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
 			      <thead>
 			      <tr>
 			        <th>No. Cheque</th>
-							<th>Imagen</th>
 							<th>Cantidad</th>
 							<th>Fch. P.</th>
 							<th>Pagar a:</th>
 							<th>Cuenta</th>
+							<th></th>
 			      </tr>
 			    	</thead>
 						<tbody>
 							{% for cheque in queryset %}
 			      <tr>
 							<td>{{cheque.no_cheque}}</td>
-							{% if cheque.imagen %}
-							<td>
-							<img src="{{cheque.imagen.url}}" width="300" height="200""/>
-							</td>
-							{% else %}
-							<td>
-							<img src="{%static "che/img/default.png" %}" align="center" height="200" width="300"/>
-							</td>
-							{%endif%}
 							<td>{{cheque.cantidad}}</td>
-							<td>{{cheque.fecha_pagar|date:"l, d M Y"}}</td>
+							<td>{{cheque.fecha_pagar|date:"l, d/m/Y"}}</td>
 							<td>{{cheque.proveedor}}</td>
 							<td>{{cheque.cuenta}}</td>
 									{% for cat in cheque.proveedor.all %}
@@ -74,6 +55,7 @@
 									{% for cat in cheque.cuenta.all %}
 									<td>{{ nombre }}</td>
 									{% endfor %}
+							<td><a class="btn btn-primary" href="{% url "che:detail_cheque" cheque.id%}">D</a> </td>
 			      </tr>
 							{% endfor %}
 				</tbody>
@@ -87,6 +69,8 @@
  // Call the dataTables jQuery plugin
 $(document).ready(function() {
 	$('.table').DataTable({
+		"scrollX": true,
+		"scrollY": 400,
 		"language": {
 			"sProcessing": "Procesando...",
 			"sLengthMenu": "Mostrar _MENU_ registros",
