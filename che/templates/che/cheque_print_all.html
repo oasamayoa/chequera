@@ -1,11 +1,11 @@
-{%load static%}
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="es">
+  <meta charset="utf-8">
+<head>
 <style type="text/css">
-    body {
-          font-weight: 100px;
-          font-size: 14px;
-          text-align: left;
+    @page {
+        size: letter;
+        margin: 1cm;
 
         }
         .table {
@@ -56,47 +56,41 @@
 </style>
 </head>
 <body>
-  <head>
-    <meta charset="utf-8">
-    <table>
-      <tr>
-        <td colspan="3" class="header"><p>REPORTE DE CHEQUES</p></td>
-        </tr>
-    </table>
-  </head>
-  {% if queryset %}
-  <br>
-<div class="">
-<hr>
-<br>
-<br>
-    <table>
-    <thead>
-    <tr>
-      <th>No. Cheque</th>
-      <th>Cantidad</th>
-      <th>Fch. P.</th>
-      <th>Pagar a:</th>
-      <th>Cuenta</th>
-    </tr>
-    </thead>
-    <tbody>
-      {% for cheque in queryset %}
-    <tr>
-      <td>{{cheque.no_cheque}}</td>
-      <td>{{cheque.cantidad}}</td>
-      <td>{{cheque.fecha_pagar|date:"l, d M Y"}}</td>
-      <td>{{cheque.proveedor}}</td>
-      <td>{{cheque.cuenta}}</td>
-          {% for cat in cheque.proveedor.all %}
-          <td>{{ cat }}</td>
+  <div class="container">
+    <div class="card">
+      <div class="card-header">
+        <center>
+          <h4> Sistema de Cheques</h4>
+          <h3>Reporte de Cheques<br><small>Periodo: {{f1|date:"d/m/Y"}} al {{f2|date:"d/m/Y"}}</small></h3>
+        </center>
+      </div>
+      <table class="table">
+        <thead>
+          <th>No. Cheque</th>
+          <th>Proveedor</th>
+          <th>Cuenta</th>
+          <th>Cantidad</th>
+          <th>No. Fac.</th>
+          <th>Fch. P.</th>
+          <th>Fch. C.</th>
+          <th>Estado</th>
+        </thead>
+        <tbody>
+          {% for item in enc%}
+          <tr>
+            <td>{{ item.no_cheque }}</td>
+            <td>{{ item.proveedor }}</td>
+            <td>{{ item.cuenta }}</td>
+            <td>Q.{{ item.cantidad }}</td>
+            <td>{{ item.no_fac }}</td>
+            <td>{{ item.fecha_pagar|date:"d/m/Y" }}</td>
+            <td>{{ item.fecha_creado|date:"d/m/Y" }}</td>
+            <td >{{item.estado|yesno:"Pendiente,Entregado"}}</td>
+          </tr>
           {% endfor %}
-    </tr>
-      {% endfor %}
-</tbody>
-</table>
-</div>
-{%endif%}
-
+        </tbody>
+      </table>
+    </div>
+  </div>
   </body>
 </html>

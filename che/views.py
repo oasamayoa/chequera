@@ -22,7 +22,9 @@ from django.template.loader import get_template
 from .utils import render_to_pdf, Render #created in step 4
 from django.views.generic import TemplateView , CreateView , DetailView , UpdateView , DeleteView, View
 import django_filters
-from datetime import *
+from django.utils.dateparse import parse_date
+from datetime import date, timedelta
+
 
 from .filter import ChequeFilter
 
@@ -73,7 +75,7 @@ def Cheque_inactivar(request,id):
 
 
 class ChequeDetailView(SuccessMessageMixin,SinPrivilegios, generic.DetailView):
-    permission_required = "che.detail_cheque"
+    permission_required = "che.change_cheque"
     redirect_field_name = 'redirect_to'
     template_name = 'che/detail_cheque.html'
     slug_field = 'id'
@@ -192,7 +194,7 @@ class ChequeGeneratePDF(View):
 
         }
         html = template.render(params)
-        pdf = Render.render('che/cheque_print_all.html', params)
+        pdf = Render.render('', params)
         if pdf:
             response = HttpResponse(pdf, content_type='application/pdf')
             filename = "Invoice_%s.pdf" %("12341231")
@@ -204,18 +206,17 @@ class ChequeGeneratePDF(View):
             return response
         return HttpResponse("Not found")
 
-def imprimir_cheque_list(request, date_min, date_max):
-    qs = Bancofilter(request)
-    date_min=parse_date(date_min)
-    date_max=parse_date(date_max)
-    enc = Cheque.objects.filter(fecha__gte=date_min,fecha__lt=date_max)
+@login_required(login_url='/login/')
+@permission_required('che.change_cheque', login_url='bases:sin_privilegios')
+def imprimir_cheque_list(request, f1,f2):
+    template_name = "che/cheque_print_all.html"
+    f1=parse_date(f1)
+    f2=parse_date(f2)
+    enc = Cheque.objects.filter(fecha_creado__range = [f1 , f2]).order_by('-fecha_creado')
     context = {
-        'queryset': qs,
-        'proveedor': Provedor.objects.all(),
-        'institucion': Cuenta.objects.all(),
-        'date_min':date_min,
-        'date_max':date_max,
+        'request': request,
+        'f1':f1,
+        'f2':f2,
         'enc':enc
-
     }
-    return render(request, "che/cheque_print_all.html", context)
+    return render(request, template_name, context)

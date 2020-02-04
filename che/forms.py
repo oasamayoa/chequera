@@ -33,7 +33,11 @@ class ChequeForm(forms.ModelForm):
          }
         widgets = {
         'no_cheque': forms.TextInput(attrs={'class':'form-control'}),
-        'fecha_creado': widgets.AdminDateWidget(),
+        'fecha_creado': forms.DateInput(
+            format='%d/%m/%Y',
+            attrs={'class': 'form-control datepicker',
+                    'autocomplete':'off'}
+        ),
         'fecha_pagar': widgets.AdminDateWidget(),
         'cantidad': forms.TextInput(attrs={'class':'form-control'}),
         'no_fac': forms.TextInput(attrs={'class':'form-control'}),

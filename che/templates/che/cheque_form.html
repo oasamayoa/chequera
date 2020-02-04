@@ -1,3 +1,4 @@
+{%load static%}
 <div class="modal-dialog modal-lg">
         <div class="modal-content">
             {% if obj %}
@@ -22,6 +23,7 @@
                             <div class="row">
                                 {{ form.as_p }}
                             </div>
+                            </div>
                             <div class="dropdown-divider"></div>
                             <div class="row">
                                 <div class="col">
@@ -42,3 +44,14 @@
             </form>
         </div>
     </div>
+    {% block js_page %}
+    <script>
+      $(function(){
+        $("#id_fecha_creado, #id_fecha_pagar").datetimepicker({
+          format: 'Y-m-d',
+          timepicker:false
+
+        });
+        });
+      </script>
+    {% endblock %}

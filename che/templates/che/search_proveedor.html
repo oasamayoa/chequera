@@ -98,23 +98,6 @@ $(document).ready(function() {
 			   }
 		}
 	});
-	$("#btnPrint").click(function(e){
-		e.preventDefault();
-		var date_min,date_max;
-		date_min = $("#date_min").val();
-		date_max = $("#date_max").val();
-		if(date_min=="" || date_min==null){
-			date_min="2019-06-01";
-		}
-		if(date_max=="" || date_max==null){
-			var d = new Date();
-			var date_max = d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate();
-		}
-
-		var url = "che/imprimir-todas/" + date_min + "/" + date_max;
-
-		window.open(url,'cheques');
-	});
 });
 </script>
 {% endblock %}
