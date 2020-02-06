@@ -61,7 +61,7 @@
       <li class="nav-item">
         <a class="nav-link" href="{% url 'bases:home' %}">
           <i class="fas fa-fw fa-tachometer-alt"></i>
-          <span>Dashboard</span></a>
+          <span>Inicio</span></a>
       </li>
 
       <!-- Divider -->
@@ -187,12 +187,34 @@
 
         <!-- Begin Page Content -->
         {% block page_content %}
-        <div class="container-fluid">
-
-          <!-- Page Heading -->
-          <h1 class="h3 mb-4 text-gray-800">Blank Page</h1>
-
-        </div>
+        <main>
+          <style type="text/css">
+              #banner {
+                  margin-top: 50px ;
+                  position: relative;
+              }
+              #banner {
+                  width: 100%;
+                  height: 100%;
+              }
+              #banner .contenedor {
+                  position: absolute;
+                  top: 50%;
+                  left: 50%;
+                  transform: translateX(-50%) translateY(-50%);
+                  color: #fff;
+              }
+              #banner h2 {
+                  font-size: 28px;
+              }
+          </style>
+          <section id="banner">
+            <img src="{% static 'base/img/banner.jpg' %}">
+            <div class="contenedor">
+              <h2> Control de Cheques Farmacia America</h2>
+            </div>
+          </section>
+        </main>
         {% endblock %}
         <!-- /.container-fluid -->
         {% block footer %}

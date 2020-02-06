@@ -23,7 +23,7 @@ from .utils import render_to_pdf, Render #created in step 4
 from django.views.generic import TemplateView , CreateView , DetailView , UpdateView , DeleteView, View
 import django_filters
 from django.utils.dateparse import parse_date
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 
 
 from .filter import ChequeFilter
@@ -210,6 +210,21 @@ class ChequeGeneratePDF(View):
 @permission_required('che.change_cheque', login_url='bases:sin_privilegios')
 def imprimir_cheque_list(request, f1,f2):
     template_name = "che/cheque_print_all.html"
+    f1=parse_date(f1)
+    f2=parse_date(f2)
+    enc = Cheque.objects.filter(fecha_creado__range = [f1 , f2]).order_by('-fecha_creado')
+    context = {
+        'request': request,
+        'f1':f1,
+        'f2':f2,
+        'enc':enc
+    }
+    return render(request, template_name, context)
+
+@login_required(login_url='/login/')
+@permission_required('che.change_cheque', login_url='bases:sin_privilegios')
+def imprimir_cheque_img(request, f1,f2):
+    template_name = "che/cheque_print_img.html"
     f1=parse_date(f1)
     f2=parse_date(f2)
     enc = Cheque.objects.filter(fecha_creado__range = [f1 , f2]).order_by('-fecha_creado')

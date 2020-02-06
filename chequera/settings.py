@@ -77,29 +77,29 @@ WSGI_APPLICATION = 'chequera.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'chequera',
-#         'HOST': 'localhost' ,
-#         'USER': 'postgres' ,
-#         'PASSWORD': '123' ,
-#         'PORT': '5432' ,
-#     }
-# }
-
-# base de datos de farmacia
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'chequera',
         'HOST': 'localhost' ,
         'USER': 'postgres' ,
-        'PASSWORD': 'Alejandro214.' ,
+        'PASSWORD': '123' ,
         'PORT': '5432' ,
     }
 }
 
+# base de datos de farmacia
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'chequera',
+#         'HOST': 'localhost' ,
+#         'USER': 'postgres' ,
+#         'PASSWORD': 'Alejandro214.' ,
+#         'PORT': '5432' ,
+#     }
+# }
+#
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
