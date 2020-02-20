@@ -1,0 +1,57 @@
+{% extends 'base/base.html' %}
+{% block footer %}{% endblock %}
+{% block page_content %}
+<form class="" action="." method="GET" autocomplete="off">
+<span>Fecha Inicial</span>
+<input class="form-class" type="text"  name="f5" id="f5">
+
+<span>Fecha Final</span>
+	<input class="form-class" type="text"  name="f6" id="f6">
+<br>
+<br>
+	<div class="striped" cellspacing="0" width="100%">
+		<label for="categoria">Proveedor</label>
+		<select  id="categoria" class="form-control" name="categoria">
+			<option selected>Buscar...</option>
+			{% for categorias in categoria %}
+			<option  value="{{ categorias.pk }}">{{ categorias.nombre }}</option>
+			{% endfor %}
+		</select>
+	</div>
+	<br>
+	<div class="form-group col-md-4">
+		<button class="btn btn-warning" type="submit" id="btnPrintProveedor">Imprimir</button>
+	</div>
+</form>
+</div>
+{% endblock %}
+{% block js_page %}
+<script>
+	$(function(){
+		$("#f5, #f6").datetimepicker({
+			format: 'Y-m-d',
+			timepicker:false
+
+		});
+  $("#btnPrintProveedor").click(function(e){
+    e.preventDefault();
+    var f5 , f6 ;
+    f5 = $("#f5").val();
+    f6 = $("#f6").val();
+    if(f5=="" || f5==null){
+      f1="01-01-2019";
+    }
+    if(f6=="" || f6==null){
+      var d = new Date();
+    //  var f6 = d.getDate() + "-" + (d.getMonth()+1) + "-" + d.getFullYear();
+    	var f6 = d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate();
+    }
+		// var categoria =1
+		categoria = $("#categoria").val()
+    var url = "pdfproveedor/" + f5 + "/" + f6 + "/" + categoria ;
+
+    window.open(url,'cheques');
+    });
+		});
+</script>
+{% endblock %}

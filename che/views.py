@@ -32,6 +32,7 @@ from .filter import ChequeFilter
 class ChequeView(SuccessMessageMixin,SinPrivilegios, generic.ListView):
     permission_required = "che.view_cheque"
     model = Cheque
+    provedor = Provedor.objects.all()
     template_name = "che/cheque_list.html"
     context_object_name = "obj"
 
@@ -103,7 +104,6 @@ def Bancofilter(request):
     cuenta_query = request.GET.get('cuenta_query')
     category = request.GET.get('category')
     categoria = request.GET.get('categoria')
-    print(categoria)
     banco_query = request.GET.get('banco_query')
 
 
@@ -235,3 +235,62 @@ def imprimir_cheque_img(request, f1,f2):
         'enc':enc
     }
     return render(request, template_name, context)
+
+
+@login_required(login_url='/login/')
+@permission_required('che.change_cheque', login_url='bases:sin_privilegios')
+def Vista_Proveedor(request):
+    categoria = Provedor.objects.all()
+    results = Cheque.objects.all()
+    template_name = "che/cheque_vista_pdf.html"
+
+    context = {
+        'categoria': Provedor.objects.all(),
+        'results': Cheque.objects.all()
+    }
+
+    return render(request, template_name, context)
+
+
+@login_required(login_url='/login/')
+@permission_required('che.change_cheque', login_url='bases:sin_privilegios')
+def imprimir_provedor(request,f5,f6 , categoria):
+    template_name = "che/cheque_print_prove.html"
+    f5=parse_date(f5)
+    f6=parse_date(f6)
+    prueba = []
+    pro = []
+    query = []
+    enc = Cheque.objects.filter(fecha_creado__range =  [f5, f6] , proveedor=categoria).order_by('-fecha_creado')
+
+
+    return render(request, template_name, {'f5':f5,'f6':f6, 'categoria': categoria,'prueba':prueba,'query':query, 'enc':enc, 'pro':pro})
+
+@login_required(login_url='/login/')
+@permission_required('che.change_cheque', login_url='bases:sin_privilegios')
+def Vista_Banco(request):
+    categoria = Cuenta.objects.all()
+    cheque = Cheque.objects.all()
+    template_name = "che/cheque_vista_bancopdf.html"
+
+    context = {
+        'categoria': Cuenta.objects.all(),
+        'cheque':  Cheque.objects.all()
+    }
+
+    return render(request, template_name, context)
+
+@login_required(login_url='/login/')
+@permission_required(login_url='bases:sin_privilegios')
+def imprimir_banco(request,f5,f6 , categoria):
+    template_name = "che/cheque_print_banco.html"
+    f5=parse_date(f5)
+    f6=parse_date(f6)
+    categoria=(categoria)
+    prueba = []
+    pro = []
+    query = []
+    enc = Cheque.objects.filter(fecha_creado__range =  [f5, f6] , cuenta__nombre__icontains=categoria).order_by('-fecha_creado')
+
+
+    return render(request, template_name, {'f5':f5,'f6':f6, 'categoria': categoria,'prueba':prueba,'query':query, 'enc':enc, 'pro':pro})

@@ -11,7 +11,6 @@
 
 <span>Fecha Final</span>
 	<input class="form-control mr-sm-2" type="date"  name="date_max" id="date_max" size=50% >
-
 	<div class="striped" cellspacing="0" width="100%">
 		<label for="category">Proveedor</label>
 		<select id="category" class="form-control" name="category">
@@ -24,7 +23,7 @@
 	</div>
 	<br>
 	<div class="form-group col-md-4">
-		<button class="btn btn-warning" type="submit" id="btnPrint">Imprimir</button>
+		<button class="btn btn-warning" type="submit" id="btnPrintPro">Imprimir</button>
 	</div>
 </form>
 <br>
@@ -68,6 +67,33 @@
 {%endblock%}
 {% block js_page %}
 <script>
+	$(function(){
+    $("").datetimepicker({
+      format: 'Y-m-d',
+      timepicker:false
+
+    });
+    $("#btnPrintPro").click(function(e){
+      e.preventDefault();
+      var date_min,date_max, category;
+      date_min = $("#date_min").val();
+      date_max = $("#date_max").val();
+			category = $("#category").val();
+      if(date_min=="" || date_min==null){
+        date_min="01-01-2019";
+      }
+      if(date_max=="" || date_max==null){
+        var d = new Date();
+        // var f2 = d.getDate() + "-" + (d.getMonth()+1) + "-" + d.getFullYear();
+        var date_max = d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate();
+      }
+
+      var url = "imprimir-proveedor/" + date_min + "/" + date_max + "/" + category;
+
+      window.open(url,'cheques');
+    });
+
+  });
  // Call the dataTables jQuery plugin
 $(document).ready(function() {
 	$('.table').DataTable({

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+  <meta charset="utf-8">
+<head>
+<style type="text/css">
+    @page {
+        size: letter;
+        margin: 1cm;
+
+        }
+        .table {
+          width: 75%;
+          max-width: 75%;
+            /* margin-bottom: 5px; */
+            /* background-color: #fff; */
+        }
+        .header {
+          font-size: 14px;
+          font-weight: 50px;
+          text-align: center;
+          color: #007cae;
+        }
+        .title {
+          font-size: 14px;
+          font-weight: 100;
+           /* text-align: right;*/
+           padding: 10px 20px 0px 20px;
+        }
+        .title span {
+            color: #007cae;
+        }
+        .details {
+            padding: 10px 20px 0px 20px;
+            text-align: left !important;
+            /*margin-left: 40%;*/
+        }
+        .hrItem {
+            border: none;
+            height: 1px;
+            /* Set the hr color */
+            color: #333; /* old IE */
+            background-color: #fff; /* Modern Browsers */
+        }
+        .table th,
+        .table td {
+            font-size: 10px;
+            padding: 5px;
+            /* border-top: 1px solid #000; */
+            text-align: left;
+        }
+        .table thead th {
+            vertical-align: bottom;
+            border-bottom: 2px solid #000;
+            text-align: center;
+        }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="card-header">
+        <center>
+          <h4> Sistema de Cheques</h4>
+          <h3>Reporte de Cheques<br><small>Periodo: {{f5|date:"d/m/Y"}} al {{f6|date:"d/m/Y"}}</small></h3>
+        </center>
+      </div>
+
+                <table class="table">
+                <thead>
+                <tr>
+                  <th>No. Cheque</th>
+                  <th>Cantidad</th>
+                  <th>Fch. P.</th>
+                  <th>Pagar a:</th>
+                  <th>Cuenta</th>
+                </tr>
+                </thead>
+                <tbody>
+                  {% for cheque in enc %}
+                <tr>
+                  <td>{{cheque.no_cheque}}</td>
+                  <td>{{cheque.cantidad}}</td>
+                  <td>{{cheque.fecha_pagar|date:"l, d/m/Y"}}</td>
+                  <td>{{cheque.proveedor}}</td>
+                  <td>{{cheque.cuenta}}</td>
+                </tr>
+                  {% endfor %}
+            </tbody>
+            </table>
+    </div>
+  </div>
+
+  </body>
+</html>

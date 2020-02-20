@@ -118,6 +118,24 @@
 
       window.open(url,'cheques');
     });
+    $("#btnPrintPro").click(function(e){
+      e.preventDefault();
+      var date_min,date_max,pro;
+      f1 = $("#f1").val();
+      f2 = $("#f2").val();
+      if(f1=="" || f1==null){
+        f1="01-01-2019";
+      }
+      if(f2=="" || f2==null){
+        var d = new Date();
+        // var f2 = d.getDate() + "-" + (d.getMonth()+1) + "-" + d.getFullYear();
+        var f2 = d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate();
+      }
+
+      var url = "imprimir-prove/" + f1 + "/" + f2 + "/" + pro;
+
+      window.open(url,'cheques');
+    });
 
   });
   function inactivar(id)
