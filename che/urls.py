@@ -20,7 +20,7 @@ urlpatterns = [
         path('cheque/imprimir-todas/<str:f1>/<str:f2>' , imprimir_cheque_list, name="cheque_print_all"),
         path('cheque/imprimir-imagen/<str:f1>/<str:f2>' , imprimir_cheque_img, name="cheque_print_img"),
         path('cheque/pdfproveedor/<str:f5>/<str:f6>/<str:categoria>', imprimir_provedor, name="proveedor_print_prove"),
-        path('cheque/pdfbanco/<str:f5>/<str:f6>/<str:categoria>', imprimir_banco, name="banco_print_pdf"),
+        path('cheque/pdfbanco/<str:f5>/<str:f6>/<str:categoria>', imprimir_banco, name="cheque_print_banco"),
 
         path('reporte/fecha/',filter, name = 'search_che'),
         path('reporte/banco/',BancoFilterView, name = 'search_banco'),
@@ -29,7 +29,7 @@ urlpatterns = [
 
         path('detalle/cheque/<int:id>' , ChequeDetailView.as_view() , name='detail_cheque'),
         path('cheque/detalle' , Vista_Proveedor, name='cheque_detalle'),
-        path('cheque/detalle/banco' , Vista_Banco, name='banco_detalle'),
+        path('cheque/banco' , Vista_Banco, name='banco_detalle'),
 
 
 

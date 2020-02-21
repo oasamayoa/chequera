@@ -14,7 +14,7 @@
 		<select  id="categoria" class="form-control" name="categoria">
 			<option selected>Buscar...</option>
 			{% for categorias in categoria %}
-			<option  value="{{categorias.nombre}} ">{{ categorias.nombre }}</option>
+			<option  value="{{categorias.nombre}} ">{{ categorias }}</option>
 			{% endfor %}
 		</select>
 	</div>
@@ -31,9 +31,8 @@
 		$("#f5, #f6").datetimepicker({
 			format: 'Y-m-d',
 			timepicker:false
-
 		});
-  $("#btnPrintBanco").click(function(e){
+	$("#btnPrintBanco").click(function(e){
     e.preventDefault();
     var f5 , f6 ;
     f5 = $("#f5").val();
@@ -46,12 +45,12 @@
     //  var f6 = d.getDate() + "-" + (d.getMonth()+1) + "-" + d.getFullYear();
     	var f6 = d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate();
     }
-		// var categoria =1
+		//var categoria = 1
 		categoria = $("#categoria").val()
     var url = "pdfbanco/" + f5 + "/" + f6 + "/" + categoria;
 
     window.open(url,'cheques');
     });
-		});
+	});
 </script>
 {% endblock %}

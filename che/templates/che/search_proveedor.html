@@ -21,10 +21,6 @@
 		</select>
 		<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
 	</div>
-	<br>
-	<div class="form-group col-md-4">
-		<button class="btn btn-warning" type="submit" id="btnPrintPro">Imprimir</button>
-	</div>
 </form>
 <br>
 
@@ -67,33 +63,6 @@
 {%endblock%}
 {% block js_page %}
 <script>
-	$(function(){
-    $("").datetimepicker({
-      format: 'Y-m-d',
-      timepicker:false
-
-    });
-    $("#btnPrintPro").click(function(e){
-      e.preventDefault();
-      var date_min,date_max, category;
-      date_min = $("#date_min").val();
-      date_max = $("#date_max").val();
-			category = $("#category").val();
-      if(date_min=="" || date_min==null){
-        date_min="01-01-2019";
-      }
-      if(date_max=="" || date_max==null){
-        var d = new Date();
-        // var f2 = d.getDate() + "-" + (d.getMonth()+1) + "-" + d.getFullYear();
-        var date_max = d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate();
-      }
-
-      var url = "imprimir-proveedor/" + date_min + "/" + date_max + "/" + category;
-
-      window.open(url,'cheques');
-    });
-
-  });
  // Call the dataTables jQuery plugin
 $(document).ready(function() {
 	$('.table').DataTable({

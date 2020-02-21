@@ -115,7 +115,7 @@
         </a>
         <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Menu</h6>
+            <h6 class="collapse-header">Busquedas</h6>
             {% if perms.che.view_cheque %}
             <a class="collapse-item" href="{% url 'che:search_che' %}">Busqueda por fecha</a>
             {% endif %}
@@ -125,6 +125,7 @@
             {% if perms.che.view_cheque %}
             <a class="collapse-item" href="{% url 'che:search_proveedor' %}">Busqueda por Proveedor</a>
             {% endif %}
+            <h6 class="collapse-header">Impresion de Reportes</h6>
             {% if perms.che.view_cheque %}
             <a class="collapse-item" href="{% url 'che:cheque_detalle' %}">Imprimir Proveedor</a>
             {% endif %}

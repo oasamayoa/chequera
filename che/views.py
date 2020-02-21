@@ -281,16 +281,15 @@ def Vista_Banco(request):
     return render(request, template_name, context)
 
 @login_required(login_url='/login/')
-@permission_required(login_url='bases:sin_privilegios')
+@permission_required('che.change_cheque', login_url='bases:sin_privilegios')
 def imprimir_banco(request,f5,f6 , categoria):
     template_name = "che/cheque_print_banco.html"
     f5=parse_date(f5)
     f6=parse_date(f6)
-    categoria=(categoria)
     prueba = []
     pro = []
     query = []
-    enc = Cheque.objects.filter(fecha_creado__range =  [f5, f6] , cuenta__nombre__icontains=categoria).order_by('-fecha_creado')
+    enc = Cheque.objects.filter(fecha_creado__range =  [f5, f6] , cuenta__nombre=categoria).order_by('-fecha_creado')
 
 
     return render(request, template_name, {'f5':f5,'f6':f6, 'categoria': categoria,'prueba':prueba,'query':query, 'enc':enc, 'pro':pro})
