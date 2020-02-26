@@ -1,4 +1,4 @@
-from django.db.models import Q, Count
+from django.db.models import Q, Count, Sum
 
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
@@ -213,11 +213,15 @@ def imprimir_cheque_list(request, f1,f2):
     f1=parse_date(f1)
     f2=parse_date(f2)
     enc = Cheque.objects.filter(fecha_creado__range = [f1 , f2]).order_by('-fecha_creado')
+    suma = 0
+    for cheque in enc:
+        suma = suma+cheque.cantidad
     context = {
         'request': request,
         'f1':f1,
         'f2':f2,
-        'enc':enc
+        'enc':enc,
+        'suma':suma
     }
     return render(request, template_name, context)
 
@@ -228,11 +232,15 @@ def imprimir_cheque_img(request, f1,f2):
     f1=parse_date(f1)
     f2=parse_date(f2)
     enc = Cheque.objects.filter(fecha_creado__range = [f1 , f2]).order_by('-fecha_creado')
+    suma = 0
+    for cheque in enc:
+        suma = suma+cheque.cantidad
     context = {
         'request': request,
         'f1':f1,
         'f2':f2,
-        'enc':enc
+        'enc':enc,
+        'suma':suma
     }
     return render(request, template_name, context)
 
@@ -262,9 +270,11 @@ def imprimir_provedor(request,f5,f6 , categoria):
     pro = []
     query = []
     enc = Cheque.objects.filter(fecha_creado__range =  [f5, f6] , proveedor=categoria).order_by('-fecha_creado')
+    suma = 0
+    for cheque in enc:
+        suma = suma+cheque.cantidad
 
-
-    return render(request, template_name, {'f5':f5,'f6':f6, 'categoria': categoria,'prueba':prueba,'query':query, 'enc':enc, 'pro':pro})
+    return render(request, template_name, {'f5':f5,'f6':f6, 'categoria': categoria,'prueba':prueba,'query':query, 'enc':enc, 'pro':pro, 'suma':suma})
 
 @login_required(login_url='/login/')
 @permission_required('che.change_cheque', login_url='bases:sin_privilegios')
@@ -291,5 +301,8 @@ def imprimir_banco(request,f5,f6 , categoria):
     query = []
     enc = Cheque.objects.filter(fecha_creado__range =  [f5, f6] , cuenta__nombre=categoria).order_by('-fecha_creado')
 
-
-    return render(request, template_name, {'f5':f5,'f6':f6, 'categoria': categoria,'prueba':prueba,'query':query, 'enc':enc, 'pro':pro})
+    #tot = Cheque.objects.filter(fecha_creado__range = [f5, f6], cuenta__nombre=categoria).aggregate(Sum('cantidad'))
+    suma = 0
+    for cheque in enc:
+        suma = suma+cheque.cantidad
+    return render(request, template_name, {'f5':f5,'f6':f6, 'categoria': categoria,'prueba':prueba,'query':query, 'enc':enc, 'pro':pro,'suma':suma})
