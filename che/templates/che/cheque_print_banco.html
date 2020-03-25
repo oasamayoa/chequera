@@ -74,6 +74,7 @@
                   <th>Fch. P.</th>
                   <th>Pagar a:</th>
                   <th>Cuenta</th>
+                  <th>Rechazado</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -84,6 +85,9 @@
                   <td>{{cheque.fecha_pagar|date:"l, d/m/Y"}}</td>
                   <td>{{cheque.proveedor}}</td>
                   <td>{{cheque.cuenta}}</td>
+                  {% if cheque.status %}
+                    <td>{{cheque.status}}</td>
+                  {% endif %}
                 </tr>
                   {% endfor %}
             </tbody>

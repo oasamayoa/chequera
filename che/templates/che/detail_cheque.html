@@ -22,6 +22,7 @@
               <th scope="col">Emision del Cheque</th>
               <th scope="col">Pagado A </th>
               <th scope="col">Cuenta Origen</th>
+              <th scope="col">Rechazado</th>
             </tr>
           </thead>
           <tbody>
@@ -31,6 +32,9 @@
               <td>{{cheque.fecha_pagar}}</td>
               <td>{{cheque.proveedor}}</td>
               <td>{{cheque.cuenta}}</td>
+              {% if cheque.status %}
+                <td>{{cheque.status}}</td>
+              {% endif %}
             </tr>
           </tbody>
         </table>

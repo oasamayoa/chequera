@@ -18,6 +18,10 @@ class Cheque(ClaseModelo):
     cuenta = models.ForeignKey(Cuenta, on_delete=models.CASCADE)
     proveedor = models.ForeignKey(Provedor, on_delete=models.CASCADE)
 
+    LOAN_STATUS = (
+        ('R', 'R'),
+    )
+    status = models.CharField(max_length=1, choices=LOAN_STATUS, null=True, blank=True)
 
     def __str__(self):
         return '{}'.format(self.no_cheque)

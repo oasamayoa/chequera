@@ -44,6 +44,7 @@
         <th>No. Fac.</th>
         <th>Fch. P.</th>
         <th>Estado</th>
+        <th>Rechazado</th>
         <th class="all">Acciones</th>
       </thead>
       <tbody>
@@ -56,6 +57,11 @@
           <td>{{ item.no_fac }}</td>
           <td>{{ item.fecha_pagar|date:"d/m/Y" }}</td>
           <td >{{item.estado|yesno:"Pendiente,Entregado"}}</td>
+          {% if item.status %}
+            <td>{{ item.status }}</td>
+          {% else %}
+            <td></td>
+          {% endif %}
           <td>
             <button class="btn btn-warning btn-circle" onclick="return abrir_modal('{% url 'che:cheque_edit' item.id %}')">
                 <i class="far fa-edit"></i></button>

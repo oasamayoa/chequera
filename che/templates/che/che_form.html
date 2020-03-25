@@ -27,6 +27,7 @@
 							<th>Fch. P.</th>
 							<th>Pagar a:</th>
 							<th>Cuenta</th>
+							<th>Rechazado</th>
 							<th></th>
 			      </tr>
 			    	</thead>
@@ -47,6 +48,9 @@
 							<td>{{cheques.fecha_pagar|date:"l, d/m/Y"}}</td>
 							<td>{{cheques.proveedor}}</td>
 							<td>{{cheques.cuenta}}</td>
+							{% if cheque.status %}
+								<td>{{cheque.status}}</td>
+							{% endif %}
 							<td><a class="btn btn-primary" href="{% url "che:detail_cheque" cheques.id%}">D</a> </td>
 			      </tr>
 					{%endfor%}

@@ -16,7 +16,8 @@ class ChequeForm(forms.ModelForm):
         'cuenta',
         'proveedor',
         'imagen',
-        'estado'
+        'estado',
+        'status'
         ]
 
         exclude = ['um','fm','uc', 'estado_che']
@@ -30,6 +31,7 @@ class ChequeForm(forms.ModelForm):
          'cuenta':"Cuentas",
          'proveedor':"Pagar a:",
          'imagen': "Imagen del Cheque",
+         'status': "Marcar Cheque Rechezado",
          }
         widgets = {
         'no_cheque': forms.TextInput(attrs={'class':'form-control'}),
