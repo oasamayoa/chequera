@@ -106,6 +106,9 @@
             {% if perms.che.view_cheque %}
             <a class="collapse-item" href="{% url 'che:cheque_list' %}">Cheque</a>
             {% endif %}
+            {% if perms.che.view_deposito %}
+            <a class="collapse-item" href="{% url 'che:deposito_list' %}">Deposito</a>
+            {% endif %}
           </div>
         </div>
       </li>

@@ -74,7 +74,7 @@
           <th>Fch. P.</th>
           <th>Fch. C.</th>
           <th>Estado</th>
-          <th>Rechazado</th>
+          <th>R</th>
         </thead>
         <tbody>
           {% for item in enc%}
@@ -86,7 +86,7 @@
             <td>{{ item.no_fac }}</td>
             <td>{{ item.fecha_pagar|date:"d/m/Y" }}</td>
             <td>{{ item.fecha_creado|date:"d/m/Y" }}</td>
-            <td >{{item.estado|yesno:"Pendiente,Entregado"}}</td>
+            <td >{{item.estado|yesno:"Pe,En"}}</td>
             {% if item.status %}
               <td>{{ item.status }}</td>
             {% endif %}

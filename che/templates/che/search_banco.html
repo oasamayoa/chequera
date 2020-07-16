@@ -38,7 +38,7 @@
 							<th>Fch. P.</th>
 							<th>Pagar a:</th>
 							<th>Cuenta</th>
-							<th>Rechazado</th>
+							<th>R</th>
 							<th></th>
 			      </tr>
 			    	</thead>
@@ -53,7 +53,7 @@
 							{% if cheque.status %}
 								<td>{{cheque.status}}</td>
 							{% else %}
-								<td></td>								
+								<td></td>
 							{% endif %}
 									{% for cat in cheque.proveedor.all %}
 									<td>{{ cat }}</td>
@@ -61,7 +61,7 @@
 									{% for cat in cheque.cuenta.all %}
 									<td>{{ nombre }}</td>
 									{% endfor %}
-							<td><a class="btn btn-primary" href="{% url "che:detail_cheque" cheque.id%}">D</a> </td>
+							<td><a class="btn btn-primary" href="{% url "che:detail_cheque" cheque.id%}">D</a></td>
 			      </tr>
 							{% endfor %}
 				</tbody>

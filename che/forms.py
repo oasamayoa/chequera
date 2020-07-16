@@ -1,5 +1,5 @@
 from django import forms
-from .models import Cheque
+from .models import Cheque, Deposito
 from django.contrib.admin import widgets
 
 
@@ -49,3 +49,35 @@ class ChequeForm(forms.ModelForm):
 
         self.fields['cuenta'].empty_label = "Selecione cuenta"
         self.fields['proveedor'].empty_label = "Pagar a:"
+
+class DepositoForm(forms.ModelForm):
+    class Meta:
+        model=Deposito
+
+        fields = [
+        'no_depo',
+        'cantidad',
+        'fecha_creado',
+        'cheque',
+        'imagen_dep',
+
+        ]
+
+        exclude = ['um','fm','uc', 'proveedor', 'cuenta', 'no_cheque']
+
+        labels = {
+         'no_depo':"No. Deposito",
+         'cantidad':"Cantidad",
+         'fecha_creado':"Fecha del Deposito",
+         'cheque':"No. Cheque",
+         'imagen_dep':"Img. Depo.",
+
+         }
+
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({
+                'class':'form-control'
+            })

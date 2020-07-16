@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-</script>
 <html lang="es">
   <meta charset="utf-8">
 <head>
@@ -62,52 +61,30 @@
       <div class="card-header">
         <center>
           <h4> Sistema de Cheques</h4>
-          <h3>Reporte de Cheques<br><small>Periodo: {{f5|date:"d/m/Y"}} al {{f6|date:"d/m/Y"}}</small></h3>
+          <h3>Reporte de Depositos<br><small>Periodo: {{f1|date:"d/m/Y"}} al {{f2|date:"d/m/Y"}}</small></h3>
         </center>
       </div>
-
-                <table class="table">
-                <thead>
-                <tr>
-                  <th>No. Cheque</th>
-                  <th>Cantidad</th>
-                  <th>Fch. P.</th>
-                  <th>Pagar a:</th>
-                  <th>Cuenta</th>
-                  <th>R</th>
-                </tr>
-                </thead>
-                <tbody>
-                  {% for cheque in enc %}
-                <tr>
-                  <td>{{cheque.no_cheque}}</td>
-                  <td>Q.{{cheque.cantidad}}</td>
-                  <td>{{cheque.fecha_pagar|date:"l, d/m/Y"}}</td>
-                  <td>{{cheque.proveedor}}</td>
-                  <td>{{cheque.cuenta}}</td>
-                  {% if cheque.status %}
-                    <td>{{cheque.status}}</td>
-                  {% endif %}
-                </tr>
-                  {% endfor %}
-            </tbody>
-            </table>
-            <!-- <table class="table">
-            <thead>
-            <tr>
-              <th>total de cheques<th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-
-            <tr>
-            </tbody>
-            </table> -->
-
-{% if suma %}
-<p><h3>Total de Cheque<br>Q.{{suma}}</p></h3>
-{% endif %}
+      <table class="table">
+        <thead>
+          <th>No. Deposito</th>
+          <th>No. Cheques</th>
+          <th>Cantidad</th>
+          <th>Fecha</th>
+        </thead>
+        <tbody>
+          {% for item in enc%}
+          <tr>
+            <td>{{ item.no_depo }}</td>
+            <td>{{ item.cheque }}</td>
+            <td>{{ item.cantidad }}</td>
+            <td>{{ item.fecha_creado|date:"d/m/Y" }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% if suma %}
+      <p><h3>Total de Depositos<br>Q.{{suma}}</p></h3>
+      {% endif %}
     </div>
   </div>
   </body>

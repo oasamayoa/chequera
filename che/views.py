@@ -12,9 +12,9 @@ from django.views import generic
 from django.urls import reverse_lazy
 from django.shortcuts import render
 
-from .models import Cheque
+from .models import Cheque, Deposito
 from registro.models import Banco, Cuenta, Provedor
-from che.forms import ChequeForm
+from che.forms import ChequeForm, DepositoForm
 from bases.views import SinPrivilegios
 
 from django.utils import timezone
@@ -36,6 +36,13 @@ class ChequeView(SuccessMessageMixin,SinPrivilegios, generic.ListView):
     template_name = "che/cheque_list.html"
     context_object_name = "obj"
 
+class DepositoView(SuccessMessageMixin,SinPrivilegios, generic.ListView):
+    permission_required = "che.view_deposito"
+    model = Deposito
+    cheque = Cheque.objects.all()
+    template_name = "che/deposito_list.html"
+    context_object_name = "obj"
+
 class ChequeNew(SuccessMessageMixin,SinPrivilegios, generic.CreateView):
     permission_required = "che.add_cheque"
     model=Cheque
@@ -48,6 +55,18 @@ class ChequeNew(SuccessMessageMixin,SinPrivilegios, generic.CreateView):
         form.instance.uc = self.request.user
         return super().form_valid(form)
 
+class DepositoNew(SuccessMessageMixin,SinPrivilegios, generic.CreateView):
+    permission_required = "che.add_deposito"
+    model=Deposito
+    template_name="che/depo_form.html"
+    context_object_name = "obj"
+    form_class = DepositoForm
+    success_url=reverse_lazy("che:deposito_list")
+
+    def form_valid(self, form):
+        form.instance.uc = self.request.user
+        return super().form_valid(form)
+
 class ChequeEdit(SuccessMessageMixin,SinPrivilegios, generic.UpdateView):
     permission_required = "che.change_cheque"
     model=Cheque
@@ -55,6 +74,18 @@ class ChequeEdit(SuccessMessageMixin,SinPrivilegios, generic.UpdateView):
     context_object_name = "obj"
     form_class = ChequeForm
     success_url=reverse_lazy("che:cheque_list")
+
+    def form_valid(self, form):
+        form.instance.um = self.request.user.id
+        return super().form_valid(form)
+
+class DepositoEdit(SuccessMessageMixin,SinPrivilegios, generic.UpdateView):
+    permission_required = "che.change_deposito"
+    model=Deposito
+    template_name="che/depo_form.html"
+    context_object_name = "obj"
+    form_class = DepositoForm
+    success_url=reverse_lazy("che:deposito_list")
 
     def form_valid(self, form):
         form.instance.um = self.request.user.id
@@ -83,6 +114,15 @@ class ChequeDetailView(SuccessMessageMixin,SinPrivilegios, generic.DetailView):
     slug_url_kwarg = 'id'
     queryset = Cheque.objects.all()
     context_object_name = 'cheque'
+
+class DepositoDetailView(SuccessMessageMixin,SinPrivilegios, generic.DetailView):
+    permission_required = "che.change_deposito"
+    redirect_field_name = 'redirect_to'
+    template_name = 'che/detail_deposito.html'
+    slug_field = 'id'
+    slug_url_kwarg = 'id'
+    queryset = Deposito.objects.all()
+    context_object_name = 'deposito'
 
 
 def is_valid_queryparam(param):
@@ -216,6 +256,25 @@ def imprimir_cheque_list(request, f1,f2):
     suma = 0
     for cheque in enc:
         suma = suma+cheque.cantidad
+    context = {
+        'request': request,
+        'f1':f1,
+        'f2':f2,
+        'enc':enc,
+        'suma':suma
+    }
+    return render(request, template_name, context)
+
+@login_required(login_url='/login/')
+@permission_required('che.change_deposito', login_url='bases:sin_privilegios')
+def imprimir_deposito_list(request, f1,f2):
+    template_name = "che/deposito_print_all.html"
+    f1=parse_date(f1)
+    f2=parse_date(f2)
+    enc = Deposito.objects.filter(fecha_creado__range = [f1 , f2]).order_by('-fecha_creado')
+    suma = 0
+    for deposito in enc:
+        suma = suma+deposito.cantidad
     context = {
         'request': request,
         'f1':f1,

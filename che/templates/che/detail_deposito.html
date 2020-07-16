@@ -7,8 +7,8 @@
         <div class="card">
             <div class="header">
       <div class="row">
-        {% if cheque.imagen %}
-        <img class="rounded" src="{{cheque.imagen.url}}" width="800px" height="450px" />
+        {% if deposito.imagen_dep %}
+        <img class="rounded" src="{{deposito.imagen_dep.url}}" width="800px" height="450px" />
         {% else %}
         <img src="{%static "che/img/default.png" %}" align="center" height="200" width="300"/>
         {%endif%}
@@ -17,24 +17,18 @@
         <table class="table table-hover">
           <thead>
             <tr>
+              <th scope="col">No. Deposito</th>
               <th scope="col">No. Cheque</th>
-              <th scope="col">Monto</th>
-              <th scope="col">Emision del Cheque</th>
-              <th scope="col">Pagado A </th>
-              <th scope="col">Cuenta Origen</th>
-              <th scope="col">R</th>
+              <th scope="col">Cantidad</th>
+              <th scope="col">Fecha</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>{{cheque.no_cheque}}</td>
-              <td>Q.{{cheque.cantidad}}</td>
-              <td>{{cheque.fecha_pagar}}</td>
-              <td>{{cheque.proveedor}}</td>
-              <td>{{cheque.cuenta}}</td>
-              {% if cheque.status %}
-                <td>{{cheque.status}}</td>
-              {% endif %}
+              <td>{{deposito.no_depo}}</td>
+              <td>{{deposito.cheque}}</td>
+              <td>Q.{{deposito.cantidad}}</td>
+              <td>{{deposito.fecha_creado}}</td>
             </tr>
           </tbody>
         </table>
@@ -50,4 +44,3 @@
 
 {%endblock%}
 {% block footer %}{% endblock %}
-d

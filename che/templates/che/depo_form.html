@@ -1,0 +1,90 @@
+{% extends 'base/base.html' %}
+{% block page_content %}
+<form method="POST" class="form-inline">
+  {% csrf_token %}
+  <div class="content-wrapper col-xl-10 col-md-10 mb-10">
+          {% if obj %}
+          <div class="card card-warning">
+          {% else %}
+          <div class="card card-success">
+          {% endif %}
+             <div class="card-header">
+               <h3 class="card-title">{% if obj %} Editar {% else %} Nuevo {% endif %} Deposito</h3>
+               <div class="card-tools">
+               </div>
+               <!-- /.card-tools -->
+             </div>
+             <!-- /.card-header -->
+             <div class="card-body">
+               <div class="dropdwon-divider"></div>
+               <div class="row">
+                 <div clas="input-group">
+                  <div class="col-6">
+                   {{ form.no_depo.errors }}
+                   <label for="{{ form.no_depo.id_for_labe }}">No. Deposito:</label>
+                   {{ form.no_depo }}
+                   </div>
+                  </div>
+              </div>
+              <div class="row">
+                <div clas="input-group">
+                 <div class="col-6">
+                  {{ form.fecha_creado.errors }}
+                  <label for="{{ form.fecha_creado.id_for_labe }}">Fecha:</label>
+                  {{ form.fecha_creado }}
+                  </div>
+                 </div>
+             </div>
+             <div class="row">
+               <div clas="input-group">
+                <div class="col-6">
+                 {{ form.cantidad.errors }}
+                 <label for="{{ form.cantidad.id_for_labe }}">Cantidad:</label>
+                 {{ form.cantidad }}
+                 </div>
+                </div>
+            </div>
+            <div class="row">
+              <div clas="input-group">
+               <div class="col-6">
+                {{ form.cheque.errors }}
+                <label for="{{ form.cheque.id_for_labe }}">No. Cheque:</label>
+                {{ form.cheque }}
+                </div>
+               </div>
+           </div>
+           <div class="row">
+             <div clas="input-group">
+              <div class="col-6">
+               {{ form.imagen_dep.errors }}
+               <label for="{{ form.imagen_dep.id_for_labe }}">Img. Boleta:</label>
+               {{ form.imagen_dep }}
+               </div>
+              </div>
+          </div>
+                  <div class="input-group mb-3">
+                   <div class="input-group-prepend">
+                       <button type="submit" class="btn btn-danger"><span class="fa fa-save"></span>Guardad</button>
+                       <a href="{% url 'che:deposito_list' %}" class="btn btn-success"><span class=" fa fa-undo"</span>Cancelar</a>
+                     </div>
+                   </div>
+               </div>
+               </div>
+             </div>
+             </div>
+             <!-- /.card-body -->
+
+           <!-- /.card -->
+{% endblock%}
+{% block footer %}{% endblock%}
+{% block js_page %}
+<script>
+  $(function(){
+    $("#id_fecha_creado").datetimepicker({
+      format: 'Y-m-d',
+      timepicker:false
+
+    });
+    });
+  </script>
+{% endblock %}
