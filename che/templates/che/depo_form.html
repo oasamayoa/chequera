@@ -1,6 +1,6 @@
 {% extends 'base/base.html' %}
 {% block page_content %}
-<form method="POST" class="form-inline">
+<form method="POST" class="form-inline" enctype="multipart/form-data">
   {% csrf_token %}
   <div class="content-wrapper col-xl-10 col-md-10 mb-10">
           {% if obj %}
