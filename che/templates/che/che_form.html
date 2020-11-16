@@ -28,7 +28,7 @@
 							<th>Pagar a:</th>
 							<th>Cuenta</th>
 							<th>R</th>
-							<th></th>
+							
 			      </tr>
 			    	</thead>
 						<tbody>
@@ -38,9 +38,9 @@
 							{% if cheques.imagen %}
 							<td>
 							<img src="{{cheques.imagen.url}}" width="300" height="200"/>
-							</td>
+
 							{% else %}
-							<td>
+
 							<img src="{%static "che/img/default.png" %}" align="center" height="200" width="300"/>
 							</td>
 							{%endif%}

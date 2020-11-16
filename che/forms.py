@@ -1,5 +1,6 @@
 from django import forms
 from .models import Cheque, Deposito
+from registro.models import Cuenta, Provedor
 from django.contrib.admin import widgets
 
 
@@ -32,23 +33,71 @@ class ChequeForm(forms.ModelForm):
          'proveedor':"Pagar a:",
          'imagen': "Imagen del Cheque",
          'status': "Marcar Cheque Rechezado",
-         }
+        }
         widgets = {
-            'no_cheque': forms.TextInput(attrs={'class':'form-control'}),
-            'fecha_pagar': widgets.AdminDateWidget(),
-            'cantidad': forms.TextInput(attrs={'class':'form-control'}),
-            'no_fac': forms.TextInput(attrs={'class':'form-control'}),
+            'no_fac': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'style': 'width: 100%',
+                    'autocomplete': 'off'
+                }
+            ),
+            'cantidad': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'style': 'width: 100%',
+                    'autocomplete': 'off'
+                }
+            ),
+            'no_cheque': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'style': 'width: 100%',
+                    'autocomplete': 'off'
+                }
+            ),
+            'fecha_pagar': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'style': 'width: 100%',
+                    'autocomplete': 'off'
+                }
+            ),
+            'fecha_creado': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'style': 'width: 100%',
+                    'autocomplete': 'off'
+                }
+            ),
+            'cuenta': forms.Select(
+                attrs={
+                    'class': 'form-control select2',
+                    'style': 'width: 100%',
+                    'autocomplete': 'off'
+                }
+            ),
+            'proveedor': forms.Select(
+                attrs={
+                    'class': 'form-control select2',
+                    'style': 'width: 100%',
+                    'autocomplete': 'off'
+                }
+            ),
         }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for field in iter(self.fields):
-            self.fields[field].widget.attrs.update({
-                'class':'form-control'
-            })
 
-        self.fields['cuenta'].empty_label = "Selecione cuenta"
-        self.fields['proveedor'].empty_label = "Pagar a:"
+    cuenta = forms.ModelChoiceField(queryset=Cuenta.objects.all(), widget=forms.Select(attrs={
+        'class': 'form-control select2',
+        'style': 'width: 100%'
+    }))
+    proveedor = forms.ModelChoiceField(queryset=Provedor.objects.all(), widget=forms.Select(attrs={
+        'class': 'form-control select2',
+        'style': 'width: 100%'
+    }))
+
+        # self.fields['cuenta'].empty_label = "Selecione cuenta"
+        # self.fields['proveedor'].empty_label = "Pagar a:"
 
 class DepositoForm(forms.ModelForm):
     class Meta:
@@ -74,10 +123,41 @@ class DepositoForm(forms.ModelForm):
 
          }
 
+        widgets = {
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for field in iter(self.fields):
-            self.fields[field].widget.attrs.update({
-                'class':'form-control'
-            })
+            'no_depo': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'style': 'width: 100%',
+                    'autocomplete': 'off'
+                }
+            ),
+            'cantidad': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'style': 'width: 100%',
+                    'autocomplete': 'off'
+                }
+            ),
+            'fecha_creado': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'style': 'width: 100%',
+                    'autocomplete': 'off'
+                }
+            ),
+            'cheque': forms.Select(
+                attrs={
+                    'class': 'form-control select2',
+                    'style': 'width: 100%',
+                    'autocomplete': 'off'
+                }
+            ),
+
+        }
+
+
+        cheque = forms.ModelChoiceField(queryset=Cheque.objects.all(), widget=forms.Select(attrs={
+        'class': 'form-control select2',
+        'style': 'width: 100%'
+        }))

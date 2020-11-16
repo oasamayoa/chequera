@@ -32,16 +32,30 @@ from .filter import ChequeFilter
 class ChequeView(SuccessMessageMixin,SinPrivilegios, generic.ListView):
     permission_required = "che.view_cheque"
     model = Cheque
-    provedor = Provedor.objects.all()
     template_name = "che/cheque_list.html"
-    context_object_name = "obj"
+
+
+    def get_queryset(self):
+        return self.model.objects.all().order_by('-fecha_creado')[:100]
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
 
 class DepositoView(SuccessMessageMixin,SinPrivilegios, generic.ListView):
     permission_required = "che.view_deposito"
     model = Deposito
-    cheque = Cheque.objects.all()
     template_name = "che/deposito_list.html"
-    context_object_name = "obj"
+
+
+
+    def get_queryset(self):
+        return self.model.objects.all().order_by('-fecha_creado')[:100]
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
 
 class ChequeNew(SuccessMessageMixin,SinPrivilegios, generic.CreateView):
     permission_required = "che.add_cheque"
@@ -186,7 +200,12 @@ def Bancofilter(request):
 @login_required(login_url='/login/')
 @permission_required('che.change_cheque', login_url='bases:sin_privilegios')
 def BancoFilterView(request):
-    qs = Bancofilter(request)
+    # qs = Bancofilter(request)
+    value = request.GET.get('date_min' , '')
+    if value:
+        qs = Bancofilter(request)
+    else:
+        qs = {}
     context = {
         'queryset': qs,
         'proveedor': Provedor.objects.all(),
@@ -197,7 +216,12 @@ def BancoFilterView(request):
 @login_required(login_url='/login/')
 @permission_required('che.change_cheque', login_url='bases:sin_privilegios')
 def ProveedorFilterView(request):
-    qs = Bancofilter(request)
+    # qs = Bancofilter(request)
+    value = request.GET.get('date_min' , '')
+    if value:
+        qs = Bancofilter(request)
+    else:
+        qs = {}
     context = {
         'queryset': qs,
         'proveedor': Provedor.objects.all(),
