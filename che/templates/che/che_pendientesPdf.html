@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+  <meta charset="utf-8">
+<head>
+<style type="text/css">
+    #customers {
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    }
+
+    #customers td, #customers th {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+
+    #customers tr:nth-child(even){background-color: #f2f2f2;}
+
+    #customers tr:hover {background-color: #ddd;}
+
+    #customers th {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      text-align: left;
+      background-color: #4CAF50;
+      color: white;
+    }
+
+</style>
+</head>
+<body>
+      <div class="card-header">
+        <center>
+          <h4> Sistema de Cheques<br>Cheques no entregados</h4>
+          <h3>Reporte de Cheques al {{ today}}</h3>
+        </center>
+      </div>
+      <table id="customers">
+        <thead>
+          <tr>
+            <th>No. Cheque</th>
+            <th>Proveedor</th>
+            <th>Cuenta</th>
+            <th>Cantidad</th>
+            <th>No. Fac.</th>
+            <th>Fch. P.</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in cheque %}
+          <tr>
+            <td>{{ item.no_cheque }}</td>
+            <td>{{ item.proveedor }}</td>
+            <td>{{item.cuenta.banco.nombre}}</td>
+            <td>Q.{{ item.cantidad }}</td>
+            <td>{{ item.no_fac }}</td>
+            <td>{{ item.fecha_pagar|date:"d/m/Y" }}</td>
+            <td >{{item.estado_che|yesno:"En,Pe"}}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+  </body>
+</html>

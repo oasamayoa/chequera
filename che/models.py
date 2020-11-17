@@ -40,7 +40,22 @@ class Deposito(ClaseModelo):
 
     def __str__(self):
         return '{}'.format(self.no_depo)
-        
+
 
     class Meta:
         verbose_name_plural = "Depositos"
+
+class Fisico_Entregado(ClaseModelo):
+    nombre = models.CharField('Nombre al que se le entrego', max_length=50)
+    fecha_creado = models.DateField(auto_now_add=True)
+    cheque = models.ForeignKey(Cheque, on_delete=models.CASCADE)
+
+
+    def __str__(self):
+        return '{}'.format(self.nombre)
+
+
+    class Meta:
+        verbose_name = 'Cheque entregado'
+        verbose_name_plural = 'Cheques entregados'
+        db_table = 'Che_Fisico'

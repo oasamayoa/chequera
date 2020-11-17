@@ -1,0 +1,43 @@
+{% extends 'base/base.html' %}
+{% block footer %}{% endblock %}
+{% block page_content %}
+<form class="" action="." method="GET" autocomplete="off">
+<span>Buscar fecha a pagar</span>
+<input class="form-class" type="text"  name="f6" id="f6">
+
+<br>
+<br>
+	<br>
+	<div class="form-group col-md-4">
+		<button class="btn btn-warning" type="submit" id="btnPrintPagar">Imprimir</button>
+	</div>
+</form>
+</div>
+{% endblock %}
+{% block js_page %}
+<script>
+	$(function(){
+		$("#f6").datetimepicker({
+			format: 'Y-m-d',
+			timepicker:false
+
+		});
+  $("#btnPrintPagar").click(function(e){
+    e.preventDefault();
+    var f6;
+    f6 = $("#f6").val();
+
+    if(f6=="" || f6==null){
+      var d = new Date();
+    //  var f6 = d.getDate() + "-" + (d.getMonth()+1) + "-" + d.getFullYear();
+    	var f6 = d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate();
+    }
+		// var categoria =1
+		// pagar = $("#pagar").val()
+    var url = "pdfpragar/" + f6 + "/" ;
+
+    window.open(url,'cheques');
+    });
+		});
+</script>
+{% endblock %}

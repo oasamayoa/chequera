@@ -28,7 +28,10 @@
 
   <link href="{% static 'base/datepicker/jquery.datetimepicker.min.css'%}" rel="stylesheet">
 
-  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+  <!-- <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" /> -->
+
+  <link href="{% static 'base/vendor/select2/css/select2.min.css' %}" rel="stylesheet" />
+  
 
 
 
@@ -133,6 +136,9 @@
             {% endif %}
             {% if perms.che.view_cheque %}
             <a class="collapse-item" href="{% url 'che:banco_detalle' %}">Imprimir Banco</a>
+            {% endif %}
+            {% if perms.che.view_cheque %}
+            <a class="collapse-item" href="{% url 'che:cheque_pagar' %}">Imprimir cheque a pagar</a>
             {% endif %}
           </div>
         </div>
@@ -297,7 +303,8 @@
 
   <script src="{% static 'base/datepicker/jquery.datetimepicker.full.js' %}"></script>
   <script src="{% static 'base/datepicker/jquery.datetimepicker.min.js' %}"></script>
-  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+  <!-- <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script> -->
+  <script src="{% static 'base/vendor/select2/js/select2.min.js' %}"></script>
 
 
   {% block control_modal%}

@@ -12,7 +12,7 @@
       <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
         <div class="dropdown-header">Acciones:</div>
         <a class="dropdown-item" onclick="return abrir_modal('{% url 'che:cheque_new' %}')" href="#"><i class="far fa-calendar-plus"></i> Nuevo</a>
-        <a class="dropdown-item" href="{% url 'che:cheque_print_all' %}" target="reportes"><i class="fas fa-print"></i> Listado</a>
+        <a class="dropdown-item" href="{% url 'che:che_pendiente_all' %}" target="reportes"><i class="fas fa-print"></i> Listado</a>
       </div>
     </div>
   </div>
@@ -37,15 +37,17 @@
     </div>
     <table class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
       <thead>
-        <th>No. Cheque</th>
-        <th>Proveedor</th>
-        <th>Cuenta</th>
-        <th>Cantidad</th>
-        <th>No. Fac.</th>
-        <th>Fch. P.</th>
-        <th>Estado</th>
-        <th>R</th>
-        <th class="all">Acciones</th>
+        <tr>
+          <th>No. Cheque</th>
+          <th>Proveedor</th>
+          <th>Cuenta</th>
+          <th>Cantidad</th>
+          <th>No. Fac.</th>
+          <th>Fch. P.</th>
+          <th>Estado</th>
+          <th>R</th>
+          <th class="all">Acciones</th>
+        </tr>
       </thead>
       <tbody>
         {% for m in cheque_list %}

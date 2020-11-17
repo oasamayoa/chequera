@@ -24,6 +24,8 @@ from django.views.generic import TemplateView , CreateView , DetailView , Update
 import django_filters
 from django.utils.dateparse import parse_date
 from datetime import date, timedelta, datetime
+from xhtml2pdf import pisa
+
 
 
 from .filter import ChequeFilter
@@ -418,5 +420,93 @@ def search(request):
     else:
         cheques =[]
 
-    return render(request , "che/busqueda_all_che.html" , { 'query' :query , 'cheques': cheques, 
+    return render(request , "che/busqueda_all_che.html" , { 'query' :query , 'cheques': cheques,
         })
+
+
+@login_required(login_url='/login/')
+@permission_required('che.change_cheque', login_url='bases:sin_privilegios')
+def Vista_pagar(request):
+    cheque = Cheque.objects.all()
+    template_name = "che/cheque_pagar_pdf.html"
+
+    context = {
+        'cheque':  Cheque.objects.all()
+    }
+
+    return render(request, template_name, context)
+
+
+@login_required(login_url='/login/')
+@permission_required('che.change_cheque', login_url='bases:sin_privilegios')
+def imprimir_che_pagar(request,f6):
+    template_name = "che/cheque_print_pagar.html"
+    enc=parse_date(f6)
+    if enc:
+        qset = (
+            # Q(cantidad=query)|
+            Q(fecha_pagar=enc)
+            )
+        enc = Cheque.objects.filter(qset).order_by('-fc')
+    else:
+        enc =[]
+
+
+    return render(request, template_name, {'f6': f6, 'enc': enc})
+
+
+@login_required(login_url='/login/')
+@permission_required('che.change_cheque', login_url='bases:sin_privilegios')
+def reporte_che_entregados(request):
+
+    def link_callback(uri, rel):
+                """
+                Convert HTML URIs to absolute system paths so xhtml2pdf can access those
+                resources
+                """
+                result = finders.find(uri)
+                if result:
+                        if not isinstance(result, (list, tuple)):
+                                result = [result]
+                        result = list(os.path.realpath(path) for path in result)
+                        path=result[0]
+                else:
+                        sUrl = settings.STATIC_URL        # Typically /static/
+                        sRoot = settings.STATIC_ROOT      # Typically /home/userX/project_static/
+                        mUrl = settings.MEDIA_URL         # Typically /media/
+                        mRoot = settings.MEDIA_ROOT       # Typically /home/userX/project_static/media/
+
+                        if uri.startswith(mUrl):
+                                path = os.path.join(mRoot, uri.replace(mUrl, ""))
+                        elif uri.startswith(sUrl):
+                                path = os.path.join(sRoot, uri.replace(sUrl, ""))
+                        else:
+                                return uri
+
+                # make sure that file exists
+                if not os.path.isfile(path):
+                        raise Exception(
+                                'media URI must start with %s or %s' % (sUrl, mUrl)
+                        )
+                return path
+
+
+    template_path = 'che/che_pendientesPdf.html'
+    today = timezone.now()
+
+    cheque = Cheque.objects.filter(estado_che=False).order_by('-fc')
+    context = {
+        'cheque': cheque,
+        'today': today,
+        'reque': request
+    }
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'inline; filename="cheques_pendientes.pdf"'
+    template= get_template(template_path)
+    html = template.render(context)
+
+    pisa_status = pisa.CreatePDF(
+       html, dest=response, link_callback=link_callback)
+    if pisa_status.err:
+        return HttpResponse('error <pre>' + html + '</pre>')
+    return response
