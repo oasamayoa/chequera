@@ -21,7 +21,7 @@ class ChequeForm(forms.ModelForm):
         'status'
         ]
 
-        exclude = ['um','fm','uc', 'estado_che']
+        exclude = ['um','fm','uc', 'estado']
 
         labels = {
          'no_cheque':"No. Cheque",
@@ -100,6 +100,14 @@ class ChequeForm(forms.ModelForm):
         # self.fields['proveedor'].empty_label = "Pagar a:"
 
 class DepositoForm(forms.ModelForm):
+
+    cheque = forms.ModelChoiceField(queryset=Cheque.objects.filter(estado_che=False), widget=forms.Select(attrs={
+    'class': 'form-control select2',
+    'style': 'width: 100%'
+    }))
+
+
+
     class Meta:
         model=Deposito
 
@@ -146,18 +154,6 @@ class DepositoForm(forms.ModelForm):
                     'autocomplete': 'off'
                 }
             ),
-            'cheque': forms.Select(
-                attrs={
-                    'class': 'form-control select2',
-                    'style': 'width: 100%',
-                    'autocomplete': 'off'
-                }
-            ),
+
 
         }
-
-
-        cheque = forms.ModelChoiceField(queryset=Cheque.objects.all(), widget=forms.Select(attrs={
-        'class': 'form-control select2',
-        'style': 'width: 100%'
-        }))

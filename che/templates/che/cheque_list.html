@@ -56,7 +56,7 @@
           <td>Q.{{ m.cantidad }}</td>
           <td>{{ m.no_fac }}</td>
           <td>{{ m.fecha_pagar|date:"d/m/Y" }}</td>
-          <td >{{m.estado|yesno:"Pe,En"}}</td>
+          <td >{{m.estado_che|yesno:"ENTREGADO,PENDIENTE"}}</td>
           {% if m.status %}
             <td>{{ m.status }}</td>
           {% else %}
@@ -65,13 +65,6 @@
           <td>
             <button class="btn btn-warning btn-circle" onclick="return abrir_modal('{% url 'che:cheque_edit' m.id %}')">
                 <i class="far fa-edit"></i></button>
-            <button clas="btn-circle" onclick="inactivar({{item.id}})">
-                    {% if m.estado %}
-                    <i class="far fa-thumbs-up text-primary"></i>
-                  {% else %}
-                    <i class="far fa-thumbs-down text-danger"></i>
-                  {% endif %}
-                </button>
           </td>
         </tr>
         {% endfor %}
@@ -81,46 +74,8 @@
 </div>
 {% endblock %}
 {% block js_page %}
+{%  include 'base/dtable.js' %}
 <script>
-  $(function() {
-
-    $("#f1, #f2").datetimepicker({
-      format: 'Y-m-d',
-      timepicker:false
-
-    });
-
-    $('.table').DataTable({
-      "scrollX": true,
-      "scrollY": 400,
-
-      "language": {
-        "sProcessing": "Procesando...",
-        "sLengthMenu": "Mostrar _MENU_ registros",
-        "sZeroRecords": "No se encontraron resultados",
-        "sEmptyTable": "Ningún dato disponible en esta tabla",
-        "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-        "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
-        "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
-        "sInfoPostFix": "",
-        "sSearch": "Buscar:",
-        "sUrl": "",
-        "sInfoThousands": ",",
-        "sLoadingRecords": "Cargando...",
-        "oPaginate": {
-            "sFirst": "<span class='fa fa-angle-double-left'></span>",
-            "sLast": "<span class='fa fa-angle-double-right'></span>",
-            "sNext": "<span class='fa fa-angle-right'></span>",
-            "sPrevious": "<span class='fa fa-angle-left'></span>"
-        },
-        "oAria": {
-            "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
-            "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-        }
-      }
-    });
-    });
-
     $("#btnPrint").click(function(e){
       e.preventDefault();
       var date_min,date_max;
@@ -176,32 +131,32 @@
       window.open(url,'cheques');
     });
 
-  function inactivar(id){
-    var data = {id:id};
-    data = JSON.stringify(data);
-    var token = '{{csrf_token}}';
-
-    $.ajax({
-      headers : {"X-CSRFToken": token},
-      type:"POST",
-      url:"/che/cheque/estado/"+id,
-      data: data,
-      success: function(response){
-        if(response==="OK")
-        {
-          location.reload(true);
-        }
-        else{
-          mensaje("ESTADO CAMBIADO");
-        }
-      },
-      error: function(jqXHR, textStatus, errorThrow){
-        console.log(textStatus, errorThrow);
-        mensaje(errorThrow,'red');
-        cerrar_modal();
-      }
-    });
-  }
+  // function inactivar(id_estado_che){
+  //   var data = {id_estado_che:id_estado_che};
+  //   data = JSON.stringify(data);
+  //   var token = '{{csrf_token}}';
+  //
+  //   $.ajax({
+  //     headers : {"X-CSRFToken": token},
+  //     type:"POST",
+  //     url:"/che/cheque/estado/"+id_estado_che,
+  //     data: data,
+  //     success: function(response){
+  //       if(response==="OK")
+  //       {
+  //         location.reload(true);
+  //       }
+  //       else{
+  //         mensaje("ESTADO CAMBIADO");
+  //       }
+  //     },
+  //     error: function(jqXHR, textStatus, errorThrow){
+  //       console.log(textStatus, errorThrow);
+  //       mensaje(errorThrow,'red');
+  //       cerrar_modal();
+  //     }
+  //   });
+  // }
 
   </script>
 {% endblock %}

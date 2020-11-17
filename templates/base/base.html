@@ -30,6 +30,8 @@
 
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
 
+
+
 </head>
 
 <body id="page-top" class="bg-gradient-primary">
@@ -113,6 +115,9 @@
         <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Busquedas</h6>
+            {% if perms.che.view_cheque %}
+            <a class="collapse-item" href="{% url 'che:bucsar' %}">Busqueda cheques a pagar</a>
+            {% endif %}
             {% if perms.che.view_cheque %}
             <a class="collapse-item" href="{% url 'che:search_che' %}">Busqueda por fecha</a>
             {% endif %}
@@ -277,6 +282,8 @@
 
   <!-- Custom scripts for all pages-->
   <script src="{% static  'base/js/sb-admin-2.min.js' %}"></script>
+
+  <script src="{% static  'base/js/sum().js' %}"></script>
 
   <!-- Page level plugins -->
   <script src="{% static 'base/vendor/datatables/jquery.dataTables.min.js' %}"></script>

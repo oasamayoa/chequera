@@ -1,0 +1,95 @@
+{% extends 'base/base.html' %}
+
+{% block page_content %}
+<div class="content-wrapper">
+ <section class="content-header">
+   <div class="container-fluid">
+     <div class="row mb-2">
+       <div class="col-sm-6">
+         <h1>Cheques a pagar</h1>
+       </div>
+       <div class="col-sm-6">
+         <ol class="breadcrumb float-sm-right">
+           <li class="breadcrumb-item"><a href="#"> Listado de cheques</a></li>
+         </ol>
+       </div>
+     </div>
+   </div>
+ </section>
+ <section>
+<form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search"
+action="." method="GET" autocomplete="off"
+>
+	<div class="input-group">
+		<input class="form-control bg-light border-0 small" type="date"  name="q" size=50%  placeholder="Buscar (No. Orden , Cliente)"
+		name="q"
+		value="{{query|escape}}"
+		placeholder="Cliente, Serie, No.de Servicio"
+		aria-label="Search" aria-describedby="basic-addon2"
+		autocomplete="off"
+		>
+		<div class="input-group-append">
+			<button class="btn btn-primary" type="submit">
+				<i class="fas fa-search fa-sm"></i>
+			</button>
+		</div>
+	</div>
+</form>
+
+{%if query%}
+  <br>
+  <div class="card shadow mb-4">
+    <div class="card-header py-3">
+      <h6 class="m-0 font-weight-bold text-primary">Resultado para "<em>{{query}}</em>"</h6>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+  <!-- <table class="table table-hover ">
+    <thead> -->
+    <table id="busqueda" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+      <thead>
+      <tr>
+        <!-- <th scope="col" style="width: 20%" >ejemplo</th> -->
+        <th>No. Cheque</th>
+        <th>Fecha a pagar</th>
+        <th>Pagar a:</th>
+        <th>Cantidad</th>
+        <th>Estado</th>
+        <th class="all">Opciones</th>
+      </tr>
+      </thead>
+      <tbody>
+      {% for m in cheques %}
+      <tr>
+        <td>{{ m.no_cheque }}</td>
+        <td>{{ m.fecha_pagar }}</td>
+        <td>{{m.proveedor.nombre}}</td>
+        <td>{{m.cantidad}}</td>
+        <td>{{ m.estado|yesno:"Entregado,Pendiente" }}</td>
+        <td><a class="btn btn-outline-secondary" href="{%url 'che:detail_cheque' m.pk%}">Detalle</a></td>
+      </tr>
+  {%endfor%}
+</tbody>
+</table>
+  </div>
+  {% if suma %}
+  <div class="card-footer">
+      <p>{{suma}}</p>
+  </div>
+  {% endif %}
+  </div>
+
+  </div>
+  {%endif%}
+</section>
+</div>
+
+{% endblock %}
+{% block js_page %}
+{% include 'base/dtable.js' %}
+
+<script type="text/javascript">
+  var table = $('.busqueda').DataTable();
+  table.column( 4 ).data().sum();
+</script>
+{% endblock %}

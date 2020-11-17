@@ -1,7 +1,7 @@
 from django.db.models import Q, Count, Sum
 
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 import json
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
@@ -77,9 +77,22 @@ class DepositoNew(SuccessMessageMixin,SinPrivilegios, generic.CreateView):
     form_class = DepositoForm
     success_url=reverse_lazy("che:deposito_list")
 
-    def form_valid(self, form):
-        form.instance.uc = self.request.user
-        return super().form_valid(form)
+    def post(self, request, *args, **kwargs):
+        form = DepositoForm(request.POST, request.FILES)
+        if form.is_valid():
+            self.object = form.save(commit=False)
+            form.instance.uc = self.request.user
+            id_che = self.object.cheque.pk
+            cheque_update = Cheque.objects.get(pk=id_che)
+            cheque_update.estado_che = True
+            form.save()
+            cheque_update.save()
+            return HttpResponseRedirect(self.success_url)
+        return render(request, self.template_name, {'form': form})
+
+    # def form_valid(self, form):
+    #     form.instance.uc = self.request.user
+    #     return super().form_valid(form)
 
 class ChequeEdit(SuccessMessageMixin,SinPrivilegios, generic.UpdateView):
     permission_required = "che.change_cheque"
@@ -389,3 +402,21 @@ def imprimir_banco(request,f5,f6 , categoria):
     for cheque in enc:
         suma = suma+cheque.cantidad
     return render(request, template_name, {'f5':f5,'f6':f6, 'categoria': categoria,'prueba':prueba,'query':query, 'enc':enc, 'pro':pro,'suma':suma})
+
+
+
+@login_required(login_url='/login/')
+@permission_required('che.change_cheque', login_url='bases:sin_privilegios')
+def search(request):
+    query = request.GET.get('q' , '')
+    if query:
+        qset = (
+            # Q(cantidad=query)|
+            Q(fecha_pagar=query)
+            )
+        cheques = Cheque.objects.filter(qset).order_by('-fc')
+    else:
+        cheques =[]
+
+    return render(request , "che/busqueda_all_che.html" , { 'query' :query , 'cheques': cheques, 
+        })
