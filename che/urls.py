@@ -4,7 +4,8 @@ from django.contrib.auth import views as auth_views
 from .views import ChequeView, Cheque_inactivar,  ChequeNew, ChequeEdit, ChequeGeneratePDF,  filter,\
         ChequeDetailView, BancoFilterView,ProveedorFilterView, imprimir_cheque_list, imprimir_cheque_img,\
         imprimir_provedor, Vista_Proveedor, Vista_Banco, imprimir_banco, DepositoView, DepositoNew, DepositoEdit,\
-        imprimir_deposito_list, DepositoDetailView, search, Vista_pagar, imprimir_che_pagar, reporte_che_entregados
+        imprimir_deposito_list, DepositoDetailView, search, Vista_pagar, imprimir_che_pagar, reporte_che_entregados,\
+        ChequeEntregadoView, ChequeEntregadoNew
 from .models import Cheque
 
 
@@ -45,7 +46,8 @@ urlpatterns = [
         path('buscar/', search, name='bucsar'),
         path('cheques/no-entregados', reporte_che_entregados, name='che_pendiente_all'),
 
-
+        path('che-entregado/',ChequeEntregadoView.as_view(), name='che_entregado_list'),
+        path('che-entregado/new', ChequeEntregadoNew.as_view(), name='che_entregado_new'),
 
 
 ]

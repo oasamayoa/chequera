@@ -12,9 +12,9 @@ from django.views import generic
 from django.urls import reverse_lazy
 from django.shortcuts import render
 
-from .models import Cheque, Deposito
+from .models import Cheque, Deposito, Fisico_Entregado
 from registro.models import Banco, Cuenta, Provedor
-from che.forms import ChequeForm, DepositoForm
+from che.forms import ChequeForm, DepositoForm, CheEntregadoForm
 from bases.views import SinPrivilegios
 
 from django.utils import timezone
@@ -510,3 +510,37 @@ def reporte_che_entregados(request):
     if pisa_status.err:
         return HttpResponse('error <pre>' + html + '</pre>')
     return response
+
+
+class ChequeEntregadoView(SuccessMessageMixin,SinPrivilegios, generic.ListView):
+    permission_required = "che.view_cheque"
+    model = Fisico_Entregado
+    template_name = "che/cheque_entregado_list.html"
+
+
+    def get_queryset(self):
+        return self.model.objects.all().order_by('-fecha_creado')[:100]
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+class ChequeEntregadoNew(SuccessMessageMixin,SinPrivilegios, generic.CreateView):
+    permission_required = "che.add_cheque"
+    model=Fisico_Entregado
+    template_name="che/cheque_entregado_form.html"
+    form_class = CheEntregadoForm
+    success_url=reverse_lazy("che:che_entregado_list")
+
+    def post(self, request, *args, **kwargs):
+        form = CheEntregadoForm(request.POST, request.FILES)
+        if form.is_valid():
+            self.object = form.save(commit=False)
+            form.instance.uc = self.request.user
+            id_che = self.object.cheque.pk
+            cheque_update = Cheque.objects.get(pk=id_che)
+            cheque_update.estado_che = True
+            form.save()
+            cheque_update.save()
+            return HttpResponseRedirect(self.success_url)
+        return render(request, self.template_name, {'form': form})

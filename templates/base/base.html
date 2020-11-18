@@ -31,7 +31,7 @@
   <!-- <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" /> -->
 
   <link href="{% static 'base/vendor/select2/css/select2.min.css' %}" rel="stylesheet" />
-  
+
 
 
 
@@ -105,6 +105,9 @@
             {% endif %}
             {% if perms.che.view_deposito %}
             <a class="collapse-item" href="{% url 'che:deposito_list' %}">Deposito</a>
+            {% endif %}
+            {% if perms.che.view_deposito %}
+            <a class="collapse-item" href="{% url 'che:che_entregado_list' %}">Cheque entregado fisico</a>
             {% endif %}
           </div>
         </div>

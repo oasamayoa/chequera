@@ -1,5 +1,5 @@
 from django import forms
-from .models import Cheque, Deposito
+from .models import Cheque, Deposito, Fisico_Entregado
 from registro.models import Cuenta, Provedor
 from django.contrib.admin import widgets
 
@@ -155,5 +155,39 @@ class DepositoForm(forms.ModelForm):
                 }
             ),
 
+
+        }
+
+class CheEntregadoForm(forms.ModelForm):
+
+    cheque = forms.ModelChoiceField(queryset=Cheque.objects.filter(estado_che=False), widget=forms.Select(attrs={
+    'class': 'form-control select2',
+    'style': 'width: 100%'
+    }))
+
+
+
+    class Meta:
+        model=Fisico_Entregado
+
+        fields = ['nombre', 'cheque']
+
+        exclude = ['um','fm','uc','fecha_creado' ]
+
+        labels = {
+         'nombre':"Nombre del cliente",
+         'cheque':"Cheque ",
+
+         }
+
+        widgets = {
+
+            'nombre': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'style': 'width: 100%',
+                    'autocomplete': 'off'
+                }
+            ),
 
         }
