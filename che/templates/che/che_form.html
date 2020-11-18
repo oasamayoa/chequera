@@ -22,28 +22,18 @@
 			      <thead>
 			      <tr>
 			        <th>No. Cheque</th>
-							<th>Imagen</th>
 							<th>Cantidad</th>
 							<th>Fch. P.</th>
 							<th>Pagar a:</th>
 							<th>Cuenta</th>
 							<th>R</th>
-							
+
 			      </tr>
 			    	</thead>
 						<tbody>
 				   {%for cheques in cheque%}
 			      <tr>
 							<td>{{cheques.no_cheque}}</td>
-							{% if cheques.imagen %}
-							<td>
-							<img src="{{cheques.imagen.url}}" width="300" height="200"/>
-
-							{% else %}
-
-							<img src="{%static "che/img/default.png" %}" align="center" height="200" width="300"/>
-							</td>
-							{%endif%}
 							<td>{{cheques.cantidad}}</td>
 							<td>{{cheques.fecha_pagar|date:"l, d/m/Y"}}</td>
 							<td>{{cheques.proveedor}}</td>

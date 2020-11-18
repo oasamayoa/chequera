@@ -25,6 +25,9 @@ import django_filters
 from django.utils.dateparse import parse_date
 from datetime import date, timedelta, datetime
 from xhtml2pdf import pisa
+import os
+from django.conf import settings
+from django.contrib.staticfiles import finders
 
 
 
