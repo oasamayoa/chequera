@@ -109,6 +109,9 @@
             {% if perms.che.view_deposito %}
             <a class="collapse-item" href="{% url 'che:che_entregado_list' %}">Cheque entregado fisico</a>
             {% endif %}
+            {% if perms.che.view_deposito %}
+            <a class="collapse-item" href="{% url 'che:cheque_rechazado_list' %}">Cheque rechazado</a>
+            {% endif %}
           </div>
         </div>
       </li>

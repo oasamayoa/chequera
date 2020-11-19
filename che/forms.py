@@ -1,5 +1,5 @@
 from django import forms
-from .models import Cheque, Deposito, Fisico_Entregado
+from .models import Cheque, Deposito, Fisico_Entregado, Cheque_rechazado
 from registro.models import Cuenta, Provedor
 from django.contrib.admin import widgets
 
@@ -183,6 +183,46 @@ class CheEntregadoForm(forms.ModelForm):
         widgets = {
 
             'nombre': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'style': 'width: 100%',
+                    'autocomplete': 'off'
+                }
+            ),
+
+        }
+
+class CheRechazadoForm(forms.ModelForm):
+
+    cheque_re = forms.ModelChoiceField(queryset=Cheque.objects.all(), widget=forms.Select(attrs={
+    'class': 'form-control select2',
+    'style': 'width: 100%'
+    }))
+
+    cheque_nu = forms.ModelChoiceField(queryset=Cheque.objects.filter(status=None), widget=forms.Select(attrs={
+    'class': 'form-control select2',
+    'style': 'width: 100%'
+    }))
+
+
+
+    class Meta:
+        model=Cheque_rechazado
+
+        fields = ['cheque_re', 'cheque_nu', 'observacion']
+
+        exclude = ['um','fm','uc' ]
+
+        labels = {
+         'cheque_re':"Cheque rechazado",
+         'cheque_nu':"Cheque Nuevo ",
+         'observacion': "Observaciones"
+
+         }
+
+        widgets = {
+
+            'observacion': forms.TextInput(
                 attrs={
                     'class': 'form-control',
                     'style': 'width: 100%',

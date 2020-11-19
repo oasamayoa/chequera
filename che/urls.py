@@ -5,7 +5,8 @@ from .views import ChequeView, Cheque_inactivar,  ChequeNew, ChequeEdit, ChequeG
         ChequeDetailView, BancoFilterView,ProveedorFilterView, imprimir_cheque_list, imprimir_cheque_img,\
         imprimir_provedor, Vista_Proveedor, Vista_Banco, imprimir_banco, DepositoView, DepositoNew, DepositoEdit,\
         imprimir_deposito_list, DepositoDetailView, search, Vista_pagar, imprimir_che_pagar, reporte_che_entregados,\
-        ChequeEntregadoView, ChequeEntregadoNew
+        ChequeEntregadoView, ChequeEntregadoNew, cheques_rechazados, ChequeRechazadoView, ChequeRechazadoNew,\
+        ChequeGeneratePendintesPDF
 from .models import Cheque
 
 
@@ -48,6 +49,11 @@ urlpatterns = [
 
         path('che-entregado/',ChequeEntregadoView.as_view(), name='che_entregado_list'),
         path('che-entregado/new', ChequeEntregadoNew.as_view(), name='che_entregado_new'),
+        path('che-rechazado/<int:id>', cheques_rechazados, name='che_rechazado'),
+
+        path('cheque-rechazado/',ChequeRechazadoView.as_view(), name='cheque_rechazado_list'),
+        path('che-rechazado/new', ChequeRechazadoNew.as_view(), name='cheque_rechazado_new'),
+        path('cheques-recha-all', ChequeGeneratePendintesPDF.as_view(), name='cheques_recha_all'),
 
 
 ]

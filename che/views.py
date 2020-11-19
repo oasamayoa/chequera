@@ -9,12 +9,12 @@ from django.contrib.auth.decorators import login_required, permission_required
 
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views import generic
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.shortcuts import render
 
-from .models import Cheque, Deposito, Fisico_Entregado
+from .models import Cheque, Deposito, Fisico_Entregado, Cheque_rechazado
 from registro.models import Banco, Cuenta, Provedor
-from che.forms import ChequeForm, DepositoForm, CheEntregadoForm
+from che.forms import ChequeForm, DepositoForm, CheEntregadoForm, CheRechazadoForm
 from bases.views import SinPrivilegios
 
 from django.utils import timezone
@@ -445,55 +445,51 @@ def Vista_pagar(request):
 def imprimir_che_pagar(request,f6):
     template_name = "che/cheque_print_pagar.html"
     enc=parse_date(f6)
+    suma = 0
     if enc:
         qset = (
-            # Q(cantidad=query)|
+
             Q(fecha_pagar=enc)
             )
         enc = Cheque.objects.filter(qset).order_by('-fc')
+        suma = list(Cheque.objects.filter(qset).aggregate(Sum('cantidad')).values())[0]
     else:
         enc =[]
+        suma=[]
 
 
-    return render(request, template_name, {'f6': f6, 'enc': enc})
+    return render(request, template_name, {'f6': f6, 'enc': enc, 'suma':suma})
 
 
-@login_required(login_url='/login/')
-@permission_required('che.change_cheque', login_url='bases:sin_privilegios')
+
+def link_callback(uri, rel):
+    """
+    Convert HTML URIs to absolute system paths so xhtml2pdf can access those
+    resources
+    """
+    # use short variable names
+    sUrl = settings.STATIC_URL      # Typically /static/
+    sRoot = settings.STATIC_ROOT    # Typically /home/userX/project_static/
+    mUrl = settings.MEDIA_URL       # Typically /static/media/
+    mRoot = settings.MEDIA_ROOT     # Typically /home/userX/project_static/media/
+
+    # convert URIs to absolute system paths
+    if uri.startswith(mUrl):
+        path = os.path.join(mRoot, uri.replace(mUrl, ""))
+    elif uri.startswith(sUrl):
+        path = os.path.join(sRoot, uri.replace(sUrl, ""))
+    else:
+        return uri  # handle absolute uri (ie: http://some.tld/foo.png)
+
+    # make sure that file exists
+    if not os.path.isfile(path):
+            raise Exception(
+                'media URI must start with %s or %s' % (sUrl, mUrl)
+            )
+    return path
+
+
 def reporte_che_entregados(request):
-
-    def link_callback(uri, rel):
-                """
-                Convert HTML URIs to absolute system paths so xhtml2pdf can access those
-                resources
-                """
-                result = finders.find(uri)
-                if result:
-                        if not isinstance(result, (list, tuple)):
-                                result = [result]
-                        result = list(os.path.realpath(path) for path in result)
-                        path=result[0]
-                else:
-                        sUrl = settings.STATIC_URL        # Typically /static/
-                        sRoot = settings.STATIC_ROOT      # Typically /home/userX/project_static/
-                        mUrl = settings.MEDIA_URL         # Typically /media/
-                        mRoot = settings.MEDIA_ROOT       # Typically /home/userX/project_static/media/
-
-                        if uri.startswith(mUrl):
-                                path = os.path.join(mRoot, uri.replace(mUrl, ""))
-                        elif uri.startswith(sUrl):
-                                path = os.path.join(sRoot, uri.replace(sUrl, ""))
-                        else:
-                                return uri
-
-                # make sure that file exists
-                if not os.path.isfile(path):
-                        raise Exception(
-                                'media URI must start with %s or %s' % (sUrl, mUrl)
-                        )
-                return path
-
-
     template_path = 'che/che_pendientesPdf.html'
     today = timezone.now()
 
@@ -547,3 +543,67 @@ class ChequeEntregadoNew(SuccessMessageMixin,SinPrivilegios, generic.CreateView)
             cheque_update.save()
             return HttpResponseRedirect(self.success_url)
         return render(request, self.template_name, {'form': form})
+
+class ChequeRechazadoView(SuccessMessageMixin,SinPrivilegios, generic.ListView):
+    permission_required = "che.view_cheque"
+    model = Cheque_rechazado
+    template_name = "che/cheque_rechazado_list.html"
+
+
+    def get_queryset(self):
+        return self.model.objects.all().order_by('-fc')[:100]
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+class ChequeRechazadoNew(SuccessMessageMixin,SinPrivilegios, generic.CreateView):
+    permission_required = "che.add_cheque"
+    model= Cheque_rechazado
+    template_name="che/cheque_rechazado_form.html"
+    form_class = CheRechazadoForm
+    success_url=reverse_lazy("che:cheque_rechazado_list")
+
+    def post(self,request, *args, **kwargs):
+        form = CheRechazadoForm(request.POST, request.FILES)
+        if form.is_valid():
+            self.object = form.save(commit=False)
+            form.instance.uc = self.request.user
+            id_che = self.object.cheque_re.pk
+            cheque_update = Cheque.objects.get(pk=id_che)
+            cheque_update.status = 'E'
+            form.save()
+            cheque_update.save()
+            return HttpResponseRedirect(self.success_url)
+        return render(request, self.template_name, {'form': form})
+
+
+def cheques_rechazados(request, id , **kwargs):
+    cheque = Cheque.objects.get(pk=id)
+    cheque.status = 'E'
+    cheque.save()
+    #Agregar al historial
+    return HttpResponseRedirect(reverse('che:search_che'))
+
+
+class ChequeGeneratePendintesPDF(View):
+    def get(self, request, *args, **kwargs):
+        template = get_template('che/cheque_print_rechazados.html')
+        cheque = Cheque.objects.filter(estado_che=False).order_by('-fc')
+        params = {
+            "cheque": cheque,
+
+
+        }
+        html = template.render(params)
+        pdf = Render.render('', params)
+        if pdf:
+            response = HttpResponse(pdf, content_type='application/pdf')
+            filename = "Invoice_%s.pdf" %("12341231")
+            content = "inline; filename='%s'" %(filename)
+            download = request.GET.get("download")
+            if download:
+                content = "attachment; filename='%s'" %(filename)
+            response['Content-Disposition'] = content
+            return response
+        return HttpResponse("Not found")
