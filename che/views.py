@@ -1,4 +1,6 @@
 from django.db.models import Q, Count, Sum
+from easy_pdf.views import PDFTemplateView, PDFTemplateResponseMixin
+
 
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
@@ -607,3 +609,11 @@ class ChequeGeneratePendintesPDF(View):
             response['Content-Disposition'] = content
             return response
         return HttpResponse("Not found")
+
+class PDFPedidosHoy(PDFTemplateResponseMixin , TemplateView):
+    redirect_field_name = 'redirect_to'
+    template_name = 'che/report_cheques_del_dia.html'
+
+    def get_context_data(self , *args , **kwargs):
+        cheque = Cheque.objects.filter(estado_che=False).order_by('-fc')
+        return {"cheque" : cheque}
