@@ -1,39 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+  <meta charset="utf-8">
+<head>
+<style type="text/css">
+    @page {
+        size: letter;
+        margin: 1cm;
 
-
-
-    <style type="text/css">
-        body {
-            font-family: "Helvetica", "sans-serif";
-            color: #333333;
         }
-    </style>
-    <table class="table">
-      <thead>
-        <th>No. Cheque</th>
-        <th>Proveedor</th>
-        <th>Cuenta</th>
-        <th>Cantidad</th>
-        <th>No. Fac.</th>
-        <th>Fch. P.</th>
-        <th>Fch. C.</th>
-        <th>Estado</th>
-        <th>R</th>
-      </thead>
-      <tbody>
-        {% for item in cheque%}
-        <tr>
-          <td>{{ item.no_cheque }}</td>
-          <td>{{ item.proveedor }}</td>
-          <td>{{ item.cuenta }}</td>
-          <td>Q.{{ item.cantidad }}</td>
-          <td>{{ item.no_fac }}</td>
-          <td>{{ item.fecha_pagar|date:"d/m/Y" }}</td>
-          <td>{{ item.fecha_creado|date:"d/m/Y" }}</td>
-          <td >{{item.estado_che|yesno:"Pe,En"}}</td>
-          {% if item.status %}
-          <td>{{ item.status }}</td>
-          {% endif %}
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+        .table {
+          width: 75%;
+          max-width: 75%;
+            /* margin-bottom: 5px; */
+            /* background-color: #fff; */
+        }
+        .header {
+          font-size: 14px;
+          font-weight: 50px;
+          text-align: center;
+          color: #007cae;
+        }
+        .title {
+          font-size: 14px;
+          font-weight: 100;
+           /* text-align: right;*/
+           padding: 10px 20px 0px 20px;
+        }
+        .title span {
+            color: #007cae;
+        }
+        .details {
+            padding: 10px 20px 0px 20px;
+            text-align: left !important;
+            /*margin-left: 40%;*/
+        }
+        .hrItem {
+            border: none;
+            height: 1px;
+            /* Set the hr color */
+            color: #333; /* old IE */
+            background-color: #fff; /* Modern Browsers */
+        }
+        .table th,
+        .table td {
+            font-size: 10px;
+            padding: 5px;
+            /* border-top: 1px solid #000; */
+            text-align: left;
+        }
+        .table thead th {
+            vertical-align: bottom;
+            border-bottom: 2px solid #000;
+            text-align: center;
+        }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="card-header">
+        <center>
+          <h4> Sistema de Cheques</h4>
+          <h3>Reporte cheques pendientes de entrega<br><small></small></h3>
+        </center>
+      </div>
+      <table class="table">
+        <thead>
+          <th>No. Cheque</th>
+          <th>Proveedor</th>
+          <th>Cuenta</th>
+          <th>Cantidad</th>
+          <th>No. Fac.</th>
+          <th>Fch. P.</th>
+          <th>Fch. C.</th>
+          <th>Estado</th>
+          <th>R</th>
+        </thead>
+        <tbody>
+          {% for item in cheque%}
+          <tr>
+            <td>{{ item.no_cheque }}</td>
+            <td>{{ item.proveedor }}</td>
+            <td>{{ item.cuenta }}</td>
+            <td>Q.{{ item.cantidad }}</td>
+            <td>{{ item.no_fac }}</td>
+            <td>{{ item.fecha_pagar|date:"d/m/Y" }}</td>
+            <td>{{ item.fecha_creado|date:"d/m/Y" }}</td>
+            <td >{{item.estado_che|yesno:"En,Pendiente"}}</td>
+            {% if item.status %}
+              <td>{{ item.status }}</td>
+            {% endif %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+  </body>
+</html>
