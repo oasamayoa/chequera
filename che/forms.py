@@ -18,7 +18,8 @@ class ChequeForm(forms.ModelForm):
         'proveedor',
         'imagen',
         'estado',
-        'status'
+        'status',
+        'estado_che',
         ]
 
         exclude = ['um','fm','uc', 'estado']
@@ -33,6 +34,7 @@ class ChequeForm(forms.ModelForm):
          'proveedor':"Pagar a:",
          'imagen': "Imagen del Cheque",
          'status': "Marcar Cheque Rechezado",
+         'estado_che': 'Estado'
         }
         widgets = {
             'no_fac': forms.TextInput(
@@ -42,6 +44,11 @@ class ChequeForm(forms.ModelForm):
                     'autocomplete': 'off'
                 }
             ),
+            # 'estado_che': forms.TextInput(
+            #     attrs={
+            #         'class': 'form-control',
+            #     }
+            # ),
             'cantidad': forms.TextInput(
                 attrs={
                     'class': 'form-control',

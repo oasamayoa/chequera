@@ -96,7 +96,7 @@ DATABASES = {
         'NAME': 'chequera',
         'HOST': 'localhost' ,
         'USER': 'postgres' ,
-        'PASSWORD': 'Alejandro214.' ,
+        'PASSWORD': 'america214.' ,
         'PORT': '5432' ,
     }
 }
