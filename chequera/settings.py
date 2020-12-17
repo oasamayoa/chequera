@@ -84,7 +84,11 @@ DATABASES = {
         'NAME': 'chequera',
         'HOST': 'localhost' ,
         'USER': 'postgres' ,
+<<<<<<< HEAD
         'PASSWORD': '123' ,
+=======
+        'PASSWORD': 'america214.' ,
+>>>>>>> b1625712eb27d7647f32795d99fcff40e87bd229
         'PORT': '5432' ,
     }
 }
