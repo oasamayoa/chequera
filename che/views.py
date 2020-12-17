@@ -617,3 +617,22 @@ class PDFPedidosHoy(PDFTemplateResponseMixin , TemplateView):
     def get_context_data(self , *args , **kwargs):
         cheque = Cheque.objects.filter(estado_che=False).order_by('-fc')
         return {"cheque" : cheque}
+
+@login_required(login_url='/login/')
+@permission_required('che.change_cheque', login_url='bases:sin_privilegios')
+def deposito_filter(request):
+    query1 = request.GET.get('q', '')
+    query2 = request.GET.get('p', 'p')
+    if query1:
+        if query2:
+            inicio = datetime.strptime(query1, '%Y-%m-%d')
+            final = datetime.strptime(query2, '%Y-%m-%d')
+            deposito = Deposito.objects.filter(fecha_creado__range =[inicio , final]).order_by('-fecha_creado')
+        else :
+            deposito = []
+            inicio = []
+    else :
+        final = []
+        deposito = []
+
+    return render(request , 'che/deposito_filter.html' , {'query1': query1 , 'query2' : query2 ,'deposito': deposito})

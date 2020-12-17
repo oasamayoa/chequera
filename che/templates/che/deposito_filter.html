@@ -1,0 +1,85 @@
+{%extends 'base/base.html' %}
+{%load static%}
+{%block page_content %}
+<font color="blue" face="TimensRouw">
+<h2 align="center">Buscador Deposito por Fecha </h2>
+</font>
+<br>
+<form class="form-inline" action="." method="GET" autocomplete="off">
+<span>Fecha Inicial</span>
+<input class="form-control mr-sm-2" type="date"  name="q" size=50% value="{{query1|escape}}">
+
+<span>Fecha Final</span>
+	<input class="form-control mr-sm-2" type="date"  name="p" size=50% value="{{query2|escape}}">
+	<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
+</form>
+  <br>
+					{% if query1 %}
+
+			<div class="">
+
+			  		<table class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+			      <thead>
+			      <tr>
+							<th>No. Deposito</th>
+			        <th>No. Cheque</th>
+							<th>factura</th>
+							<th>Cantidad</th>
+							<th>Pagar a:</th>
+							<th>Cuenta</th>
+							<th></th>
+			      </tr>
+			    	</thead>
+						<tbody>
+				   {%for m in deposito%}
+			      <tr>
+							<td>{{m.no_depo}}</td>
+							<td>{{m.cheque.no_cheque}}</td>
+							<td>{{m.cheque.no_fac}}</td>
+							<td>{{m.cheque.cantidad}}</td>
+							<td>{{m.cheque.proveedor}}</td>
+							<td>{{m.cheque.cuenta}}</td>
+							<td><a class="btn btn-primary" href="{% url 'che:detail_deposito' m.id %}" >D</a> </td>
+			      </tr>
+					{%endfor%}
+				</tbody>
+			  </table>
+				</div>
+				{%endif%}
+
+{%endblock%}
+{% block js_page %}
+<script>
+ // Call the dataTables jQuery plugin
+$(document).ready(function() {
+	$('.table').DataTable({
+		"scrollX": true,
+		"scrollY": 400,
+		"language": {
+			"sProcessing": "Procesando...",
+			"sLengthMenu": "Mostrar _MENU_ registros",
+			"sZeroRecords": "No se encontraron resultados",
+			"sEmptyTable": "Ningún dato disponible en esta tabla",
+			"sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+			"sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+			"sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+			"sInfoPostFix": "",
+			"sSearch": "Buscar:",
+			"sUrl": "",
+			"sInfoThousands": ",",
+			"sLoadingRecords": "Cargando...",
+			  "oPaginate": {
+			    "sFirst": "<span class='fa fa-angle-double-left'></span>",
+			     "sLast": "<span class='fa fa-angle-double-right'></span>",
+			     "sNext": "<span class='fa fa-angle-right'></span>",
+			     "sPrevious": "<span class='fa fa-angle-left'></span>"
+			   },
+			   "oAria": {
+			     "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+			     "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+			   }
+		}
+	});
+});
+</script>
+{% endblock %}
