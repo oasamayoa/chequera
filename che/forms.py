@@ -1,5 +1,5 @@
 from django import forms
-from .models import Cheque, Deposito, Fisico_Entregado, Cheque_rechazado
+from .models import Cheque, Deposito, Fisico_Entregado, Cheque_rechazado, Factura, Abono_Factura
 from registro.models import Cuenta, Provedor
 from django.contrib.admin import widgets
 
@@ -238,3 +238,71 @@ class CheRechazadoForm(forms.ModelForm):
             ),
 
         }
+
+
+
+class FacturaForm(forms.ModelForm):
+
+    proveedor = forms.ModelChoiceField(queryset=Provedor.objects.all(), widget=forms.Select(attrs={
+    'class': 'form-control select2',
+    'style': 'width: 100%'
+    }))
+
+
+    class Meta:
+        model=Factura
+
+        fields = ['no_fac', 'fecha_pagar', 'proveedor', 'total_fac']
+
+        exclude = ['um','fm','uc', 'imagen_fac', 'total_fac1' ]
+
+        labels = {
+         'no_fac':"No. Factura",
+         'fecha_pagar':"Fecha a pagar factura",
+         'proveedor': "Pagar a",
+         'total_fac': "Total"
+
+         }
+
+        widgets = {
+
+            'no_fac': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'style': 'width: 100%',
+                    'autocomplete': 'off'
+                }
+            ),
+            'fecha_pagar': forms.DateInput(
+                attrs={
+                    'class': 'form-control',
+                    'autocomplete': 'off'
+                }
+            ),
+            'total_fac': forms.NumberInput(
+                attrs={
+                    'class': 'form-control',
+                    'autocomplete': 'off'
+                }
+            ),
+
+        }
+
+class AbonoForm(forms.ModelForm):
+
+    id_factura = forms.ModelChoiceField(queryset=Factura.objects.all(), widget=forms.Select(attrs={
+    'class': 'form-control select2',
+    'style': 'width: 100%'
+    }))
+
+    id_cheque = forms.ModelChoiceField(queryset=Cheque.objects.all(), widget=forms.Select(attrs={
+    'class': 'form-control select2',
+    'style': 'width: 100%'
+    }))
+
+    class Meta:
+        model = Abono_Factura
+
+        fields = ['id_factura', 'id_cheque']
+
+        exclude = ['um','fm','uc', 'total', 'estado_abono']

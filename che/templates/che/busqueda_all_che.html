@@ -65,7 +65,7 @@ action="." method="GET" autocomplete="off"
         <td>{{ m.fecha_pagar }}</td>
         <td>{{m.proveedor.nombre}}</td>
         <td>{{m.cantidad}}</td>
-        <td>{{ m.estado|yesno:"Entregado,Pendiente" }}</td>
+        <td>{{ m.estado_che|yesno:"ENTREGADO,PENDIENTE" }}</td>
         <td><a class="btn btn-outline-secondary" href="{%url 'che:detail_cheque' m.pk%}">Detalle</a></td>
       </tr>
   {%endfor%}

@@ -74,7 +74,7 @@
                   <th>Fch. P.</th>
                   <th>Pagar a:</th>
                   <th>Cuenta</th>
-                  <th>R</th>
+                  <th>Estado</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -85,9 +85,7 @@
                   <td>{{cheque.fecha_pagar}}</td>
                   <td>{{cheque.proveedor}}</td>
                   <td>{{cheque.cuenta}}</td>
-                  {% if cheque.status %}
-                    <td>{{cheque.status}}</td>
-                  {% endif %}
+                  <td>{{cheque.estado_che|yesno:"Entregado,Pendiente"}}</td>
                 </tr>
                   {% endfor %}
             </tbody>

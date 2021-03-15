@@ -1,0 +1,71 @@
+{% extends 'base/base.html' %}
+{% block page_content %}
+<div class="container-fluid">
+    <div class="col">
+      <h4>Facturas a ingresar</h4>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      {% if obj %}
+                      <form method="POST" action="{% url 'che:factura_edit' obj.pk %}" enctype="multipart/form-data">
+                      {% else %}
+                      <form method="POST" action="{% url 'che:factura_new' %}" enctype="multipart/form-data">
+                      {% endif %}
+                        {% csrf_token %}
+                        {% include 'base/field_error.html'%}
+                        <div class="col">
+
+                          <div class="row g-3">
+                              <div class="col-md-4">
+                                <label for="inputnombre">{{ form.no_fac.label }}</label>
+                                {{ form.no_fac }}
+                              </div>
+                              <div class="col-md-2">
+                                <label for="inputfecha_pago">{{ form.fecha_pagar.label }}</label>
+                                {{ form.fecha_pagar }}
+                              </div>
+                              <div class="col-10 mt-1">
+                                <label for="inputprovedor">{{ form.proveedor.label}}</label>
+                                {{ form.proveedor }}
+                             </div>
+                             <div class="col-md-3 mt-3">
+                                <label for="inputpagar">{{ form.total_fac.label }}</label>
+                                {{ form.total_fac }}
+                             </div>
+                             <div class="col-12 mt-4">
+                                <button class="btn btn-primary" type="submit">Guardar</button>
+                             </div>
+                            </div>
+                        </div>
+                      </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+  {% csrf_token %}
+{% endblock%}
+{% block footer %}{% endblock%}
+{% block js_page %}
+<script>
+  $(function(){
+    $("#id_fecha_pagar").datetimepicker({
+      format: 'Y-m-d',
+      timepicker:false
+    });
+    });
+    $(function(){
+        $('.select2').select2({
+
+        });
+      });
+  </script>
+{% endblock %}

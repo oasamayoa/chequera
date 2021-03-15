@@ -112,6 +112,12 @@
             {% if perms.che.view_deposito %}
             <a class="collapse-item" href="{% url 'che:cheque_rechazado_list' %}">Cheque rechazado</a>
             {% endif %}
+            {% if perms.che.view_deposito %}
+            <a class="collapse-item" href="{% url 'che:factura_list' %}">Ingreso de Factura</a>
+            {% endif %}
+            {% if perms.che.view_deposito %}
+            <a class="collapse-item" href="{% url 'che:abono_factura_list' %}">Abono</a>
+            {% endif %}
           </div>
         </div>
       </li>

@@ -14,9 +14,9 @@ from django.views import generic
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import render
 
-from .models import Cheque, Deposito, Fisico_Entregado, Cheque_rechazado
+from .models import Cheque, Deposito, Fisico_Entregado, Cheque_rechazado, Factura, Abono_Factura
 from registro.models import Banco, Cuenta, Provedor
-from che.forms import ChequeForm, DepositoForm, CheEntregadoForm, CheRechazadoForm
+from che.forms import ChequeForm, DepositoForm, CheEntregadoForm, CheRechazadoForm, FacturaForm, AbonoForm
 from bases.views import SinPrivilegios
 
 from django.utils import timezone
@@ -64,6 +64,33 @@ class DepositoView(SuccessMessageMixin,SinPrivilegios, generic.ListView):
         context = super().get_context_data(**kwargs)
         return context
 
+class FacturaView(SuccessMessageMixin,SinPrivilegios, generic.ListView):
+    permission_required = "che.view_factura"
+    model = Factura
+    template_name = "che/factura_list.html"
+
+
+
+    def get_queryset(self):
+        return self.model.objects.all().order_by('-fc')[:100]
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+class Abono_FacturaView(SuccessMessageMixin,SinPrivilegios, generic.ListView):
+    permission_required = "che.view_factura"
+    model = Abono_Factura
+    template_name = "che/abono_factura_list.html"
+
+
+    def get_queryset(self):
+        return self.model.objects.all().order_by('-fc')[:100]
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
 class ChequeNew(SuccessMessageMixin,SinPrivilegios, generic.CreateView):
     permission_required = "che.add_cheque"
     model=Cheque
@@ -101,6 +128,22 @@ class DepositoNew(SuccessMessageMixin,SinPrivilegios, generic.CreateView):
     #     form.instance.uc = self.request.user
     #     return super().form_valid(form)
 
+class FacturaNew(SuccessMessageMixin,SinPrivilegios, generic.CreateView):
+    permission_required = "che.add_cheque"
+    model=Factura
+    template_name="che/factura_form.html"
+    context_object_name = "obj"
+    form_class = FacturaForm
+    success_url=reverse_lazy("che:factura_list")
+
+    def form_valid(self, form):
+        form.instance.uc = self.request.user
+        return super().form_valid(form)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
 class ChequeEdit(SuccessMessageMixin,SinPrivilegios, generic.UpdateView):
     permission_required = "che.change_cheque"
     model=Cheque
@@ -120,6 +163,18 @@ class DepositoEdit(SuccessMessageMixin,SinPrivilegios, generic.UpdateView):
     context_object_name = "obj"
     form_class = DepositoForm
     success_url=reverse_lazy("che:deposito_list")
+
+    def form_valid(self, form):
+        form.instance.um = self.request.user.id
+        return super().form_valid(form)
+
+class FacturaEdit(SuccessMessageMixin,SinPrivilegios, generic.UpdateView):
+    permission_required = "che.change_deposito"
+    model=Factura
+    template_name="che/factura_form.html"
+    context_object_name = "obj"
+    form_class = FacturaForm
+    success_url=reverse_lazy("che:factura_list")
 
     def form_valid(self, form):
         form.instance.um = self.request.user.id
@@ -579,6 +634,30 @@ class ChequeRechazadoNew(SuccessMessageMixin,SinPrivilegios, generic.CreateView)
             return HttpResponseRedirect(self.success_url)
         return render(request, self.template_name, {'form': form})
 
+
+class Abono_Fac(SuccessMessageMixin, SinPrivilegios, generic.CreateView):
+    permission_required = "che.add_cheque"
+    model = Abono_Factura
+    template_name = "che/abono_factura_form.html"
+    form_class = AbonoForm
+    success_url=reverse_lazy("che:abono_factura_list")
+
+    # def post(self, request, *args, **kwargs):
+    #     form = AbonoForm(request.POST)
+    #     if form.is_valid():
+    #         self.object = form.save(commit=False)
+    #         form.instance.uc = self.request.user
+    #         id_facturas = self.object.id_factura.pk
+    #         fac_update = Factura.objects.get(pk=id_facturas)
+    #         # fac_update.total_fac1 = total
+    #         form.save()
+    #         fac_update.save()
+    #         return HttpResponseRedirect(self.success_url)
+    #     return render(request, self.template_name, {'form': form})
+
+    def form_valid(self, form):
+        form.instance.uc = self.request.user
+        return super().form_valid(form)
 
 def cheques_rechazados(request, id , **kwargs):
     cheque = Cheque.objects.get(pk=id)

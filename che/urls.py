@@ -6,7 +6,8 @@ from .views import ChequeView, Cheque_inactivar,  ChequeNew, ChequeEdit, ChequeG
         imprimir_provedor, Vista_Proveedor, Vista_Banco, imprimir_banco, DepositoView, DepositoNew, DepositoEdit,\
         imprimir_deposito_list, DepositoDetailView, search, Vista_pagar, imprimir_che_pagar, reporte_che_entregados,\
         ChequeEntregadoView, ChequeEntregadoNew, cheques_rechazados, ChequeRechazadoView, ChequeRechazadoNew,\
-        ChequeGeneratePendintesPDF, PDFPedidosHoy, deposito_filter
+        ChequeGeneratePendintesPDF, PDFPedidosHoy, deposito_filter, FacturaView, FacturaNew, FacturaEdit, \
+        Abono_FacturaView, Abono_Fac
 from .models import Cheque
 
 
@@ -57,6 +58,13 @@ urlpatterns = [
 
         path('prueba/', PDFPedidosHoy.as_view(), name='prueba_rechazo'),
         path('reporte/boleta-fecha/',deposito_filter, name = 'boleta_filter'),
+
+        path('factura/',FacturaView.as_view(), name='factura_list'),
+        path('factura/new', FacturaNew.as_view(), name='factura_new'),
+        path('factura/edit/<int:pk>',FacturaEdit.as_view(), name='factura_edit'),
+
+        path('abono/', Abono_FacturaView.as_view(), name='abono_factura_list'),
+        path('abono/new', Abono_Fac.as_view(), name='abono_fac_new'),
 
 
 ]
