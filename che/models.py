@@ -5,6 +5,7 @@ from django.utils import timezone
 from datetime import date
 
 
+
 class Cheque(ClaseModelo):
 
     no_cheque = models.CharField(max_length=200)
@@ -89,9 +90,9 @@ class Factura(ClaseModelo):
     def __str__(self):
         return '{}'.format(self.no_fac)
 
-    def save(self):
-        self.total_fac1 = self.total_fac
-        super(Factura, self).save()
+    # def save(self):
+    #     self.total_fac1 = self.total_fac
+    #     super(Factura, self).save()
 
 
     class Meta:
@@ -108,9 +109,9 @@ class Abono_Factura(ClaseModelo):
     def __str__(self):
         return '{}'.format(self.id_factura)
 
-    def save(self):
-        self.total = self.id_factura.total_fac1 - self.id_cheque.cantidad
-        super(Abono_Factura, self).save()
+    # def save(self):
+    #     self.total = self.id_factura.total_fac1 - self.id_cheque.cantidad
+    #     super(Abono_Factura, self).save()
 
 
     class Meta:

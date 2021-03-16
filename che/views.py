@@ -136,6 +136,15 @@ class FacturaNew(SuccessMessageMixin,SinPrivilegios, generic.CreateView):
     form_class = FacturaForm
     success_url=reverse_lazy("che:factura_list")
 
+    # def post(self,  request, *args, **kwargs):
+    #     form = FacturaForm(request.POST)
+    #     if form.is_valid():
+    #
+    #
+    #         form.save()
+    #         factura.save()
+    #     return render(request, self.template_name, {'form': form})
+
     def form_valid(self, form):
         form.instance.uc = self.request.user
         return super().form_valid(form)
@@ -642,22 +651,24 @@ class Abono_Fac(SuccessMessageMixin, SinPrivilegios, generic.CreateView):
     form_class = AbonoForm
     success_url=reverse_lazy("che:abono_factura_list")
 
-    # def post(self, request, *args, **kwargs):
-    #     form = AbonoForm(request.POST)
-    #     if form.is_valid():
-    #         self.object = form.save(commit=False)
-    #         form.instance.uc = self.request.user
-    #         id_facturas = self.object.id_factura.pk
-    #         fac_update = Factura.objects.get(pk=id_facturas)
-    #         # fac_update.total_fac1 = total
-    #         form.save()
-    #         fac_update.save()
-    #         return HttpResponseRedirect(self.success_url)
-    #     return render(request, self.template_name, {'form': form})
+    def post(self, request, *args, **kwargs):
+        form = AbonoForm(request.POST)
+        if form.is_valid():
+            self.object = form.save(commit=False)
+            form.instance.uc = self.request.user
+            id_che = self.object.id_cheque.pk
+            id_cheque = Cheque.objects.get(pk=id_che)
+            id_facturas = self.object.id_factura.pk
+            fac_update = Factura.objects.get(pk=id_facturas)
+            fac_update.total_fac1 = fac_update.total_fac1 - id_cheque.cantidad
+            form.save()
+            fac_update.save()
+            return HttpResponseRedirect(self.success_url)
+        return render(request, self.template_name, {'form': form})
 
-    def form_valid(self, form):
-        form.instance.uc = self.request.user
-        return super().form_valid(form)
+    # def form_valid(self, form):
+    #     form.instance.uc = self.request.user
+    #     return super().form_valid(form)
 
 def cheques_rechazados(request, id , **kwargs):
     cheque = Cheque.objects.get(pk=id)

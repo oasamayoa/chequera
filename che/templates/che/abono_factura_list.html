@@ -23,18 +23,18 @@
     <table class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
       <thead>
         <th>No. Factura</th>
-        <th>Feche Pagar</th>
-        <th>Proveedor</th>
+        <th>total factura</th>
+        <th>No. Cheque</th>
         <th>Cantidad</th>
         <th class="all">Acciones</th>
       </thead>
       <tbody>
         {% for item in abono_factura_list %}
         <tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
+          <td>{{item.id_factura.no_fac}}</td>
+          <td>{{item.id_factura.total_fac}}</td>
+          <td>{{item.id_cheque.no_cheque}}</td>
+          <td>{{item.id_cheque.cantidad}}</td>
           <td>
              <a class="project-actions text-right">
                 <a class="btn btn-info btn-sm" href="#">
