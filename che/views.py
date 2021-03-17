@@ -3,7 +3,7 @@ from easy_pdf.views import PDFTemplateView, PDFTemplateResponseMixin
 
 
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 import json
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
@@ -84,8 +84,12 @@ class Abono_FacturaView(SuccessMessageMixin,SinPrivilegios, generic.ListView):
     template_name = "che/abono_factura_list.html"
 
 
+    # def get_queryset(self):
+    #     return self.model.objects.all().order_by('-fc')[:100]
+
     def get_queryset(self):
-        return self.model.objects.all().order_by('-fc')[:100]
+        return  self.model.objects.latest('fc')
+
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -102,6 +106,13 @@ class ChequeNew(SuccessMessageMixin,SinPrivilegios, generic.CreateView):
     def form_valid(self, form):
         form.instance.uc = self.request.user
         return super().form_valid(form)
+
+    def form_invalid(self, form):
+        response = super().form_invalid(form)
+        if self.request.is_ajax():
+            return JsonResponse(form.errors, status=400)
+        else:
+            return response
 
 class DepositoNew(SuccessMessageMixin,SinPrivilegios, generic.CreateView):
     permission_required = "che.add_deposito"
@@ -666,9 +677,7 @@ class Abono_Fac(SuccessMessageMixin, SinPrivilegios, generic.CreateView):
             return HttpResponseRedirect(self.success_url)
         return render(request, self.template_name, {'form': form})
 
-    # def form_valid(self, form):
-    #     form.instance.uc = self.request.user
-    #     return super().form_valid(form)
+
 
 def cheques_rechazados(request, id , **kwargs):
     cheque = Cheque.objects.get(pk=id)

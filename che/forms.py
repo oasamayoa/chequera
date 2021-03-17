@@ -13,33 +13,34 @@ class ChequeForm(forms.ModelForm):
         'fecha_creado',
         'fecha_pagar',
         'cantidad',
-        'no_fac',
         'cuenta',
         'proveedor',
         'imagen',
         'estado',
         'status',
         'estado_che',
+        'id_fac',
         ]
 
-        exclude = ['um','fm','uc', 'estado']
+        exclude = ['um','fm','uc', 'estado', 'no_fac']
 
         labels = {
          'no_cheque':"No. Cheque",
          'fecha_creado':"Fecha creado",
          'fecha_pagar':"Fecha a Pagar",
          'cantidad':"Cantidad",
-         'no_fac':"No. Factura",
+         'id_fac':"No. Factura",
          'cuenta':"Cuentas",
          'proveedor':"Pagar a:",
          'imagen': "Imagen del Cheque",
          'status': "Marcar Cheque Rechezado",
          'estado_che': 'Estado'
+
         }
         widgets = {
-            'no_fac': forms.TextInput(
+            'id_fac': forms.Select(
                 attrs={
-                    'class': 'form-control',
+                    'class': 'form-control select2',
                     'style': 'width: 100%',
                     'autocomplete': 'off'
                 }
@@ -93,6 +94,10 @@ class ChequeForm(forms.ModelForm):
             ),
         }
 
+    id_fac = forms.ModelChoiceField(queryset=Factura.objects.all(), widget=forms.Select(attrs={
+        'class': 'form-control select2',
+        'style': 'width: 100%'
+    }))
 
     cuenta = forms.ModelChoiceField(queryset=Cuenta.objects.all(), widget=forms.Select(attrs={
         'class': 'form-control select2',
@@ -102,6 +107,13 @@ class ChequeForm(forms.ModelForm):
         'class': 'form-control select2',
         'style': 'width: 100%'
     }))
+
+    def clean_no_cheque(self):
+        no_cheque = self.cleaned_data.get('no_cheque')
+
+        if Cheque.objects.filter(no_cheque=no_cheque).exists():
+            raise forms.ValidationError('El No. de cheque ya existe')
+        return no_cheque
 
         # self.fields['cuenta'].empty_label = "Selecione cuenta"
         # self.fields['proveedor'].empty_label = "Pagar a:"
@@ -252,15 +264,16 @@ class FacturaForm(forms.ModelForm):
     class Meta:
         model=Factura
 
-        fields = ['no_fac', 'fecha_pagar', 'proveedor', 'total_fac']
+        fields = ['no_fac', 'fecha_pagar', 'proveedor', 'total_fac', 'total_fac1']
 
-        exclude = ['um','fm','uc', 'imagen_fac', 'total_fac1' ]
+        exclude = ['um','fm','uc', 'imagen_fac' ]
 
         labels = {
          'no_fac':"No. Factura",
          'fecha_pagar':"Fecha a pagar factura",
          'proveedor': "Pagar a",
-         'total_fac': "Total"
+         'total_fac': "Total factura",
+         'total_fac1': "Confirmacion de Total"
 
          }
 
@@ -285,8 +298,24 @@ class FacturaForm(forms.ModelForm):
                     'autocomplete': 'off'
                 }
             ),
+            'total_fac1': forms.NumberInput(
+                attrs={
+                    'class': 'form-control',
+                    'autocomplete': 'off'
+                }
+            ),
 
         }
+
+    def clean_total_fac1(self):
+        total_fac = self.cleaned_data.get('total_fac')
+        total_fac1 = self.cleaned_data.get('total_fac1')
+        print(total_fac)
+        print(total_fac1)
+        if total_fac != total_fac1:
+            raise forms.ValidationError('No coincide')
+        return total_fac1
+
 
 class AbonoForm(forms.ModelForm):
 

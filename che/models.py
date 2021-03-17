@@ -4,7 +4,29 @@ from registro.models import Cuenta, Provedor
 from django.utils import timezone
 from datetime import date
 
+class Factura(ClaseModelo):
+    no_fac = models.CharField('Factura', unique = True, max_length = 25)
+    total_fac =  models.FloatField(default=0)
+    estado_fac = models.NullBooleanField(default=0)
+    fecha_pagar = models.DateField(blank=True)
+    imagen_fac = models.ImageField(upload_to='factura/' , null=True, blank=True)
+    total_fac1 = models.FloatField(default=0)
 
+    proveedor = models.ForeignKey(Provedor, on_delete=models.CASCADE)
+
+
+    def __str__(self):
+        return '{}'.format(self.no_fac)
+
+    # def save(self):
+    #     self.total_fac1 = self.total_fac
+    #     super(Factura, self).save()
+
+
+    class Meta:
+        verbose_name = 'Factura'
+        verbose_name_plural = 'Facturas'
+        db_table = 'Factura'
 
 class Cheque(ClaseModelo):
 
@@ -18,6 +40,8 @@ class Cheque(ClaseModelo):
 
     cuenta = models.ForeignKey(Cuenta, on_delete=models.CASCADE)
     proveedor = models.ForeignKey(Provedor, on_delete=models.CASCADE)
+    id_fac = models.ForeignKey(Factura, on_delete=models.CASCADE)
+
 
     LOAN_STATUS = (
         ('R', 'R'),
@@ -76,29 +100,7 @@ class Cheque_rechazado(ClaseModelo):
         verbose_name_plural = 'Cheques rechazados'
         db_table = 'Che_rechazado'
 
-class Factura(ClaseModelo):
-    no_fac = models.CharField('Factura', unique = True, max_length = 25)
-    total_fac =  models.FloatField(default=0)
-    estado_fac = models.NullBooleanField(default=0)
-    fecha_pagar = models.DateField(blank=True)
-    imagen_fac = models.ImageField(upload_to='factura/' , null=True, blank=True)
-    total_fac1 = models.FloatField(default=0)
 
-    proveedor = models.ForeignKey(Provedor, on_delete=models.CASCADE)
-
-
-    def __str__(self):
-        return '{}'.format(self.no_fac)
-
-    # def save(self):
-    #     self.total_fac1 = self.total_fac
-    #     super(Factura, self).save()
-
-
-    class Meta:
-        verbose_name = 'Factura'
-        verbose_name_plural = 'Facturas'
-        db_table = 'Factura'
 
 class Abono_Factura(ClaseModelo):
     id_factura = models.ForeignKey(Factura, on_delete=models.CASCADE)

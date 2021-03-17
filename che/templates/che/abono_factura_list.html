@@ -29,12 +29,12 @@
         <th class="all">Acciones</th>
       </thead>
       <tbody>
-        {% for item in abono_factura_list %}
+
         <tr>
-          <td>{{item.id_factura.no_fac}}</td>
-          <td>{{item.id_factura.total_fac}}</td>
-          <td>{{item.id_cheque.no_cheque}}</td>
-          <td>{{item.id_cheque.cantidad}}</td>
+          <td>{{object_list.id_factura.no_fac}}</td>
+          <td>{{object_list.id_factura.total_fac}}</td>
+          <td>{{object_list.id_cheque.no_cheque}}</td>
+          <td>{{object_list.id_cheque.cantidad}}</td>
           <td>
              <a class="project-actions text-right">
                 <a class="btn btn-info btn-sm" href="#">
@@ -44,7 +44,7 @@
                 </a></a>
           </td>
         </tr>
-          {% endfor %}
+
       </tbody>
     </table>
   </div>
