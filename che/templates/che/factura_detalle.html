@@ -1,0 +1,36 @@
+{%extends 'base/base.html' %}
+{%block page_content %}
+<div class="row">
+  <div class="col">
+    <h1>Prueba de factura</h1>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>No. fac</th>
+          <th>TOTAL</th>
+          <th>No. cheque</th>
+          <th>TOTAL</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for m in abonos_facturas %}
+        <tr>
+          <td>{{ m.id_factura }}</td>
+          <td>{{ m.id_factura.total_fac}}</td>
+          <td>{{ m.id_cheque }}</td>
+          <td>{{ m.id_cheque.cantidad }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>
+{% endblock %}

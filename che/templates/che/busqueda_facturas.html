@@ -1,0 +1,56 @@
+{% extends 'base/base.html' %}
+{% block page_content %}
+<div class="container-fluid">
+  <div class="col">
+    <h4>Busqueda por No. de Factura</h4>
+  </div>
+
+  <form class="" action="." method="GET" autocomplete="off">
+    <div class="input-group">
+      <input type="text" name="q" value="{{query|escape}}" placeholder="No. de factura"
+      aria-label="Busqueda" aria-describedby="basic-addon2"
+      autocomplete="off"
+      >
+      <div class="input-group-append">
+        <button class="btn btn-primary" type="submit">
+          <i class="fas fa-search fa-sm"></i>
+        </button>
+      </div>
+    </div>
+  </form>
+
+{% if query %}
+  <br>
+  <div class="card shadow mb-3">
+    <div class="card-header py-3">
+      <h6 class="m-0 font-weight-bold text-primary">Resultado para <em>{{query}}</em></h6>
+    </div>
+
+  <div class="card-body">
+    <div class="table-responsive">
+      <table id="busqueda" class="table table-borderd table-hover">
+        <thead>
+          <tr>
+            <th>No. de factura</th>
+            <th>Total factura</th>
+          </tr>
+          </thead>
+          <tbody>
+          {% for m in facturas %}
+            <tr>
+              <td>
+                <a href="{% url 'che:factura_detalle' m.id %}">
+                {{ m.no_fac }}
+                </a>
+              </td>
+              <td>{{ m.total_fac }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+      </table>
+    </div>
+    {% endif %}
+  </div>
+  </div>
+</div>
+{% endblock%}

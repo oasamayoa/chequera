@@ -18,6 +18,10 @@ class Factura(ClaseModelo):
     def __str__(self):
         return '{}'.format(self.no_fac)
 
+    @property
+    def abonos_facturas(self):
+        return self.abono_factura_set.all()
+
     # def save(self):
     #     self.total_fac1 = self.total_fac
     #     super(Factura, self).save()

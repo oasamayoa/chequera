@@ -40,6 +40,7 @@ class ChequeView(SuccessMessageMixin,SinPrivilegios, generic.ListView):
     permission_required = "che.view_cheque"
     model = Cheque
     template_name = "che/cheque_list.html"
+    # paginate_by = 10 esta opcion sirve para cuantos elementos queres mostrar por pagina
 
 
     def get_queryset(self):
@@ -735,3 +736,35 @@ def deposito_filter(request):
         deposito = []
 
     return render(request , 'che/deposito_filter.html' , {'query1': query1 , 'query2' : query2 ,'deposito': deposito})
+
+@login_required(login_url='/login/')
+def search_factura(request):
+    query = request.GET.get('q' , '')
+    if query:
+        qset = (
+            Q(no_fac__icontains=query)
+            # Q(username__nombres__icontains=query)|
+            # Q(username__apellidos__icontains=query)
+            )
+        facturas = Factura.objects.filter(qset).order_by('-fc')
+    else:
+        facturas =[]
+
+    return render(request , "che/busqueda_facturas.html" , { 'query' :query , 'facturas': facturas,
+        })
+
+
+class FacturaDetail(SuccessMessageMixin,SinPrivilegios, generic.DetailView):
+    permission_required = "che.view_cheque"
+    model = Factura
+    template_name = 'che/factura_detalle.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['abonos_facturas'] = self.get_object().abonos_facturas
+
+        context['form'] = AbonoForm({
+            'factura_id' : self.get_object().id
+        })
+        print(context)
+        return context
