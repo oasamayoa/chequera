@@ -1,36 +1,49 @@
 {%extends 'base/base.html' %}
 {%block page_content %}
-<div class="row">
-  <div class="col">
-    <h1>Prueba de factura</h1>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col 6">
+      <h2>Registro Pago de Factura</h2>
+    </div>
   </div>
-</div>
+<br>
+  <div class="row">
+    <div class="col 4">
+      <h4>Total Factura: Q. {{ object.total_fac }}</h4>
+    </div>
 
-<div class="row">
-  <div class="col">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>No. fac</th>
-          <th>TOTAL</th>
-          <th>No. cheque</th>
-          <th>TOTAL</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for m in abonos_facturas %}
-        <tr>
-          <td>{{ m.id_factura }}</td>
-          <td>{{ m.id_factura.total_fac}}</td>
-          <td>{{ m.id_cheque }}</td>
-          <td>{{ m.id_cheque.cantidad }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-
-    </table>
+    <div class="col 4">
+      <h4>No. factura: Q. {{ object.no_fac }}</h4>
+    </div>
 
   </div>
 
+  <div class="row">
+    <div class="col">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>No. cheque</th>
+            <th>Fecha ingresado</th>
+            <th>TOTAL</th>
+            <th>Pendiente factura</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for m in abonos_facturas %}
+          <tr>
+            <td>{{ m.id_cheque }}</td>
+            <td>{{ m.id_cheque.fc}}</td>
+            <td>{{ m.id_cheque.cantidad }}</td>
+            <td>{{ m.id_factura.total_fac1 }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
 </div>
 {% endblock %}

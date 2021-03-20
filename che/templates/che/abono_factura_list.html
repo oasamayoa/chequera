@@ -18,7 +18,7 @@
   <!-- Card Body -->
   <div class="card-body">
     {% if not obj %}
-    <div class="alert alert-info">Facturas</div>
+    <div class="alert alert-info">Abonos</div>
     {% endif %}
     <table class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
       <thead>
@@ -30,11 +30,13 @@
       </thead>
       <tbody>
 
+
         <tr>
           <td>{{object_list.id_factura.no_fac}}</td>
           <td>{{object_list.id_factura.total_fac}}</td>
           <td>{{object_list.id_cheque.no_cheque}}</td>
           <td>{{object_list.id_cheque.cantidad}}</td>
+
           <td>
              <a class="project-actions text-right">
                 <a class="btn btn-info btn-sm" href="#">

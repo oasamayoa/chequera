@@ -56,6 +56,11 @@ class Cheque(ClaseModelo):
     def __str__(self):
         return '{}'.format(self.no_cheque)
 
+    @property
+    def cheques_rechazados(self):
+        return self.cheque_rechazado_set.all()
+
+
 
     class Meta:
         verbose_name_plural = "Cheques"
@@ -90,13 +95,16 @@ class Fisico_Entregado(ClaseModelo):
         db_table = 'Che_Fisico'
 
 class Cheque_rechazado(ClaseModelo):
-    cheque_re = models.ForeignKey(Cheque, on_delete=models.CASCADE, null=True, blank=True, related_name='%(app_label)s_%(class)s_re')
+    cheque_re = models.ForeignKey(Cheque, on_delete=models.CASCADE)
     cheque_nu = models.ForeignKey(Cheque, on_delete=models.CASCADE, null=True, blank=True, related_name='%(app_label)s_%(class)s_nu')
     observacion = models.CharField('Observacion', max_length=200)
+    id_facturas = models.ForeignKey(Factura, on_delete=models.CASCADE)
 
 
     def __str__(self):
-        return '{}'.format(self.observacion)
+        return '{}{}'.format(self.observacion, self.chere_re)
+
+
 
 
     class Meta:

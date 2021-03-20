@@ -148,7 +148,7 @@
 
     var url = $("form").attr("action");
     var token = jQuery("[name=csrfmiddlewaretoken]").val();
-
+    var textError = "EL NUMERO DE CHEQUE YA FUE UTILIZADO";
     $("form").submit(function(e){
       e.preventDefault();
       var formData = $("form").serializeArray();
@@ -166,7 +166,7 @@
           mensaje(textStatus);
         }
       }).fail(function (error){
-          mensaje(error.responseTxt);
+          mensaje(textError);
       });
     });
   })

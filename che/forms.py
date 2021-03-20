@@ -223,18 +223,24 @@ class CheRechazadoForm(forms.ModelForm):
     'style': 'width: 100%'
     }))
 
+    id_facturas = forms.ModelChoiceField(queryset=Factura.objects.filter(), widget=forms.Select(attrs={
+    'class': 'form-control select2',
+    'style': 'width: 100%'
+    }))
+
 
 
     class Meta:
         model=Cheque_rechazado
 
-        fields = ['cheque_re', 'cheque_nu', 'observacion']
+        fields = ['cheque_re', 'cheque_nu', 'observacion', 'id_facturas']
 
         exclude = ['um','fm','uc' ]
 
         labels = {
          'cheque_re':"Cheque rechazado",
          'cheque_nu':"Cheque Nuevo ",
+         'id_facturas': "No. factura",
          'observacion': "Observaciones"
 
          }
@@ -310,8 +316,6 @@ class FacturaForm(forms.ModelForm):
     def clean_total_fac1(self):
         total_fac = self.cleaned_data.get('total_fac')
         total_fac1 = self.cleaned_data.get('total_fac1')
-        print(total_fac)
-        print(total_fac1)
         if total_fac != total_fac1:
             raise forms.ValidationError('No coincide')
         return total_fac1

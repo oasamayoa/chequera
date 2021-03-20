@@ -1,8 +1,9 @@
 from django.db.models import Q, Count, Sum
 from easy_pdf.views import PDFTemplateView, PDFTemplateResponseMixin
+from django.views.decorators.csrf  import csrf_exempt
 
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 import json
 from django.contrib import messages
@@ -79,6 +80,7 @@ class FacturaView(SuccessMessageMixin,SinPrivilegios, generic.ListView):
         context = super().get_context_data(**kwargs)
         return context
 
+
 class Abono_FacturaView(SuccessMessageMixin,SinPrivilegios, generic.ListView):
     permission_required = "che.view_factura"
     model = Abono_Factura
@@ -87,13 +89,23 @@ class Abono_FacturaView(SuccessMessageMixin,SinPrivilegios, generic.ListView):
 
     # def get_queryset(self):
     #     return self.model.objects.all().order_by('-fc')[:100]
-
     def get_queryset(self):
-        return  self.model.objects.latest('fc')
+        try:
+            if self.model.objects.latest('fc'):
+                return self.model.objects.latest('fc')
+        except self.model.DoesNotExist:
+            abono = None
+
+
+
+
+    # def get_queryset(self):
+        # return  self.model.objects.latest('fc')
 
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
+        print(context)
         return context
 
 class ChequeNew(SuccessMessageMixin,SinPrivilegios, generic.CreateView):
@@ -642,18 +654,28 @@ class ChequeRechazadoNew(SuccessMessageMixin,SinPrivilegios, generic.CreateView)
     form_class = CheRechazadoForm
     success_url=reverse_lazy("che:cheque_rechazado_list")
 
-    def post(self,request, *args, **kwargs):
-        form = CheRechazadoForm(request.POST, request.FILES)
+    def post(self, request, *args, **kwargs):
+        form = CheRechazadoForm(request.POST)
+
         if form.is_valid():
             self.object = form.save(commit=False)
             form.instance.uc = self.request.user
             id_che = self.object.cheque_re.pk
+            print(id_che)
+
             cheque_update = Cheque.objects.get(pk=id_che)
             cheque_update.status = 'E'
-            form.save()
             cheque_update.save()
+
+            id_fac = self.object.id_facturas.pk
+            factura_update = Factura.objects.get(pk=id_fac)
+            factura_update.total_fac1 = factura_update.total_fac1 + cheque_update.cantidad
+            factura_update.save()
+
+            form.save()
             return HttpResponseRedirect(self.success_url)
         return render(request, self.template_name, {'form': form})
+
 
 
 class Abono_Fac(SuccessMessageMixin, SinPrivilegios, generic.CreateView):
@@ -766,5 +788,4 @@ class FacturaDetail(SuccessMessageMixin,SinPrivilegios, generic.DetailView):
         context['form'] = AbonoForm({
             'factura_id' : self.get_object().id
         })
-        print(context)
         return context
