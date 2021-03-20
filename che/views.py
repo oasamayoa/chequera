@@ -45,7 +45,7 @@ class ChequeView(SuccessMessageMixin,SinPrivilegios, generic.ListView):
 
 
     def get_queryset(self):
-        return self.model.objects.all().order_by('-fecha_creado')[:100]
+        return self.model.objects.all().order_by('-fc')[:100]
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -737,7 +737,7 @@ class PDFPedidosHoy(PDFTemplateResponseMixin , TemplateView):
     template_name = 'che/report_cheques_del_dia.html'
 
     def get_context_data(self , *args , **kwargs):
-        cheque = Cheque.objects.filter(estado_che=False).order_by('-fc')
+        cheque = Cheque.objects.filter(estado_che=False, status=None).order_by('-fc')
         return {"cheque" : cheque}
 
 @login_required(login_url='/login/')

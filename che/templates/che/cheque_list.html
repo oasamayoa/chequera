@@ -56,7 +56,11 @@
           <td>{{ m.proveedor }}</td>
           <td>{{ m.cuenta }}</td>
           <td>Q.{{ m.cantidad }}</td>
-          <td>{{ m.no_fac }}</td>
+          {% if m.no_fac %}
+            <td>{{ m.no_fac }}</td>
+            {% else %}
+            <td>{{ m.id_fac }}</td>
+          {% endif %}
           <td>{{ m.fecha_pagar|date:"d/m/Y" }}</td>
           <td >{{m.estado_che|yesno:"ENTREGADO,PENDIENTE"}}</td>
           {% if m.status %}

@@ -48,7 +48,6 @@ class Cheque(ClaseModelo):
 
 
     LOAN_STATUS = (
-        ('R', 'R'),
         ('E', 'E'),
     )
     status = models.CharField(max_length=1, choices=LOAN_STATUS, null=True, blank=True)
