@@ -18,7 +18,8 @@ from django.shortcuts import render
 
 from .models import Cheque, Deposito, Fisico_Entregado, Cheque_rechazado, Factura, Abono_Factura
 from registro.models import Banco, Cuenta, Provedor
-from che.forms import ChequeForm, DepositoForm, CheEntregadoForm, CheRechazadoForm, FacturaForm, AbonoForm, ChequeEditform
+from che.forms import (ChequeForm, DepositoForm, CheEntregadoForm, CheRechazadoForm,
+                        FacturaForm, AbonoForm, ChequeEditform, AbonoEquivocadoForm)
 from bases.views import SinPrivilegios
 
 from django.utils import timezone
@@ -88,8 +89,6 @@ class Abono_FacturaView(SuccessMessageMixin,SinPrivilegios, generic.ListView):
     template_name = "che/abono_factura_list.html"
 
 
-    # def get_queryset(self):
-    #     return self.model.objects.all().order_by('-fc')[:100]
     def get_queryset(self):
         try:
             if self.model.objects.latest('fc'):
@@ -98,15 +97,28 @@ class Abono_FacturaView(SuccessMessageMixin,SinPrivilegios, generic.ListView):
             abono = None
 
 
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
 
 
-    # def get_queryset(self):
-        # return  self.model.objects.latest('fc')
+class Abono_EquivocadoView(SuccessMessageMixin,SinPrivilegios, generic.ListView):
+    permission_required = "che.view_factura"
+    model = Abono_Factura
+    template_name = "che/abono_factura_equi_list.html"
+
+
+    def get_queryset(self):
+        try:
+            if self.model.objects.latest('fc'):
+                return self.model.objects.latest('fc')
+        except self.model.DoesNotExist:
+            abono = None
 
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
-        print(context)
+        # print(context)
         return context
 
 class ChequeNew(SuccessMessageMixin,SinPrivilegios, generic.CreateView):
@@ -735,6 +747,38 @@ class Abono_Fac(SuccessMessageMixin, SinPrivilegios, generic.CreateView):
             fac_update.save()
             return HttpResponseRedirect(self.success_url)
         return render(request, self.template_name, {'form': form})
+
+
+
+class Abonos_equivocados(SuccessMessageMixin, SinPrivilegios, generic.CreateView):
+    permission_required = "che.add_cheque"
+    model = Abono_Factura
+    template_name = "che/abono_factura_equi_form.html"
+    form_class = AbonoEquivocadoForm
+    success_url=reverse_lazy("che:abono_factura_equi_list")
+
+    def post(self, request, *args, **kwargs):
+        form = AbonoEquivocadoForm(request.POST)
+        if form.is_valid():
+            self.object = form.save(commit=False)
+            form.instance.uc = self.request.user
+            id_che = self.object.id_cheque.pk
+            id_re = self.object.cheque_equivocado.pk
+            id_recha = Cheque.objects.get(pk=id_re)
+            id_cheque = Cheque.objects.get(pk=id_che)
+            id_facturas = self.object.id_factura.pk
+            fac_update = Factura.objects.get(pk=id_facturas)
+            fac_update.total_fac1 = fac_update.total_fac1 + id_recha.cantidad
+            fac_update.total_fac1 = fac_update.total_fac1 - id_cheque.cantidad
+            # id_che_re = self.object.cheque_equivocado.pk
+            # id_rechazado = Cheque.objects.get(pk=id_che)
+
+            fac_update.save()
+            form.save()
+
+            return HttpResponseRedirect(self.success_url)
+        return render(request, self.template_name, {'form': form})
+
 
 
 

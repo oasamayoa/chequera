@@ -1,0 +1,67 @@
+{% extends 'base/base.html' %}
+{% block page_content %}
+<div class="container-fluid">
+    <div class="col">
+      <h4>Arreglo de Abonos</h4>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <form method="POST" action="." enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {% include 'base/field_error.html'%}
+
+
+                          <div class="row g-3">
+                              <div class="col-md-4">
+                                <label for="inputnombre">Factura</label>
+                                {{ form.id_factura }}
+                              </div>
+                              <div class="col-md-2">
+                                <label for="inputfecha_pago">Cheque Correcto</label>
+                                {{ form.id_cheque}}
+                              </div>
+                            </div>
+                              <div class="row mt-3">
+                                <div class="col-md-3">
+                                  <label for="inputchequeequi"><b>Cheque Equivocado</b></label>
+                                    {{ form.cheque_equivocado }}
+                                </div>
+                              </div>
+
+                              <div class="row">
+                              <div class="col mt-4">
+                                 <button class="btn btn-primary" type="submit">Guardar</button>
+                              </div>
+                            </div>
+                      </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+  {% csrf_token %}
+{% endblock%}
+{% block footer %}{% endblock%}
+{% block js_page %}
+<script>
+  $(function(){
+    $("#id_fecha_pagar").datetimepicker({
+      format: 'Y-m-d',
+      timepicker:false
+    });
+    });
+    $(function(){
+        $('.select2').select2({
+
+        });
+      });
+  </script>
+{% endblock %}

@@ -118,6 +118,10 @@
             {% if perms.che.view_deposito %}
             <a class="collapse-item" href="{% url 'che:abono_factura_list' %}">Abono</a>
             {% endif %}
+            {% if perms.che.view_deposito %}
+            <a class="collapse-item" href="{% url 'che:abono_factura_equi_list' %}">Abono Equivocados</a>
+            {% endif %}
+
           </div>
         </div>
       </li>

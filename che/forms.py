@@ -1,4 +1,5 @@
 from django import forms
+from django.db.models import Q
 from .models import Cheque, Deposito, Fisico_Entregado, Cheque_rechazado, Factura, Abono_Factura
 from registro.models import Cuenta, Provedor
 from django.contrib.admin import widgets
@@ -94,7 +95,7 @@ class ChequeForm(forms.ModelForm):
             ),
         }
 
-    id_fac = forms.ModelChoiceField(queryset=Factura.objects.filter(total_fac1__gt = 0), widget=forms.Select(attrs={
+    id_fac = forms.ModelChoiceField(queryset=Factura.objects.filter(Q(total_fac1__gt = 0) | Q(total_fac1__lt = 0)), widget=forms.Select(attrs={
         'class': 'form-control select2',
         'style': 'width: 100%'
     }))
@@ -432,7 +433,7 @@ class FacturaForm(forms.ModelForm):
 
 class AbonoForm(forms.ModelForm):
 
-    id_factura = forms.ModelChoiceField(queryset=Factura.objects.filter(total_fac1__gt = 0), widget=forms.Select(attrs={
+    id_factura = forms.ModelChoiceField(queryset=Factura.objects.filter(Q(total_fac1__gt = 0) | Q(total_fac1__lt = 0)), widget=forms.Select(attrs={
     'class': 'form-control select2',
     'style': 'width: 100%'
     }))
@@ -446,5 +447,29 @@ class AbonoForm(forms.ModelForm):
         model = Abono_Factura
 
         fields = ['id_factura', 'id_cheque']
+
+        exclude = ['um','fm','uc', 'total', 'estado_abono', 'cheque_equivocado']
+
+class AbonoEquivocadoForm(forms.ModelForm):
+
+    id_factura = forms.ModelChoiceField(queryset=Factura.objects.filter(Q(total_fac1__gt = 0) | Q(total_fac1__lt = 0)), widget=forms.Select(attrs={
+    'class': 'form-control select2',
+    'style': 'width: 100%'
+    }))
+
+    id_cheque = forms.ModelChoiceField(queryset=Cheque.objects.all(), widget=forms.Select(attrs={
+    'class': 'form-control select2',
+    'style': 'width: 100%'
+    }))
+
+    cheque_equivocado = forms.ModelChoiceField(queryset=Cheque.objects.all(), widget=forms.Select(attrs={
+    'class': 'form-control select2',
+    'style': 'width: 100%'
+    }))
+
+    class Meta:
+        model = Abono_Factura
+
+        fields = ['id_factura', 'id_cheque', 'cheque_equivocado']
 
         exclude = ['um','fm','uc', 'total', 'estado_abono']

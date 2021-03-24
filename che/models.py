@@ -117,6 +117,7 @@ class Abono_Factura(ClaseModelo):
     id_factura = models.ForeignKey(Factura, on_delete=models.CASCADE)
     estado_abono = models.BooleanField(default=True)
     id_cheque = models.ForeignKey(Cheque, on_delete=models.CASCADE)
+    cheque_equivocado = models.ForeignKey(Cheque, on_delete=models.CASCADE, null=True, blank=True, related_name='%(app_label)s_%(class)s_eq')
     total = models.FloatField(default=0)
 
     def __str__(self):
