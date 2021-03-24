@@ -6,6 +6,7 @@ from django.views.decorators.csrf  import csrf_exempt
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 import json
+from django.core import serializers
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.decorators import login_required, permission_required
@@ -17,7 +18,7 @@ from django.shortcuts import render
 
 from .models import Cheque, Deposito, Fisico_Entregado, Cheque_rechazado, Factura, Abono_Factura
 from registro.models import Banco, Cuenta, Provedor
-from che.forms import ChequeForm, DepositoForm, CheEntregadoForm, CheRechazadoForm, FacturaForm, AbonoForm
+from che.forms import ChequeForm, DepositoForm, CheEntregadoForm, CheRechazadoForm, FacturaForm, AbonoForm, ChequeEditform
 from bases.views import SinPrivilegios
 
 from django.utils import timezone
@@ -120,12 +121,47 @@ class ChequeNew(SuccessMessageMixin,SinPrivilegios, generic.CreateView):
         form.instance.uc = self.request.user
         return super().form_valid(form)
 
-    def form_invalid(self, form):
-        response = super().form_invalid(form)
-        if self.request.is_ajax():
-            return JsonResponse(form.errors, status=400)
-        else:
-            return response
+
+    # def post(self, request, *args, **kwargs):
+    #     if request.is_ajax() and request.method == 'POST':
+    #         form = ChequeForm(request.POST, request.FILES)
+    #         form.instance.uc = self.request.user
+    #         errores =  ''
+    #         exito = False
+    #         if form.is_valid():
+    #             form.save()
+    #             exito =  True
+    #         else:
+    #             errores = form.errors
+    #         response = {exito:'exito', 'errores': errores}
+    #         return HttpResponse(json.dumps(response))
+    #     else:
+    #         return JsonResponse({"error": ""}, status=400)
+
+
+    # def post(self, request, *args, **kwargs):
+    #     if self.request.is_ajax() and request.method == 'POST':
+    #         form = ChequeForm(request.POST, request.FILES)
+    #         form.instance.uc = self.request.user
+    #         errores = ""
+    #         if form.is_valid():
+    #             form.save()
+    #         else:
+    #             errores = form.errors
+    #             return HttpResponse(json.dumps(response), mimetype="application/json")
+    #     else:
+    #         return JsonResponse(form.errors, status=400)
+
+    #
+    # def form_invalid(self, form, request):
+    #     response = super().form_invalid(form)
+    #     if self.request.is_ajax() and request.method == 'POST':
+    #         form = ChequeForm(request.POST, request.FILES)
+    #         form.save()
+    #         return JsonResponse(form.errors, status=400)
+    #     else:
+    #         return response
+
 
 class DepositoNew(SuccessMessageMixin,SinPrivilegios, generic.CreateView):
     permission_required = "che.add_deposito"
@@ -180,9 +216,9 @@ class FacturaNew(SuccessMessageMixin,SinPrivilegios, generic.CreateView):
 class ChequeEdit(SuccessMessageMixin,SinPrivilegios, generic.UpdateView):
     permission_required = "che.change_cheque"
     model=Cheque
-    template_name="che/cheque_form.html"
+    template_name="che/cheque_form_edit.html"
     context_object_name = "obj"
-    form_class = ChequeForm
+    form_class = ChequeEditform
     success_url=reverse_lazy("che:cheque_list")
 
     def form_valid(self, form):
@@ -789,3 +825,19 @@ class FacturaDetail(SuccessMessageMixin,SinPrivilegios, generic.DetailView):
             'factura_id' : self.get_object().id
         })
         return context
+
+@login_required(login_url='/login/')
+def search_cheque_numero(request):
+    query = request.GET.get('q' , '')
+    if query:
+        qset = (
+            Q(no_cheque__icontains=query)
+            # Q(username__nombres__icontains=query)|
+            # Q(username__apellidos__icontains=query)
+            )
+        cheque = Cheque.objects.filter(qset).order_by('-fc')
+    else:
+        cheque =[]
+
+    return render(request , "che/busqueda_cheque_nuemero.html" , { 'query' :query , 'cheque': cheque,
+        })

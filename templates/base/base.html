@@ -134,6 +134,9 @@
             <a class="collapse-item" href="{% url 'che:bucsar' %}">Busqueda cheques a pagar</a>
             {% endif %}
             {% if perms.che.view_cheque %}
+            <a class="collapse-item" href="{% url 'che:bucsar_che_numero' %}">Busqueda Cheques</a>
+            {% endif %}
+            {% if perms.che.view_cheque %}
             <a class="collapse-item" href="{% url 'che:bucsar_factura' %}">Buscar Facturas</a>
             {% endif %}
             {% if perms.che.view_cheque %}

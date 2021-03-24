@@ -11,7 +11,7 @@
       </a>
       <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
         <div class="dropdown-header">Acciones:</div>
-        <a class="dropdown-item" onclick="return abrir_modal('{% url 'che:cheque_new' %}')" href="#"><i class="far fa-calendar-plus"></i> Nuevo</a>
+        <a class="dropdown-item"  href="{% url 'che:cheque_new' %}"><i class="far fa-calendar-plus"></i> Nuevo</a>
         <a class="dropdown-item" href="{% url 'che:prueba_rechazo' %}" target="reportes"><i class="fas fa-print"></i> Listado</a>
       </div>
     </div>
@@ -69,8 +69,8 @@
             <td></td>
           {% endif %}
           <td>
-            <button class="btn btn-warning btn-circle" onclick="return abrir_modal('{% url 'che:cheque_edit' m.id %}')">
-                <i class="far fa-edit"></i></button>
+            <a class="btn btn-warning btn-circle" href="{% url 'che:cheque_edit' m.id %}">
+                <i class="far fa-edit"></i></a>
           </td>
         </tr>
         {% endfor %}

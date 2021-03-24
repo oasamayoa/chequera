@@ -1,0 +1,157 @@
+{% extends 'base/base.html' %}
+{% block page_content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col">
+      <h2>Ingrese el Cheque</h2>
+    </div>
+  </div>
+
+  <div class="row mt-3">
+    <div class="col">
+      <div class="card border-left-primary shadow h-100 py-2">
+          <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <form class="" action="{% url 'che:cheque_edit' obj.id %}" method="POST" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  {% include 'base/field_error.html'%}
+
+                <div class="form-group">
+                  <div class="row ">
+                    <div class="col md-4 ">
+                      <label for="inputNocheque">No. Cheque</label>
+                        {{ form.no_cheque}}
+                    </div>
+
+                    <div class="col md-4 ">
+                      <label for="inputfecha_creado">Feche Ingresado</label>
+                       {{ form.fecha_creado }}
+                    </div>
+
+                    <div class="col md-4">
+                      <label for="inputfecha_pago">Fecha a Pagar</label>
+                        {{ form.fecha_pagar }}
+
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <div class="row">
+                    <div class="col">
+                      <label for="inputproveedor">Proveedor</label>
+                        {{ form.proveedor }}
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="row">
+                    <div class="col">
+                      <label for="inputcuenta">Cuenta del banco</label>
+                       {{ form.cuenta}}
+                    </div>
+                    <div class="col">
+                      <label for="inputfactura">No. Factura</label>
+                        {{ form.id_fac }}
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="row">
+                    <div class="col">
+                      <label for="inputcantidad">Cantidad</label>
+                        Q.{{ form.cantidad }}
+                    </div>
+                    <div class="col">
+                      <label for="inputimagen">Imagen del Cheque</label>
+                        {{ form.imagen }}
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col">
+                    <label for="imputestadoimagen">Estado del Cheque</label>
+                      {{ form.estado_che }}
+
+                  </div>
+
+                </div>
+                <div class="row mt-4">
+                  <div class="col">
+                    <button class="btn btn-primary" type="submit">Guardar</button>
+
+                  </div>
+
+                </div>
+
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block js_page %}
+<script>
+
+  $(function(){
+    $("#id_fecha_creado, #id_fecha_pagar").datetimepicker({
+      format: 'Y-m-d',
+      timepicker:false
+    });
+  });
+  $(function(){
+    $('.select2').select2({
+
+    });
+  });
+
+  // $(function(){
+  //
+  //   var url = $("form").attr("action");
+  //   var token = jQuery("[name=csrfmiddlewaretoken]").val();
+  //   var textError = "EL NUMERO DE CHEQUE YA FUE UTILIZADO";
+  //   $("form").submit(function(e){
+  //     e.preventDefault();
+  //     var formData = $("form").serializeArray();
+  //     $.ajax({
+  //       url:url,
+  //       method:"POST",
+  //       headers: {'X-CSRFToken': token},
+  //       data: formData
+  //     })
+  //     .done(function(r, textStatus, xhr){
+  //       if(xhr.status=200){
+  //         location.reload(true);
+  //       }
+  //       else{
+  //         mensaje(textStatus);
+  //       }
+  //     }).fail(function (error){
+  //         mensaje(textError);
+  //     });
+  //   });
+  // })
+
+  // $('#form').submit('submit', function(e){
+  //   e.preventDefault();
+  //   var url = $("form").attr("action");
+  //   var token = jQuery("[name=csrfmiddlewaretoken]").val();
+  //
+  //   var fd = $("form").serializeArray();
+  //   console.log(fd)
+  //   $.ajax({
+  //     url: url,
+  //     data: fd,
+  //     type: 'POST',
+  //     headers: {'X-CSRFToken': token},
+  //
+  //     processData: false,
+  //     contentType: false
+  //   });
+  // });
+
+
+</script>
+{% endblock %}

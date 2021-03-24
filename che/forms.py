@@ -94,7 +94,7 @@ class ChequeForm(forms.ModelForm):
             ),
         }
 
-    id_fac = forms.ModelChoiceField(queryset=Factura.objects.all(), widget=forms.Select(attrs={
+    id_fac = forms.ModelChoiceField(queryset=Factura.objects.filter(total_fac1__gt = 0), widget=forms.Select(attrs={
         'class': 'form-control select2',
         'style': 'width: 100%'
     }))
@@ -118,6 +118,111 @@ class ChequeForm(forms.ModelForm):
         # self.fields['cuenta'].empty_label = "Selecione cuenta"
         # self.fields['proveedor'].empty_label = "Pagar a:"
 
+class ChequeEditform(forms.ModelForm):
+    class Meta:
+        model=Cheque
+
+        fields = [
+        'no_cheque',
+        'fecha_creado',
+        'fecha_pagar',
+        'cantidad',
+        'cuenta',
+        'proveedor',
+        'imagen',
+        'estado',
+        'status',
+        'estado_che',
+        'id_fac',
+        ]
+
+        exclude = ['um','fm','uc', 'estado', 'no_fac']
+
+        labels = {
+         'no_cheque':"No. Cheque",
+         'fecha_creado':"Fecha creado",
+         'fecha_pagar':"Fecha a Pagar",
+         'cantidad':"Cantidad",
+         'id_fac':"No. Factura",
+         'cuenta':"Cuentas",
+         'proveedor':"Pagar a:",
+         'imagen': "Imagen del Cheque",
+         'status': "Marcar Cheque Rechezado",
+         'estado_che': 'Estado'
+
+        }
+        widgets = {
+            'id_fac': forms.Select(
+                attrs={
+                    'class': 'form-control select2',
+                    'style': 'width: 100%',
+                    'autocomplete': 'off'
+                }
+            ),
+            # 'estado_che': forms.TextInput(
+            #     attrs={
+            #         'class': 'form-control',
+            #     }
+            # ),
+            'cantidad': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'style': 'width: 100%',
+                    'autocomplete': 'off'
+                }
+            ),
+            'no_cheque': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'style': 'width: 100%',
+                    'autocomplete': 'off'
+                }
+            ),
+            'fecha_pagar': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'style': 'width: 100%',
+                    'autocomplete': 'off'
+                }
+            ),
+            'fecha_creado': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'style': 'width: 100%',
+                    'autocomplete': 'off'
+                }
+            ),
+            'cuenta': forms.Select(
+                attrs={
+                    'class': 'form-control select2',
+                    'style': 'width: 100%',
+                    'autocomplete': 'off'
+                }
+            ),
+            'proveedor': forms.Select(
+                attrs={
+                    'class': 'form-control select2',
+                    'style': 'width: 100%',
+                    'autocomplete': 'off'
+                }
+            ),
+        }
+
+    id_fac = forms.ModelChoiceField(queryset=Factura.objects.filter(), widget=forms.Select(attrs={
+        'class': 'form-control select2',
+        'style': 'width: 100%'
+    }))
+
+    cuenta = forms.ModelChoiceField(queryset=Cuenta.objects.all(), widget=forms.Select(attrs={
+        'class': 'form-control select2',
+        'style': 'width: 100%'
+    }))
+    proveedor = forms.ModelChoiceField(queryset=Provedor.objects.all(), widget=forms.Select(attrs={
+        'class': 'form-control select2',
+        'style': 'width: 100%'
+    }))
+
+
 class DepositoForm(forms.ModelForm):
 
     cheque = forms.ModelChoiceField(queryset=Cheque.objects.filter(estado_che=False), widget=forms.Select(attrs={
@@ -125,6 +230,10 @@ class DepositoForm(forms.ModelForm):
     'style': 'width: 100%'
     }))
 
+    # cheque1 = forms.ModelChoiceField(queryset=Cheque.objects.all(), widget=forms.Select(attrs={
+    # 'class': 'form-control select2',
+    # 'style': 'width: 100%'
+    # }))
 
 
     class Meta:
@@ -323,7 +432,7 @@ class FacturaForm(forms.ModelForm):
 
 class AbonoForm(forms.ModelForm):
 
-    id_factura = forms.ModelChoiceField(queryset=Factura.objects.all(), widget=forms.Select(attrs={
+    id_factura = forms.ModelChoiceField(queryset=Factura.objects.filter(total_fac1__gt = 0), widget=forms.Select(attrs={
     'class': 'form-control select2',
     'style': 'width: 100%'
     }))

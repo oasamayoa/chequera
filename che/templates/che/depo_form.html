@@ -1,5 +1,6 @@
 {% extends 'base/base.html' %}
 {% block page_content %}
+<div class="container-fluid">
 <form method="POST" class="needs-validatio" enctype="multipart/form-data">
   {% csrf_token %}
 
@@ -40,8 +41,8 @@
    <div class="form-group">
    </div>
    <button class="btn btn-primary" type="submit">Guardar</button>
-
 </form>
+</div>
 {% endblock%}
 {% block footer %}{% endblock%}
 {% block js_page %}

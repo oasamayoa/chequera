@@ -1,135 +1,89 @@
-{%load static%}
-<div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            {% if obj %}
-            <form method="POST" id="form" role="form" class="form-inline" action="{% url 'che:cheque_edit' obj.pk %}" enctype="multipart/form-data" >
-            {% else %}
-            <form method="POST" id="form" role="form" class="form-inline" action="{% url 'che:cheque_new' %}" enctype="multipart/form-data" >
-            {% endif %}
-                <div class="col-xl-12 col-md-12 mb-12">
-                    {% if obj %}
-                    <div class="card border-left-warning shadow h-100 py-2">
-                    {% else %}
-                    <div class="card border-left-success shadow h-100 py-2">
-                    {% endif %}
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                {% if obj %} Editar {% else %} Nueva {% endif %} Cheque
-                            </div>
-                            <div class="dropdown-divider"></div>
-                            {% csrf_token %}
-                            <div class="row">
-                              <div class="col-md-6">
-                                <div class="card-body">
-                                  <div class="form-group">
-                                    <label for="email">{{ form.no_cheque.label }}</label>
-                                      {{ form.no_cheque}}
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="col-md-6 ml-auto">
-                                <div class="card-body">
-                                  <div class="form-group">
-                                    <label for="email">{{ form.fecha_creado.label }}</label>
-                                      {{ form.fecha_creado}}
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="row">
-                              <div class="col-md-6">
-                                <div class="card-body">
-                                  <div class="form-group">
-                                    <label for="email">{{ form.fecha_pagar.label }}</label>
-                                      {{ form.fecha_pagar}}
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="col-md-6 ml-auto">
-                                <div class="card-body">
-                                  <div class="form-group">
-                                    <label for="email">{{ form.cantidad.label }}</label>
-                                      {{ form.cantidad}}
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="row">
-                              <div class="col-md-6">
-                                <div class="card-body">
-                                  <div class="form-group">
-                                    <label for="email">{{ form.id_fac.label }}</label>
-                                      {{ form.id_fac}}
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="col-md-6 ml-auto">
-                                <div class="card-body">
-                                  <div class="form-group">
-                                    <label for="email">{{ form.cuenta.label }}</label>
-                                      {{ form.cuenta}}
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="row">
-                              <div class="col-md-6">
-                                <div class="card-body">
-                                  <div class="form-group">
-                                    <label for="email">{{ form.proveedor.label }}</label>
-                                      {{ form.proveedor}}
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="col-md-6 ml-auto">
-                                <div class="card-body">
-                                  <div class="form-group">
-                                    <label for="email">{{ form.imagen.label }}</label>
-                                      {{ form.imagen}}
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="row">
-                              <div class="col-md-6">
-                                <div class="card-body">
-                                  <div class="form-group">
-                                    <label for="email">{{ form.estado_che.label }}</label>
-                                      {{ form.estado_che}}
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="col-md-6 ml-auto">
-                                <div class="card-body">
-                                  <div class="form-group">
-                                    <label for="email">{{ form.status.label }}</label>
-                                      {{ form.status}}
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="modal-footer">
-                                <div class="col">
-                                    <button type="submit" class="btn btn-danger"><span class="fa fa-save"></span> Guardar</button>
-                                    <button type="button" class="btn btn-success" onclick="return cerrar_modal()">
-                                        Cancelar
-                                    </button>
-                                </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="far fa-calendar-plus fa-2x text-gray-300"></i>
-                        </div>
-                        </div>
-                    </div>
-                    </div>
-                </div>
-            </form>
-        </div>
+{% extends 'base/base.html' %}
+{% block page_content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col">
+      <h2>Ingrese el Cheque</h2>
     </div>
+  </div>
+
+  <div class="row mt-3">
+    <div class="col">
+      <div class="card border-left-primary shadow h-100 py-2">
+          <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <form class="" action="{% url 'che:cheque_new' %}" method="POST" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  {% include 'base/field_error.html'%}
+
+                <div class="form-group">
+                  <div class="row ">
+                    <div class="col md-4 ">
+                      <label for="inputNocheque">No. Cheque</label>
+                        {{ form.no_cheque}}
+                    </div>
+
+                    <div class="col md-4 ">
+                      <label for="inputfecha_creado">Feche Ingresado</label>
+                       {{ form.fecha_creado }}
+                    </div>
+
+                    <div class="col md-4">
+                      <label for="inputfecha_pago">Fecha a Pagar</label>
+                        {{ form.fecha_pagar }}
+
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <div class="row">
+                    <div class="col">
+                      <label for="inputproveedor">Proveedor</label>
+                        {{ form.proveedor }}
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="row">
+                    <div class="col">
+                      <label for="inputcuenta">Cuenta del banco</label>
+                       {{ form.cuenta}}
+                    </div>
+                    <div class="col">
+                      <label for="inputfactura">No. Factura</label>
+                        {{ form.id_fac }}
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="row">
+                    <div class="col">
+                      <label for="inputcantidad">Cantidad</label>
+                        Q.{{ form.cantidad }}
+                    </div>
+                    <div class="col">
+                      <label for="inputimagen">Imagen del Cheque</label>
+                        {{ form.imagen }}
+                    </div>
+                  </div>
+                </div>
+                <div class="row mt-4">
+                  <div class="col">
+                    <button class="btn btn-primary" type="submit">Guardar</button>
+
+                  </div>
+
+                </div>
+
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
 {% block js_page %}
 <script>
 
@@ -144,34 +98,51 @@
 
     });
   });
-  $(function(){
 
-    var url = $("form").attr("action");
-    var token = jQuery("[name=csrfmiddlewaretoken]").val();
-    var textError = "EL NUMERO DE CHEQUE YA FUE UTILIZADO";
-    $("form").submit(function(e){
-      e.preventDefault();
-      var formData = $("form").serializeArray();
-      $.ajax({
-        url:url,
-        method:"POST",
-        headers: {'X-CSRFToken': token},
-        data: formData
-      })
-      .done(function(r, textStatus, xhr){
-        if(xhr.status=200){
-          location.reload(true);
-        }
-        else{
-          mensaje(textStatus);
-        }
-      }).fail(function (error){
-          mensaje(textError);
-      });
-    });
-  })
+  // $(function(){
+  //
+  //   var url = $("form").attr("action");
+  //   var token = jQuery("[name=csrfmiddlewaretoken]").val();
+  //   var textError = "EL NUMERO DE CHEQUE YA FUE UTILIZADO";
+  //   $("form").submit(function(e){
+  //     e.preventDefault();
+  //     var formData = $("form").serializeArray();
+  //     $.ajax({
+  //       url:url,
+  //       method:"POST",
+  //       headers: {'X-CSRFToken': token},
+  //       data: formData
+  //     })
+  //     .done(function(r, textStatus, xhr){
+  //       if(xhr.status=200){
+  //         location.reload(true);
+  //       }
+  //       else{
+  //         mensaje(textStatus);
+  //       }
+  //     }).fail(function (error){
+  //         mensaje(textError);
+  //     });
+  //   });
+  // })
 
-
+  // $('#form').submit('submit', function(e){
+  //   e.preventDefault();
+  //   var url = $("form").attr("action");
+  //   var token = jQuery("[name=csrfmiddlewaretoken]").val();
+  //
+  //   var fd = $("form").serializeArray();
+  //   console.log(fd)
+  //   $.ajax({
+  //     url: url,
+  //     data: fd,
+  //     type: 'POST',
+  //     headers: {'X-CSRFToken': token},
+  //
+  //     processData: false,
+  //     contentType: false
+  //   });
+  // });
 
 
 </script>
