@@ -770,9 +770,11 @@ class Abonos_equivocados(SuccessMessageMixin, SinPrivilegios, generic.CreateView
             fac_update = Factura.objects.get(pk=id_facturas)
             fac_update.total_fac1 = fac_update.total_fac1 + id_recha.cantidad
             fac_update.total_fac1 = fac_update.total_fac1 - id_cheque.cantidad
+            id_recha.estado = id_recha.estado = False
+
             # id_che_re = self.object.cheque_equivocado.pk
             # id_rechazado = Cheque.objects.get(pk=id_che)
-
+            id_recha.save()
             fac_update.save()
             form.save()
 
@@ -868,6 +870,7 @@ class FacturaDetail(SuccessMessageMixin,SinPrivilegios, generic.DetailView):
         context['form'] = AbonoForm({
             'factura_id' : self.get_object().id
         })
+        print(context)
         return context
 
 @login_required(login_url='/login/')
@@ -885,3 +888,22 @@ def search_cheque_numero(request):
 
     return render(request , "che/busqueda_cheque_nuemero.html" , { 'query' :query , 'cheque': cheque,
         })
+
+class PDFFacturasNegativos(PDFTemplateResponseMixin , TemplateView):
+    redirect_field_name = 'redirect_to'
+    template_name = 'che/report_cheque_negativo.html'
+
+    def get_context_data(self , *args , **kwargs):
+        factura = Factura.objects.filter(total_fac1__lt=0).order_by('-fc')
+        return {"factura" : factura}
+
+class PDFHistorial_Cheques(PDFTemplateResponseMixin , TemplateView):
+    redirect_field_name = 'redirect_to'
+    template_name = 'che/reporte_historial.html'
+    model = Abono_Factura
+
+    def get_context_data(self , *args , **kwargs):
+
+        factura = Abono_Factura.objects.all()
+
+        return {"factura" : factura}

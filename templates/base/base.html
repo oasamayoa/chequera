@@ -165,6 +165,9 @@
             {% if perms.che.view_cheque %}
             <a class="collapse-item" href="{% url 'che:cheque_pagar' %}">Imprimir cheque a pagar</a>
             {% endif %}
+            {% if perms.che.view_cheque %}
+            <a class="collapse-item" href="{% url 'che:fac_negativo' %}">Imprimir Fac. negativos</a>
+            {% endif %}
           </div>
         </div>
       </li>
