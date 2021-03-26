@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'registro',
     'che',
     'easy_pdf',
+    'empleado',
 ]
 
 MIDDLEWARE = [

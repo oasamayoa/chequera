@@ -22,6 +22,7 @@ urlpatterns = [
     path('',include(('bases.urls', 'bases'), namespace='bases') ),
     path('registro/',include(('registro.urls', 'registro'), namespace='registro') ),
     path('che/',include(('che.urls', 'che'), namespace='che') ),
+    path('empleado', include(('empleado.urls', 'empleado'), namespace='empleado')),
     path('admin/', admin.site.urls),
 ]
 
