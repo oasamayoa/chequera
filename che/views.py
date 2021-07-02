@@ -134,46 +134,6 @@ class ChequeNew(SuccessMessageMixin,SinPrivilegios, generic.CreateView):
         return super().form_valid(form)
 
 
-    # def post(self, request, *args, **kwargs):
-    #     if request.is_ajax() and request.method == 'POST':
-    #         form = ChequeForm(request.POST, request.FILES)
-    #         form.instance.uc = self.request.user
-    #         errores =  ''
-    #         exito = False
-    #         if form.is_valid():
-    #             form.save()
-    #             exito =  True
-    #         else:
-    #             errores = form.errors
-    #         response = {exito:'exito', 'errores': errores}
-    #         return HttpResponse(json.dumps(response))
-    #     else:
-    #         return JsonResponse({"error": ""}, status=400)
-
-
-    # def post(self, request, *args, **kwargs):
-    #     if self.request.is_ajax() and request.method == 'POST':
-    #         form = ChequeForm(request.POST, request.FILES)
-    #         form.instance.uc = self.request.user
-    #         errores = ""
-    #         if form.is_valid():
-    #             form.save()
-    #         else:
-    #             errores = form.errors
-    #             return HttpResponse(json.dumps(response), mimetype="application/json")
-    #     else:
-    #         return JsonResponse(form.errors, status=400)
-
-    #
-    # def form_invalid(self, form, request):
-    #     response = super().form_invalid(form)
-    #     if self.request.is_ajax() and request.method == 'POST':
-    #         form = ChequeForm(request.POST, request.FILES)
-    #         form.save()
-    #         return JsonResponse(form.errors, status=400)
-    #     else:
-    #         return response
-
 
 class DepositoNew(SuccessMessageMixin,SinPrivilegios, generic.CreateView):
     permission_required = "che.add_deposito"
