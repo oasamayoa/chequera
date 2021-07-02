@@ -1,14 +1,14 @@
 from django.urls import path
 from django_filters.views import FilterView
 from django.contrib.auth import views as auth_views
-from .views import ChequeView, Cheque_inactivar,  ChequeNew, ChequeEdit, ChequeGeneratePDF,  filter,\
-        ChequeDetailView, BancoFilterView,ProveedorFilterView, imprimir_cheque_list, imprimir_cheque_img,\
-        imprimir_provedor, Vista_Proveedor, Vista_Banco, imprimir_banco, DepositoView, DepositoNew, DepositoEdit,\
-        imprimir_deposito_list, DepositoDetailView, search, Vista_pagar, imprimir_che_pagar, reporte_che_entregados,\
-        ChequeEntregadoView, ChequeEntregadoNew, cheques_rechazados, ChequeRechazadoView, ChequeRechazadoNew,\
-        ChequeGeneratePendintesPDF, PDFPedidosHoy, deposito_filter, FacturaView, FacturaNew, FacturaEdit, \
-        Abono_FacturaView, Abono_Fac, search_factura, FacturaDetail, search_cheque_numero,  Abono_EquivocadoView, Abonos_equivocados,\
-        PDFFacturasNegativos, PDFHistorial_Cheques
+from .views import (ChequeView, Cheque_inactivar,  ChequeNew, ChequeEdit, ChequeGeneratePDF,  filter,
+        ChequeDetailView, BancoFilterView,ProveedorFilterView, imprimir_cheque_list, imprimir_cheque_img,
+        imprimir_provedor, Vista_Proveedor, Vista_Banco, imprimir_banco, DepositoView, DepositoNew, DepositoEdit,
+        imprimir_deposito_list, DepositoDetailView, search, Vista_pagar, imprimir_che_pagar, reporte_che_entregados,
+        ChequeEntregadoView, ChequeEntregadoNew, cheques_rechazados, ChequeRechazadoView, ChequeRechazadoNew,
+        ChequeGeneratePendintesPDF, PDFPedidosHoy, deposito_filter, FacturaView, FacturaNew, FacturaEdit,
+        Abono_FacturaView, Abono_Fac, search_factura, FacturaDetail, search_cheque_numero,  Abono_EquivocadoView, Abonos_equivocados,
+        PDFFacturasNegativos, PDFHistorial_Cheques, Abono_Fac_equi_edit, Abono_Fac_edit)
 from .models import Cheque
 
 
@@ -23,7 +23,7 @@ urlpatterns = [
 
         path('cheques/listado',ChequeGeneratePDF.as_view(), name='cheque_print_all_all'),
         path('cheque/imprimir-todas/<str:f1>/<str:f2>' , imprimir_cheque_list, name="cheque_print_all"),
-        path('cheque/imprimir-imagen/<str:f1>/<str:f2>' , imprimir_cheque_img, name="cheque_print_img"),
+        path('cheque/imprimir-imagen/<str:f1>/<str:f2>' , imprimir_cheque_img.as_view(), name="cheque_print_img"),
         path('cheque/pdfproveedor/<str:f5>/<str:f6>/<str:categoria>', imprimir_provedor, name="proveedor_print_prove"),
         path('cheque/pdfbanco/<str:f5>/<str:f6>/<str:categoria>', imprimir_banco, name="cheque_print_banco"),
         path('cheque/pdfpragar/<str:f6>/', imprimir_che_pagar, name="cheque_print_pagar"),
@@ -67,6 +67,8 @@ urlpatterns = [
         path('abono/', Abono_FacturaView.as_view(), name='abono_factura_list'),
         path('abono-equivocado/', Abono_EquivocadoView.as_view(), name='abono_factura_equi_list'),
         path('abono/new-equi/', Abonos_equivocados.as_view(), name='abono_fac_equi_new'),
+        path('abono/editar/<int:pk>/', Abono_Fac_equi_edit.as_view(), name='abono_fac_edit'),
+        path('abono/editar-abono/<int:pk>/', Abono_Fac_edit.as_view(), name='abono_fac_edit_equi'),
 
 
 

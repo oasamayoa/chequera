@@ -3,9 +3,13 @@
   <meta charset="utf-8">
 <head>
 <style type="text/css">
-    @page {
-        size: letter;
+      @page {
         margin: 1cm;
+        margin-bottom: 2.5cm;
+          @frame footer_frame {
+                  -pdf-frame-content: footer_content;
+                  left: 50pt; width: 512pt; top: 772pt; height: 20pt;
+            }
 
         }
         .table {
@@ -71,32 +75,31 @@
           <th>Cuenta</th>
           <th>Cantidad</th>
           <th>No. Fac.</th>
-          <th>Fch. P.</th>
-          <th>Fch. C.</th>
           <th>Estado</th>
 
         </thead>
         <tbody>
           {% for item in cheque%}
           <tr>
-            <td>{{ item.no_cheque }}</td>
+            <td colspan="1" >{{ item.no_cheque }}</td>
             <td>{{ item.proveedor }}</td>
             <td>{{ item.cuenta }}</td>
-            <td>Q.{{ item.cantidad }}</td>
+            <td colspan="1" style="text-align:center;">Q.{{ item.cantidad }}</td>
             {% if item.no_fac %}
-            <td>{{ item.no_fac }}</td>
+            <td colspan="1" style="text-align:center;">{{ item.no_fac }}</td>
             {% else %}
-            <td>{{ item.id_fac }}</td>
+            <td colspan="1" style="text-align:center;"># {{ item.id_fac.no_fac }}</td>
             {% endif %}
-            <td>{{ item.fecha_pagar|date:"d/m/Y" }}</td>
-            <td>{{ item.fecha_creado|date:"d/m/Y" }}</td>
-            <td >{{item.estado_che|yesno:"En,Pendiente"}}</td>
+            <td style="text-align:center;" >{{item.estado_che|yesno:"En,Pendiente"}}</td>
           </tr>
           {% endfor %}
         </tbody>
       </table>
 
     </div>
+  </div>
+  <div  id="footer_content"> <b> (c) - página <pdf:pagenumber>
+      de <pdf:pagecount> - No. Cheques {{cheque.count}} </b>
   </div>
   </body>
 </html>

@@ -1,15 +1,18 @@
 <script>
-  $(function() {
+$(function() {
 
-    $("#f1, #f2").datetimepicker({
-      format: 'Y-m-d',
-      timepicker:false
+  $("#f1, #f2").datetimepicker({
+    format: 'Y-m-d',
+    timepicker:false
 
-    });
+  });
+
 
     $('.table').DataTable({
       "scrollX": true,
       "scrollY": 400,
+      "ordering": false,
+      "responsive": true,
 
       "language": {
         "sProcessing": "Procesando...",
@@ -36,6 +39,6 @@
         }
       }
     });
-    });
+  });
 
   </script>

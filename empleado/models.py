@@ -1,6 +1,19 @@
 from django.db import models
 from bases.models import ClaseModelo
 
+
+class Farmacia(ClaseModelo):
+    nombre = models.CharField(max_length=50)
+    estado_farm =  models.BooleanField(default=0)
+
+    def __str__(self):
+        return '{}'.format(self.nombre)
+
+    class Meta:
+        verbose_name = 'Farmacia'
+        verbose_name_plural = 'Farmacias'
+        db_table = 'Farmacia'
+
 class Empleado(ClaseModelo):
     nombre = models.CharField(max_length=50)
     apellido = models.CharField(max_length=50)
@@ -17,6 +30,8 @@ class Empleado(ClaseModelo):
     imagen_foto = models.ImageField(upload_to='empleado/' , null=True, blank=True)
     estado_empleado = models.BooleanField(default=None)
 
+    id_farmacia = models.ForeignKey(Farmacia, on_delete=models.CASCADE)
+    
     def __str__(self):
         return '{}{}'.format(self.nombre, self.apellido)
 

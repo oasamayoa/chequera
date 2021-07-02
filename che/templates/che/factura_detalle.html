@@ -9,7 +9,7 @@
 <br>
   <div class="row">
     <div class="col">
-      <h4>Pendiente factura: Q. <b>{{object.total_fac1 }}</b></h4>
+      <h4>Pendiente factura: Q. <b>{{object.total_fac1|floatformat:2 }}</b></h4>
 
     </div>
     <div class="col">
@@ -19,7 +19,7 @@
   </div>
   <div class="row mt-2">
     <div class="col 4">
-      <h4>Total Factura: Q. <b>{{ object.total_fac }}</b></h4>
+      <h4>Total Factura: Q. <b>{{ object.total_fac|floatformat:2 }}</b></h4>
     </div>
 
     <div class="col 4">
@@ -57,7 +57,11 @@
       </table>
 
     </div>
-
+    <div class="row">
+      <div class="col">
+        <a class="btn btn-primary" href="{% url 'che:bucsar_factura' %}">Regresar</a>
+      </div>
+    </div>
   </div>
 </div>
 {% endblock %}

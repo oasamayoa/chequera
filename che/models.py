@@ -3,6 +3,7 @@ from bases.models import ClaseModelo
 from registro.models import Cuenta, Provedor
 from django.utils import timezone
 from datetime import date
+from chequera.settings import MEDIA_URL, STATIC_URL
 
 class Factura(ClaseModelo):
     no_fac = models.CharField('Factura', unique = True, max_length = 25)
@@ -16,7 +17,7 @@ class Factura(ClaseModelo):
 
 
     def __str__(self):
-        return '{}'.format(self.no_fac)
+        return 'No. {} -- Total {}'.format(self.no_fac, self.total_fac)
 
     @property
     def abonos_facturas(self):
@@ -53,12 +54,16 @@ class Cheque(ClaseModelo):
     status = models.CharField(max_length=1, choices=LOAN_STATUS, null=True, blank=True)
 
     def __str__(self):
-        return '{}'.format(self.no_cheque)
+        return 'No. {} -- Total {}'.format(self.no_cheque, self.cantidad)
+
+    def get_img(self):
+        if self.imagen:
+            return '{}{}'.format(MEDIA_URL, self.imagen)
+        return '{}{}'.format(STATIC_URL, 'base/img/blanco.png')
 
     @property
     def cheques_rechazados(self):
         return self.cheque_rechazado_set.all()
-
 
 
     class Meta:
@@ -73,6 +78,11 @@ class Deposito(ClaseModelo):
 
     def __str__(self):
         return '{}'.format(self.no_depo)
+
+    def get_img_depo(self):
+        if self.imagen_dep:
+            return '{}{}'.format(MEDIA_URL, self.imagen_dep)
+        return '{}{}'.format(STATIC_URL, 'base/img/blanco.png')
 
 
     class Meta:

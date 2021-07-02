@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-{%load static%}
+{% load static %}
 <html lang="es">
   <meta charset="utf-8">
 <head>
@@ -67,20 +67,23 @@
       </div>
       <table class="table">
         <thead>
-          <th>Imagen de Cheque</th>
+          <tr>
+            <th>Imagen de Cheque</th>
+          </tr>
         </thead>
         <tbody>
           {% for item in enc%}
           <tr>
             {% if item.imagen %}
             <td>
-            <img src="{{item.imagen.url}}" width="600" height="200"/>
+              <img src="media/{{ item.imagen }}" alt="{{imagen_identificativa}}" style="width: 500px; height: 250px;">
             </td>
             {% else %}
             <td>
-            <img src="{%static "che/img/default.png" %}" align="center" height="200" width="300"/>
+              <h3>No. Cheque {{item.no_cheque}}</h3>
+              <img src="{{STATIC_URL}}base/img/default.png" alt="{{imagen_identificativa}}" style="width: 200px; height: 200px;">
             </td>
-            {%endif%}
+            {% endif %}
           </tr>
           {% endfor %}
         </tbody>

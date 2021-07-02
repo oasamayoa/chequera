@@ -19,7 +19,7 @@ from django.shortcuts import render
 from .models import Cheque, Deposito, Fisico_Entregado, Cheque_rechazado, Factura, Abono_Factura
 from registro.models import Banco, Cuenta, Provedor
 from che.forms import (ChequeForm, DepositoForm, CheEntregadoForm, CheRechazadoForm,
-                        FacturaForm, AbonoForm, ChequeEditform, AbonoEquivocadoForm)
+                        FacturaForm, AbonoForm, ChequeEditform, AbonoEquivocadoForm, AbonoEditForm, DepositoEditForm, FacturaFormEdit)
 from bases.views import SinPrivilegios
 
 from django.utils import timezone
@@ -29,9 +29,10 @@ from django.views.generic import TemplateView , CreateView , DetailView , Update
 import django_filters
 from django.utils.dateparse import parse_date
 from datetime import date, timedelta, datetime
-from xhtml2pdf import pisa
 import os
 from django.conf import settings
+from django.template.loader import get_template
+from xhtml2pdf import pisa
 from django.contrib.staticfiles import finders
 
 
@@ -47,7 +48,7 @@ class ChequeView(SuccessMessageMixin,SinPrivilegios, generic.ListView):
 
 
     def get_queryset(self):
-        return self.model.objects.all().order_by('-fc')[:100]
+        return self.model.objects.all().select_related('cuenta', 'proveedor', 'id_fac').order_by('-id')[0:100]
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -60,9 +61,8 @@ class DepositoView(SuccessMessageMixin,SinPrivilegios, generic.ListView):
     template_name = "che/deposito_list.html"
 
 
-
     def get_queryset(self):
-        return self.model.objects.all().order_by('-fecha_creado')[:100]
+        return self.model.objects.all().select_related('cheque').order_by('-id')[:100]
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -76,7 +76,7 @@ class FacturaView(SuccessMessageMixin,SinPrivilegios, generic.ListView):
 
 
     def get_queryset(self):
-        return self.model.objects.all().order_by('-fc')[:100]
+        return self.model.objects.all().select_related('proveedor').order_by('-id')[:100]
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -196,9 +196,6 @@ class DepositoNew(SuccessMessageMixin,SinPrivilegios, generic.CreateView):
             return HttpResponseRedirect(self.success_url)
         return render(request, self.template_name, {'form': form})
 
-    # def form_valid(self, form):
-    #     form.instance.uc = self.request.user
-    #     return super().form_valid(form)
 
 class FacturaNew(SuccessMessageMixin,SinPrivilegios, generic.CreateView):
     permission_required = "che.add_cheque"
@@ -242,7 +239,7 @@ class DepositoEdit(SuccessMessageMixin,SinPrivilegios, generic.UpdateView):
     model=Deposito
     template_name="che/depo_form.html"
     context_object_name = "obj"
-    form_class = DepositoForm
+    form_class = DepositoEditForm
     success_url=reverse_lazy("che:deposito_list")
 
     def form_valid(self, form):
@@ -250,11 +247,11 @@ class DepositoEdit(SuccessMessageMixin,SinPrivilegios, generic.UpdateView):
         return super().form_valid(form)
 
 class FacturaEdit(SuccessMessageMixin,SinPrivilegios, generic.UpdateView):
-    permission_required = "che.change_deposito"
+    permission_required = "che.delete_factura"
     model=Factura
     template_name="che/factura_form.html"
     context_object_name = "obj"
-    form_class = FacturaForm
+    form_class = FacturaFormEdit
     success_url=reverse_lazy("che:factura_list")
 
     def form_valid(self, form):
@@ -426,62 +423,156 @@ class ChequeGeneratePDF(View):
             return response
         return HttpResponse("Not found")
 
+
+
 @login_required(login_url='/login/')
 @permission_required('che.change_cheque', login_url='bases:sin_privilegios')
 def imprimir_cheque_list(request, f1,f2):
-    template_name = "che/cheque_print_all.html"
-    f1=parse_date(f1)
-    f2=parse_date(f2)
-    enc = Cheque.objects.filter(fecha_creado__range = [f1 , f2]).order_by('-fecha_creado')
-    suma = 0
-    for cheque in enc:
-        suma = suma+cheque.cantidad
-    context = {
-        'request': request,
-        'f1':f1,
-        'f2':f2,
-        'enc':enc,
-        'suma':suma
-    }
-    return render(request, template_name, context)
+    try:
+        template = get_template('che/cheque_print_all.html')
+        f1=parse_date(f1)
+        f2=parse_date(f2)
+        enc = Cheque.objects.filter(fecha_creado__range = [f1 , f2]).order_by('-fecha_creado')
+        suma = 0
+        for cheque in enc:
+            suma = suma+cheque.cantidad
+
+        context = {
+            'request': request,
+            'f1':f1,
+            'f2':f2,
+            'enc':enc,
+            'suma':suma
+
+        }
+        html = template.render(context)
+        response = HttpResponse(content_type='application/pdf')
+        # response['Content-Disposition'] = 'attachment; filename="report.pdf"' # esta parte es para que se descargue le pdf
+        pisa_status = pisa.CreatePDF(
+            html, dest=response)
+        return response
+    except:
+        pass
+    return HttpResponseRedirect(reverse_lazy('che:cheque_list'))
 
 @login_required(login_url='/login/')
 @permission_required('che.change_deposito', login_url='bases:sin_privilegios')
 def imprimir_deposito_list(request, f1,f2):
-    template_name = "che/deposito_print_all.html"
-    f1=parse_date(f1)
-    f2=parse_date(f2)
-    enc = Deposito.objects.filter(fecha_creado__range = [f1 , f2]).order_by('-fecha_creado')
-    suma = 0
-    for deposito in enc:
-        suma = suma+deposito.cantidad
-    context = {
-        'request': request,
-        'f1':f1,
-        'f2':f2,
-        'enc':enc,
-        'suma':suma
-    }
-    return render(request, template_name, context)
+    try:
+        template = get_template('che/deposito_print_all.html')
+        f1=parse_date(f1)
+        f2=parse_date(f2)
+        enc = Deposito.objects.filter(fecha_creado__range = [f1 , f2]).order_by('-fecha_creado')
+        suma = 0
+        for deposito in enc:
+            suma = suma+deposito.cantidad
+        context = {
+            'request': request,
+            'f1':f1,
+            'f2':f2,
+            'enc':enc,
+            'suma':suma
+        }
+        html = template.render(context)
+        response = HttpResponse(content_type='application/pdf')
+        # response['Content-Disposition'] = 'attachment; filename="report.pdf"' # esta parte es para que se descargue le pdf
+        pisa_status = pisa.CreatePDF(
+            html, dest=response)
+        return response
+    except:
+        pass
+    return HttpResponseRedirect(reverse_lazy('che:deposito_list'))
 
-@login_required(login_url='/login/')
-@permission_required('che.change_cheque', login_url='bases:sin_privilegios')
-def imprimir_cheque_img(request, f1,f2):
-    template_name = "che/cheque_print_img.html"
-    f1=parse_date(f1)
-    f2=parse_date(f2)
-    enc = Cheque.objects.filter(fecha_creado__range = [f1 , f2]).order_by('-fecha_creado')
-    suma = 0
-    for cheque in enc:
-        suma = suma+cheque.cantidad
-    context = {
-        'request': request,
-        'f1':f1,
-        'f2':f2,
-        'enc':enc,
-        'suma':suma
-    }
-    return render(request, template_name, context)
+
+class imprimir_cheque_img(View):
+    def link_callback(self, uri, rel):
+            """
+            Es la Función para poder convertir un archivo html a pdf
+            """
+            result = finders.find(uri)
+            if result:
+                    if not isinstance(result, (list, tuple)):
+                            result = [result]
+                    result = list(os.path.realpath(path) for path in result)
+                    path=result[0]
+            else:
+                    sUrl = settings.STATIC_URL
+                    sRoot = settings.STATIC_ROOT
+                    mUrl = settings.MEDIA_URL
+                    mRoot = settings.MEDIA_ROOT
+
+                    if uri.startswith(mUrl):
+                            path = os.path.join(mRoot, uri.replace(mUrl, ""))
+                    elif uri.startswith(sUrl):
+                            path = os.path.join(sRoot, uri.replace(sUrl, ""))
+                    else:
+                            return uri
+
+
+            if not os.path.isfile(path):
+                    raise Exception(
+                            'media URI must start with %s or %s' % (sUrl, mUrl)
+                    )
+            return path
+
+    def get(self, request, f1, f2, *args, **kwargs):
+        try:
+            template = get_template('che/cheque_print_img.html')
+            f1=parse_date(f1)
+            f2=parse_date(f2)
+            enc = Cheque.objects.filter(fecha_creado__range = [f1 , f2]).order_by('-fecha_creado')
+            suma = 0
+            for cheque in enc:
+                suma = suma+cheque.cantidad
+
+            context = {
+                'request': request,
+                'f1':f1,
+                'f2':f2,
+                'enc':enc,
+                'suma':suma
+
+            }
+            html = template.render(context)
+            response = HttpResponse(content_type='application/pdf')
+            # response['Content-Disposition'] = 'attachment; filename="report.pdf"' # esta parte es para que se descargue le pdf
+            pisa_status = pisa.CreatePDF(
+                html, dest=response,
+                link_callback=self.link_callback)
+            return response
+        except:
+            pass
+        return HttpResponseRedirect(reverse_lazy('che:cheque_list'))
+
+
+# def imprimir_cheque_img(request, f1,f2):
+#     try:
+#         template = get_template('che/cheque_print_img.html')
+#         f1=parse_date(f1)
+#         f2=parse_date(f2)
+#         enc = Cheque.objects.filter(fecha_creado__range = [f1 , f2]).order_by('-fecha_creado')
+#         suma = 0
+#         for cheque in enc:
+#             suma = suma+cheque.cantidad
+#
+#         context = {
+#             'request': request,
+#             'f1':f1,
+#             'f2':f2,
+#             'enc':enc,
+#             'suma':suma
+#
+#         }
+#         html = template.render(context)
+#         response = HttpResponse(content_type='application/pdf')
+#         # response['Content-Disposition'] = 'attachment; filename="report.pdf"' # esta parte es para que se descargue le pdf
+#         pisa_status = pisa.CreatePDF(
+#             html, dest=response,
+#             link_callback=self.link_callback)
+#         return response
+#     except:
+#         pass
+#     return HttpResponseRedirect(reverse_lazy('che:cheque_list'))
 
 
 @login_required(login_url='/login/')
@@ -581,23 +672,32 @@ def Vista_pagar(request):
 @login_required(login_url='/login/')
 @permission_required('che.change_cheque', login_url='bases:sin_privilegios')
 def imprimir_che_pagar(request,f6):
-    template_name = "che/cheque_print_pagar.html"
-    enc=parse_date(f6)
-    suma = 0
-    if enc:
-        qset = (
-
-            Q(fecha_pagar=enc)
-            )
-        enc = Cheque.objects.filter(qset).order_by('-fc')
-        suma = list(Cheque.objects.filter(qset).aggregate(Sum('cantidad')).values())[0]
-    else:
-        enc =[]
-        suma=[]
-
-
-    return render(request, template_name, {'f6': f6, 'enc': enc, 'suma':suma})
-
+    try:
+        template = get_template('che/cheque_print_pagar.html')
+        enc=parse_date(f6)
+        if enc:
+            qset = (
+                Q(fecha_pagar=enc)
+                )
+            enc = Cheque.objects.filter(qset).order_by('-fc')
+            suma = list(Cheque.objects.filter(qset).aggregate(Sum('cantidad')).values())[0]
+        else:
+            enc =[]
+            suma=[]
+        context = {
+            'request': request,
+            'enc':enc,
+            'suma':suma
+        }
+        html = template.render(context)
+        response = HttpResponse(content_type='application/pdf')
+        # response['Content-Disposition'] = 'attachment; filename="report.pdf"' # esta parte es para que se descargue le pdf
+        pisa_status = pisa.CreatePDF(
+            html, dest=response)
+        return response
+    except:
+        pass
+    return HttpResponseRedirect(reverse_lazy('che:cheque_pagar'))
 
 
 def link_callback(uri, rel):
@@ -709,7 +809,7 @@ class ChequeRechazadoNew(SuccessMessageMixin,SinPrivilegios, generic.CreateView)
             self.object = form.save(commit=False)
             form.instance.uc = self.request.user
             id_che = self.object.cheque_re.pk
-            print(id_che)
+
 
             cheque_update = Cheque.objects.get(pk=id_che)
             cheque_update.status = 'E'
@@ -748,6 +848,37 @@ class Abono_Fac(SuccessMessageMixin, SinPrivilegios, generic.CreateView):
             return HttpResponseRedirect(self.success_url)
         return render(request, self.template_name, {'form': form})
 
+class Abono_Fac_edit(SuccessMessageMixin,SinPrivilegios, generic.UpdateView):
+    permission_required = "che.change_abono_factura"
+    model= Abono_Factura
+    template_name="che/abono_factura_form_edit.html"
+    context_object_name = "obj"
+    form_class = AbonoEditForm
+    success_url=reverse_lazy("che:abono_factura_list")
+
+    def form_valid(self, form):
+        form.instance.um = self.request.user.id
+        id_facturas = self.object.id_factura.pk
+        id_che = self.object.id_cheque.pk
+        id_cheque = Cheque.objects.get(pk=id_che)
+        fac_update = Factura.objects.get(pk=id_facturas)
+        fac_update.total_fac1 = fac_update.total_fac1 - id_cheque.cantidad
+        fac_update.save()
+        return super().form_valid(form)
+
+
+class Abono_Fac_equi_edit(SuccessMessageMixin,SinPrivilegios, generic.UpdateView):
+    permission_required = "che.change_abono_factura"
+    model= Abono_Factura
+    template_name="che/abono_factura_equi_form.html"
+    context_object_name = "obj"
+    form_class = AbonoEquivocadoForm
+    success_url=reverse_lazy("che:abono_factura_list")
+
+    def form_valid(self, form):
+        form.instance.um = self.request.user.id
+        return super().form_valid(form)
+
 
 
 class Abonos_equivocados(SuccessMessageMixin, SinPrivilegios, generic.CreateView):
@@ -756,6 +887,8 @@ class Abonos_equivocados(SuccessMessageMixin, SinPrivilegios, generic.CreateView
     template_name = "che/abono_factura_equi_form.html"
     form_class = AbonoEquivocadoForm
     success_url=reverse_lazy("che:abono_factura_equi_list")
+
+
 
     def post(self, request, *args, **kwargs):
         form = AbonoEquivocadoForm(request.POST)
@@ -867,10 +1000,11 @@ class FacturaDetail(SuccessMessageMixin,SinPrivilegios, generic.DetailView):
         context = super().get_context_data(*args, **kwargs)
         context['abonos_facturas'] = self.get_object().abonos_facturas
 
+
         context['form'] = AbonoForm({
             'factura_id' : self.get_object().id
         })
-        print(context)
+
         return context
 
 @login_required(login_url='/login/')

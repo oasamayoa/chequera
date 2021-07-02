@@ -1,0 +1,65 @@
+{% extends 'base/base.html' %}
+{% block page_content %}
+<div class="container-fluid">
+    <div class="col">
+      <h4>Abonar Factura</h4>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      {% if obj %}
+                      <form method="POST" action="." enctype="multipart/form-data">
+                      {% else %}
+                      <form method="POST" action="{% url 'che:abono_fac_new' %}" enctype="multipart/form-data">
+                      {% endif %}
+                        {% csrf_token %}
+                        {% include 'base/field_error.html'%}
+                        <div class="col">
+
+                          <div class="row g-3">
+                              <div class="col-md-4">
+                                <label for="inputnombre"><b>Seleccionar nueva factura</b></label>
+                                {{ form.id_factura }}
+                              </div>
+                              <div class="col-md-4">
+                                <label for="inputfecha_pago"><b>Solo verificacion de Cheque</b></label>
+                                {{ form.id_cheque}}
+                              </div>
+                             <div class="col-12 mt-4">
+                                <button class="btn btn-primary" type="submit">Guardar</button>
+                                <a class="btn btn-danger" href="{% url 'che:abono_factura_list' %}">Cancelar</a>
+                             </div>
+                            </div>
+                        </div>
+                      </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+    <!-- data table -->
+</div>
+
+  {% csrf_token %}
+{% endblock%}
+{% block footer %}{% endblock%}
+{% block js_page %}
+<script>
+  $(function(){
+    $("#id_fecha_pagar").datetimepicker({
+      format: 'Y-m-d',
+      timepicker:false
+    });
+    });
+    $(function(){
+        $('.select2').select2({
+
+        });
+      });
+  </script>
+{% endblock %}
