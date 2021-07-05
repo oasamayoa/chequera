@@ -71,6 +71,7 @@
       <table class="table">
         <thead>
           <th>No. Cheque</th>
+          <th>Fch</th>
           <th>Proveedor</th>
           <th>Cuenta</th>
           <th>Cantidad</th>
@@ -82,6 +83,7 @@
           {% for item in cheque%}
           <tr>
             <td colspan="1" >{{ item.no_cheque }}</td>
+            <td>{{ item.fecha_creado|date:"d/m/Y"}}</td>
             <td>{{ item.proveedor }}</td>
             <td>{{ item.cuenta }}</td>
             <td colspan="1" style="text-align:center;">Q.{{ item.cantidad }}</td>
