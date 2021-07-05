@@ -7,7 +7,7 @@ cffi==1.14.4
 colorama==0.4.4
 cssselect2==0.4.1
 defusedxml==0.6.0
-Django==3.0
+Django==3.1.12
 django-easy-pdf==0.1.1
 django-filter==2.4.0
 django-userforeignkey==0.3.0
