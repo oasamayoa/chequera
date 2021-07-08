@@ -1,17 +1,31 @@
 {% extends 'base/base.html' %}
 {% block footer %}{% endblock %}
 {% block page_content %}
-<form class="" action="." method="GET" autocomplete="off">
-<span>Buscar fecha a pagar</span>
-<input class="form-class" type="text"  name="f6" id="f6" readonly>
+<div class="container-fluid" >
+	<div class="row mt-3" >
+		<div "col" >
+			<div class="card border-left-primary shadow h-100 py-2" >
+				<div  class="card-body" >
+					<div class="row no-gutters align-items-center">
 
-<br>
-<br>
-	<br>
-	<div class="form-group col-md-4">
-		<button class="btn btn-warning" type="submit" id="btnPrintPagar">Imprimir</button>
+						<form class="" action="." method="GET" autocomplete="off">
+						<b><span>Buscar fecha a pagar:</span></b><br><br>
+						<input class="form-class" type="text"  name="f6" id="f6" readonly>
+
+						<br>
+						<br>
+							<br>
+							<div class="form-group col-md-4">
+								<button class="btn btn-warning" type="submit" id="btnPrintPagar">Imprimir</button>
+							</div>
+						</form>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
-</form>
 </div>
 {% endblock %}
 {% block js_page %}

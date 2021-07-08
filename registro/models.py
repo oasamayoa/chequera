@@ -1,11 +1,12 @@
 from django.db import models
 from bases.models import ClaseModelo
 
+
 class Banco(ClaseModelo):
-    nombre = models.CharField(max_length=150, help_text='Nombre del Banco', unique=True)
+    nombre = models.CharField(max_length=150, unique=True)
 
     def __str__(self):
-        return '{}'.format(self.nombre)
+        return "{}".format(self.nombre)
 
     def save(self):
         self.nombre = self.nombre.upper()
@@ -14,12 +15,13 @@ class Banco(ClaseModelo):
     class Meta:
         verbose_name_plural = "Bancos"
 
+
 class Cuenta(ClaseModelo):
     banco = models.ForeignKey(Banco, on_delete=models.CASCADE)
-    nombre = models.CharField(max_length=100, help_text='Nombre de la Cuenta')
+    nombre = models.CharField(max_length=100, help_text="Nombre de la Cuenta")
 
     def __str__(self):
-        return '{}:{}'.format(self.banco,self.nombre)
+        return "{}:{}".format(self.banco, self.nombre)
 
     def save(self):
         self.nombre = self.nombre.upper()
@@ -27,13 +29,14 @@ class Cuenta(ClaseModelo):
 
     class Meta:
         verbose_name_plural = "Cuentas"
-        unique_together = ('banco','nombre')
+        unique_together = ("banco", "nombre")
+
 
 class Provedor(ClaseModelo):
     nombre = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
-        return '{}'.format(self.nombre)
+        return "{}".format(self.nombre)
 
     def save(self):
         self.nombre = self.nombre.upper()
@@ -41,6 +44,3 @@ class Provedor(ClaseModelo):
 
     class Meta:
         verbose_name_plural = "Provedores"
-
-        
-

@@ -12,6 +12,7 @@
       <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
         <div class="dropdown-header">Acciones:</div>
         <a class="dropdown-item"  href="{% url 'che:factura_new' %}"><i class="far fa-calendar-plus"></i> Nuevo</a>
+        <a class="dropdown-item" onclick="abrir_modal('{% url 'che:factura_modal_proveedor' %}')" ><i class="fas fa-search"></i> Fac. por Proveedor</a>
       </div>
     </div>
   </div>
@@ -48,10 +49,17 @@
       </tbody>
     </table>
   </div>
+  <div class="modal fade" id="abrir" role="dialog"></div>
 </div>
+
 {% endblock %}
 {% block js_page %}
 <script>
+function abrir_modal(url){
+  $('#abrir').load(url, function(){
+    $(this).modal('show');
+  });
+}
   $(function() {
 
     $("#f1, #f2").datetimepicker({

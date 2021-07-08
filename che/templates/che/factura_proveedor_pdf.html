@@ -64,44 +64,45 @@
     <div class="card">
       <div class="card-header">
         <center>
-          <h4>Cheques por Proveedor</h4>
-          <h3>Reporte de Cheques<br><small>Periodo: {{f5|date:"d/m/Y"}} al {{f6|date:"d/m/Y"}}</small></h3>
+          <h4>Estado de Cuenta de: <br> <b>{{ proveedor }}</b></h4>
+          <h3>Reporte de Facturas<br><small>Periodo: {{f1|date:"d/m/Y"}} al {{f2|date:"d/m/Y"}}</small></h3>
         </center>
       </div>
-
-                <table class="table">
-                <thead>
-                <tr>
-                  <th>No. Cheque</th>
-                  <th>Cantidad</th>
-                  <th>Fch. P.</th>
-                  <th>Pagar a:</th>
-                  <th>Cuenta</th>
-                  <th>R</th>
-                </tr>
-                </thead>
-                <tbody>
-                  {% for cheque in enc %}
-                <tr>
-                  <td>{{cheque.no_cheque}}</td>
-                  <td>{{cheque.cantidad}}</td>
-                  <td>{{cheque.fecha_pagar|date:"l, d/m/Y"}}</td>
-                  <td>{{cheque.proveedor}}</td>
-                  <td>{{cheque.cuenta}}</td>
-                  {% if cheque.status %}
-                    <td>{{cheque.status}}</td>
-                  {% endif %}
-                </tr>
-                  {% endfor %}
-            </tbody>
-            </table>
-            {% if suma %}
-            <p><h3>Total de Cheque<br>Q.{{suma}}</p></h3>
+      <table class="table">
+        <thead>
+          <th>No. Factura</th>
+          <th>Fecha a Pagar</th>
+          <th>Valor Factura</th>
+          <th>Saldo Pendiente</th>
+        </thead>
+        <tbody>
+          {% for item in enc%}
+          <tr>
+            {% if item.no_fac %}
+              <td style= 'text-align: center;'>{{ item.no_fac }}</td>
+              {% else %}
+              <td style= 'text-align: center;'>{{ item.id_fac.no_fac }}</td>
             {% endif %}
+            <td style= 'text-align: center;'>{{ item.fecha_pagar|date:"d/m/Y" }}</td>
+            <td style= 'text-align: center;'>Q.{{ item.total_fac }}</td>
+            <td style= 'text-align: center;'>{{ item.total_fac1 }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <div class="row">
+        <div class="col">
+            {% if suma %}
+            <h2>Saldo Pendiente: <b>{{suma|floatformat:2}}</b></h2>
+            {% endif %}
+        </div>
+      </div>
+      <br>
+      <div id="footer_content">(c) - página <pdf:pagenumber>
+          de <pdf:pagecount> - No. Facturas {{enc.count}}
+      </div>
+
     </div>
   </div>
   </body>
-  <div id="footer_content">(c) - página <pdf:pagenumber>
-          de <pdf:pagecount> - No. Cheques {{enc.count}}
-      </div>
 </html>

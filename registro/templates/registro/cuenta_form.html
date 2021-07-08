@@ -19,26 +19,17 @@
                             </div>
                         <div class="dropdown-divider"></div>
                         {% csrf_token %}
-                        <div class="row">
-                        <div class="clo=5">
-                            <div class="input-group">
-                                <!-- <input type="text" name="nombre" maxlength="150" class="form-control" required id="id_nombre" placeholder="Nombre" value="{% if obj %} {{ obj.nombre }} {% endif %}"> -->
-                                {{ form.banco }}
-                            </div>
-                        </div>
-                        <div class="clo=5">
-                                <div class="input-group">
-                                    <!-- <input type="text" name="nombre" maxlength="150" class="form-control" required id="id_nombre" placeholder="Nombre" value="{% if obj %} {{ obj.nombre }} {% endif %}"> -->
-                                    {{ form.nombre }}
+                        <div class="row" >
+                        {% include 'base/form.js' %}
+                            <div class="col">
+                                <div class="input-group mb-3" >
+                                    <label>Selecionar un banco</label>
+                                        {{form.banco}}
                                 </div>
-                            </div>
-                        <div class="clo=4">
-                            <!-- <div class="form-group">
-                                <label for="id_estado">Estado</label>
-                                <input type="checkbox" name="estado" class="form-control" id="id_estado"
-                                {% if obj.estado %} checked {% endif %}> -->
-                                {{ form.estado }}
-
+                                <div class="input-group mb-3" >
+                                    <label>Cuenta</label>
+                                    {{form.nombre}}
+                                </div>
                             </div>
                         </div>
                         <div class="dropdown-divider"></div>

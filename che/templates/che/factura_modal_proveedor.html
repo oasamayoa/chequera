@@ -1,0 +1,61 @@
+<div class="modal-dialog modal-xg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel"><b><i class="fas fa-barcode"></i> Imprimir
+                Factura por Proveedor</b></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col" >
+        {%  include 'base/form.js' %}
+            <label>De:</label>
+            <input type="text" class="form-control" name="f1" id="f1" readonly>
+          </div>
+          <div class="col">
+            <label>Hasta:</label>
+            <input type="text" class="form-control" name="f2" id="f2" readonly>
+          </div>
+          <br>
+          <br>
+        </div>
+         <br>
+      <div class="striped" cellspacing="0" width="100%">
+        <label for="category">Seleccionar un Proveedor</label>
+        <select  id="proveedor" class="form-control select2"  name="proveedor" style='width: 100%'>
+          {% for m in proveedor %}
+          <option  value="{{ m.nombre }} ">{{ m }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>    
+    <div class="modal-footer">
+        <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+        <a href="{#}" target="blank" type="button" class="btn btn-info" id="btnPrintInventory"> <i class="fas fa-file-pdf"></i></a>
+    </div>
+  </div>
+</div>
+</div>
+
+<script type="text/javascript">
+  $("#btnPrintInventory").click(function(e){
+      e.preventDefault();
+      var date_min,date_max;
+      f1 = $("#f1").val();
+      f2 = $("#f2").val();
+      if(f1=="" || f1==null){
+       
+      }
+      if(f2=="" || f2==null){
+        var d = new Date();
+        // var f2 = d.getDate() + "-" + (d.getMonth()+1) + "-" + d.getFullYear();
+        var f2 = d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate();
+      }
+        proveedor = $("#proveedor").val()
+      var url = "fac-proveedor-pdf/" + f1 + "/" + f2 + "/" + proveedor;
+
+      window.open(url,'cheques');
+    });
+</script>

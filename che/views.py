@@ -102,7 +102,7 @@ class FacturaView(SuccessMessageMixin, SinPrivilegios, generic.ListView):
 
     def get_queryset(self):
         return (
-            self.model.objects.all().select_related("proveedor").order_by("-id")[:100]
+            self.model.objects.all().select_related("proveedor").order_by("-id")[:800]
         )
 
     def get_context_data(self, *args, **kwargs):
@@ -154,7 +154,7 @@ class ChequeNew(SuccessMessageMixin, SinPrivilegios, generic.CreateView):
     success_url = reverse_lazy("che:cheque_list")
 
     def post(self, request, *args, **kwargs):
-        form = ChequeForm(request.POST)
+        form = ChequeForm(request.POST, request.FILES)
         if form.is_valid():
             self.object = form.save(commit=False)
             form.instance.uc = self.request.user
@@ -584,33 +584,32 @@ def Vista_Proveedor(request):
 @login_required(login_url="/login/")
 @permission_required("che.change_cheque", login_url="bases:sin_privilegios")
 def imprimir_provedor(request, f5, f6, categoria):
-    template_name = "che/cheque_print_prove.html"
-    f5 = parse_date(f5)
-    f6 = parse_date(f6)
-    prueba = []
-    pro = []
-    query = []
-    enc = Cheque.objects.filter(
-        fecha_creado__range=[f5, f6], proveedor=categoria
-    ).order_by("-fecha_creado")
-    suma = 0
-    for cheque in enc:
-        suma = suma + cheque.cantidad
+    try:
+        template = get_template("che/cheque_print_prove.html")
+        f5 = parse_date(f5)
+        f6 = parse_date(f6)
+        enc = Cheque.objects.filter(
+            fecha_creado__range=[f5, f6], proveedor=categoria
+        ).order_by("-fecha_creado")
+        suma = 0
+        for cheque in enc:
+            suma = suma + cheque.cantidad
 
-    return render(
-        request,
-        template_name,
-        {
+        context = {
             "f5": f5,
             "f6": f6,
             "categoria": categoria,
-            "prueba": prueba,
-            "query": query,
             "enc": enc,
-            "pro": pro,
             "suma": suma,
-        },
-    )
+        }
+        html = template.render(context)
+        response = HttpResponse(content_type="application/pdf")
+        # response['Content-Disposition'] = 'attachment; filename="report.pdf"' # esta parte es para que se descargue le pdf
+        pisa_status = pisa.CreatePDF(html, dest=response)
+        return response
+    except:
+        pass
+    return HttpResponseRedirect(reverse_lazy("che:factura_list"))
 
 
 @login_required(login_url="/login/")
@@ -821,18 +820,32 @@ class ChequeRechazadoNew(SuccessMessageMixin, SinPrivilegios, generic.CreateView
             self.object = form.save(commit=False)
             form.instance.uc = self.request.user
             id_che = self.object.cheque_re.pk
+            id_che_nu = self.object.cheque_nu.pk
 
+            cheque_nuevo = Cheque.objects.get(pk=id_che_nu)
             cheque_update = Cheque.objects.get(pk=id_che)
             cheque_update.status = "E"
             cheque_update.save()
 
             id_fac = self.object.id_facturas.pk
             factura_update = Factura.objects.get(pk=id_fac)
-            factura_update.total_fac1 = float(factura_update.total_fac1) + float(
-                cheque_update.cantidad
+            resultado = (
+                float(factura_update.total_fac1)
+                + float(cheque_update.cantidad)
+                - float(cheque_nuevo.cantidad)
             )
+            abono = Abono_Factura.objects.update_or_create(
+                pk=id_che_nu,
+                defaults={
+                    "id_cheque": cheque_nuevo,
+                    "cheque_equivocado": cheque_update,
+                    "estado_abono": False,
+                    "id_factura": factura_update,
+                },
+            )
+            print(abono)
+            factura_update.total_fac1 = resultado
             factura_update.save()
-
             form.save()
             return HttpResponseRedirect(self.success_url)
         return render(request, self.template_name, {"form": form})
@@ -913,18 +926,11 @@ class Abonos_equivocados(SuccessMessageMixin, SinPrivilegios, generic.CreateView
             id_cheque = Cheque.objects.get(pk=id_che)
             id_facturas = self.object.id_factura.pk
             fac_update = Factura.objects.get(pk=id_facturas)
-            fac_update.total_fac1 = float(fac_update.total_fac1) + float(
-                id_recha.cantidad
-            )
-            fac_update.total_fac1 = float(fac_update.total_fac1) - float(
-                id_cheque.cantidad
-            )
             id_recha.estado = id_recha.estado = False
-
-            # id_che_re = self.object.cheque_equivocado.pk
-            # id_rechazado = Cheque.objects.get(pk=id_che)
             id_recha.save()
-            fac_update.save()
+            print(id_recha.cantidad)
+            print(id_cheque.cantidad)
+            print(fac_update.total_fac1)
             form.save()
 
             return HttpResponseRedirect(self.success_url)
@@ -1074,3 +1080,36 @@ class PDFHistorial_Cheques(PDFTemplateResponseMixin, TemplateView):
         factura = Abono_Factura.objects.all()
 
         return {"factura": factura}
+
+
+def factura_modal_proveedor(request):
+    proveedor = Provedor.objects.all()
+    fac = Factura.objects.all()
+    template_name = "che/factura_modal_proveedor.html"
+
+    context = {"proveedor": proveedor, "fac": fac}
+    return render(request, template_name, context)
+
+
+def factura_proveedor_pdf(request, f1, f2, proveedor):
+    try:
+        template = get_template("che/factura_proveedor_pdf.html")
+        f1 = parse_date(f1)
+        f2 = parse_date(f2)
+        suma = 0
+        enc = Factura.objects.filter(
+            fc__range=[f1, f2], proveedor__nombre=proveedor
+        ).order_by("-id")
+        for m in Factura.objects.filter(
+            total_fac1__gt=0, proveedor__nombre=proveedor
+        ).order_by("-id"):
+            suma = suma + m.total_fac1
+        context = {"proveedor": proveedor, "f1": f1, "f2": f2, "enc": enc, "suma": suma}
+        html = template.render(context)
+        response = HttpResponse(content_type="application/pdf")
+        # response['Content-Disposition'] = 'attachment; filename="report.pdf"' # esta parte es para que se descargue le pdf
+        pisa_status = pisa.CreatePDF(html, dest=response)
+        return response
+    except:
+        pass
+    return HttpResponseRedirect(reverse_lazy("che:factura_list"))
