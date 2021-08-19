@@ -843,7 +843,6 @@ class ChequeRechazadoNew(SuccessMessageMixin, SinPrivilegios, generic.CreateView
                     "id_factura": factura_update,
                 },
             )
-            print(abono)
             factura_update.total_fac1 = resultado
             factura_update.save()
             form.save()
@@ -928,9 +927,6 @@ class Abonos_equivocados(SuccessMessageMixin, SinPrivilegios, generic.CreateView
             fac_update = Factura.objects.get(pk=id_facturas)
             id_recha.estado = id_recha.estado = False
             id_recha.save()
-            print(id_recha.cantidad)
-            print(id_cheque.cantidad)
-            print(fac_update.total_fac1)
             form.save()
 
             return HttpResponseRedirect(self.success_url)
