@@ -65,6 +65,9 @@ class Cheque(ClaseModelo):
     class Meta:
         verbose_name_plural = "Cheques"
 
+    def natural_key(self):
+        return self.no_cheque
+
 
 class Deposito(ClaseModelo):
     no_depo = models.CharField(max_length=50)

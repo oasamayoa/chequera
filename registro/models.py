@@ -15,6 +15,9 @@ class Banco(ClaseModelo):
     class Meta:
         verbose_name_plural = "Bancos"
 
+    def natural_key(self):
+        return self.name
+
 
 class Cuenta(ClaseModelo):
     banco = models.ForeignKey(Banco, on_delete=models.CASCADE)

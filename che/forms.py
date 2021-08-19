@@ -418,21 +418,21 @@ class CheRechazadoForm(forms.ModelForm):
 
 
     # query_id_che_re = [cheque.id for cheque in Cheque.objects.filter().order_by('-no_cheque')]
-    queryset_id_che = Cheque.objects.defer("id").filter().defer("estado_che").select_related('id_fac','proveedor','cuenta').order_by('-id')
+    queryset_id_che = Cheque.objects.filter().select_related('id_fac','proveedor','cuenta').order_by('-id')
     cheque_re = forms.ModelChoiceField(queryset=queryset_id_che, widget=forms.Select(attrs={
     'class': 'form-control select2',
     'style': 'width: 100%'
     }))
 
     # query_id_che_nu = [cheque.id for cheque in Cheque.objects.all().order_by('-id')]
-    queryset_id_che = Cheque.objects.defer("id").filter().defer("estado_che").select_related('id_fac','proveedor','cuenta').order_by('-id')
+    queryset_id_che = Cheque.objects.filter().select_related('id_fac','proveedor','cuenta').order_by('-id')
     cheque_nu = forms.ModelChoiceField(queryset=queryset_id_che, widget=forms.Select(attrs={
     'class': 'form-control select2',
     'style': 'width: 100%'
     }))
 
     # query_id_fac = [factura.id for factura in Factura.objects.filter().order_by('-id')]
-    queryset_id_fac = Factura.objects.defer("id").filter().select_related('proveedor').order_by('-id')
+    queryset_id_fac = Factura.objects.filter().select_related('proveedor').order_by('-id')
     id_facturas = forms.ModelChoiceField(queryset=Factura.objects.all(), widget=forms.Select(attrs={
     'class': 'form-control select2',
     'style': 'width: 100%'
