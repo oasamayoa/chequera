@@ -50,6 +50,7 @@ from .views import (
     Abono_Fac_edit,
     factura_modal_proveedor,
     factura_proveedor_pdf,
+    Recibo_create,
 )
 from .models import Cheque
 
@@ -158,4 +159,5 @@ urlpatterns = [
         name="factura_imprimir_detalle",
     ),
     path("facturas-negativo/", PDFFacturasNegativos.as_view(), name="fac_negativo"),
+    path("ingresar-recibo/", Recibo_create.as_view(), name="recibo_create"),
 ]

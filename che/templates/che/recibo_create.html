@@ -1,0 +1,164 @@
+{% extends 'base/base.html' %}
+{% block page_content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col">
+      <h2>Ingresar Recibo</h2>
+    </div>
+  </div>
+  <div class="row mt-3">
+    <div class="col">
+      <div class="card border-left-primary shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            {% include 'base/field_error.html'%}
+            <form method="POST" class="needs-validatio" enctype="multipart/form-data">
+              {% csrf_token %}
+              <div class="form-row">
+              <input type="hidden" name="action" value="{{ action }}">
+                 <div class="col-md-4 mb-3">
+                   <label for="email">{{form.no_recibo.label}}</label>
+                    {{ form.no_recibo }}
+                    <div class="valid-feedback">
+                   </div>
+                 </div>
+                 <div class="col-md-4 mb-3">
+                   <label for="email">{{form.factura.label}}</label>
+                    {{ form.factura }}
+                   <div class="valid-feedback">
+                   </div>
+                 </div>
+               </div>
+               <div class="form-row">
+                 <div class="col-md-3 mb-3">
+                   <label for="email">{{form.monto.label}}</label>
+                    {{ form.monto }}
+                   <div class="invalid-feedback">
+                   </div>
+                 </div>
+                 </div>
+               </div>
+               <div class="form-group">
+               </div>
+               <button class="btn btn-primary" type="submit">Guardar</button>
+               <a class="btn btn-danger" href="{% url 'che:deposito_list' %}">Cancelar</a>
+              </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+
+
+</script>
+{% endblock%}
+{% block footer %}{% endblock%}
+{% block js_page %}
+<script>
+  $(function () {
+
+    //search sale boxe
+    $('select[name="factura"]').select2({
+      allowClear: true,
+      ajax: {
+        delay: 250,
+        type: 'POST',
+        url: window.location.pathname,
+        data: function (params) {
+          var queryParameters = {
+            term: params.term,
+            action: 'search_factura'
+          }
+          return queryParameters;
+        },
+        processResults: function (data) {
+          return {
+            results: data
+          };
+        },
+      },
+      placeholder: 'Ingrese una descripción',
+      minimumInputLength: 1,
+    });
+
+
+    $('form').on('submit', function (e) {
+      e.preventDefault();
+      //var parameters = $(this).serializeArray();
+      var parameters = new FormData(this);
+      console.log(parameters);
+      prueba(window.location.pathname, parameters, function () {
+          location.href = '{{ list }}';
+      });
+    });
+
+  });
+
+function message_error(obj) {
+  var html = '';
+  if(typeof (obj) === 'object'){
+    html = '<ul style="text-align: left;">';
+    $.each(obj, function (key, value){
+      html+='<li>'+key+': '+value+'</li>';
+    });
+    html+='</ul>';
+  }
+  else{
+    html = '<p>'+obj+'</p>';
+  }
+  Swal.fire({
+    title: 'Error!',
+    html: html,
+    icon: 'error',
+  });
+}
+
+function prueba(url, parameters, callback){
+  $.confirm({
+    theme: 'material',
+    title: 'Confirmacion',
+    icon: 'fa fa-info',
+    content: 'Estas seguro de realizar esta accion?',
+    columnClass: 'small',
+    draggable: true,
+    dragWindowBorder: false,
+    buttons: {
+        info: {
+            text: "Si",
+            btnClass: 'btn-primary',
+            action: function() {
+              $.ajax({
+                url: url, // window.location.pathname,
+                type: 'POST',
+                data: parameters,
+                processData: false,
+                contentType: false,
+              }).done(function(data){
+                if(!data.hasOwnProperty('error')) {
+                  callback(data);
+                  return false;
+                }
+               message_error(data.error);
+              }).fail(function(jqXHR, textStatus, errorThrow){
+                alert(textStatus+':'+errorThrow);
+
+              }).always(function(data){
+
+              });
+            }
+        },
+        danger: {
+            text: 'No',
+            btnClass: 'btn-red',
+            action: function(){
+
+            }
+        }
+    }
+  });
+}
+
+  </script>
+{% endblock %}

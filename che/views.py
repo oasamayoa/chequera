@@ -1,6 +1,8 @@
 from django.db.models import Q, Count, Sum
 from easy_pdf.views import PDFTemplateView, PDFTemplateResponseMixin
+from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from django.db import transaction
 
 
 from django.shortcuts import render, redirect, get_object_or_404
@@ -23,6 +25,7 @@ from .models import (
     Cheque_rechazado,
     Factura,
     Abono_Factura,
+    Recibo,
 )
 from registro.models import Banco, Cuenta, Provedor
 from che.forms import (
@@ -37,6 +40,7 @@ from che.forms import (
     AbonoEditForm,
     DepositoEditForm,
     FacturaFormEdit,
+    ReciboForm,
 )
 from bases.views import SinPrivilegios
 
@@ -1109,3 +1113,64 @@ def factura_proveedor_pdf(request, f1, f2, proveedor):
     except:
         pass
     return HttpResponseRedirect(reverse_lazy("che:factura_list"))
+
+
+class Recibo_create(generic.CreateView):
+    template_name = "che/recibo_create.html"
+    model = Recibo
+    success_url = reverse_lazy("che:recibo_create")
+    form_class = ReciboForm
+
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        data = {}
+        try:
+            action = request.POST["action"]
+            if action == "search_factura":
+                data = []
+                term = request.POST["term"]
+                factura = Factura.objects.filter(total_fac1__gt=0)
+                if len(term):
+                    factura = factura.filter(no_fac__icontains=term)
+                for i in factura[0:5]:
+                    item = i.toJSON()
+                    item["text"] = i.get_factura_name()
+                    data.append(item)
+            elif action == "add":
+                recibo = request.method == "POST"
+                form = ReciboForm(request.POST)
+                if form.is_valid():
+                    self.object = form.save(commit=False)
+                    recibo_s = form.save()
+                    if form:
+                        with transaction.atomic():
+                            id_facturas = self.object.factura.pk
+                            fac_update = Factura.objects.get(pk=id_facturas)
+                            fac_update.total_fac1 -= recibo_s.monto
+                            fac_update.save()
+                            recibo_s.save()
+                            abono = Abono_Factura()
+                            user = request.user.pk
+                            abono.uc_id = user
+                            abono.id_factura_id = fac_update.id
+                            abono.estado_abono = True
+                            abono.recibo_id = recibo_s.id
+                            abono.save()
+
+                    return HttpResponseRedirect(self.success_url)
+                return render(request, self.template_name, {"form": form})
+            else:
+                data["error"] = "No ha ingresado a ninguna opción"
+        except Exception as e:
+            data["error"] = str(e)
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["action"] = "add"
+        context["list"] = self.success_url
+        return context

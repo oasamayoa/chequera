@@ -2,8 +2,9 @@ from django.db import models
 from bases.models import ClaseModelo
 from registro.models import Cuenta, Provedor
 from django.utils import timezone
-from datetime import date
+from datetime import date, datetime
 from chequera.settings import MEDIA_URL, STATIC_URL
+from django.forms import model_to_dict
 
 
 class Factura(ClaseModelo):
@@ -19,6 +20,9 @@ class Factura(ClaseModelo):
     def __str__(self):
         return "No. {} -- Total {}".format(self.no_fac, self.total_fac)
 
+    def get_factura_name(self):
+        return "No.{} -- Valor {}".format(self.no_fac, self.total_fac)
+
     @property
     def abonos_facturas(self):
         return self.abono_factura_set.all()
@@ -26,6 +30,16 @@ class Factura(ClaseModelo):
     # def save(self):
     #     self.total_fac1 = self.total_fac
     #     super(Factura, self).save()
+
+    def toJSON(self):
+        item = model_to_dict(
+            self, exclude=["proveedor", "estado", "fc", "fm", "uc", "um", "imagen_fac"]
+        )
+        item["total_fac1"] = format(self.total_fac1, ".2f")
+        item["total_fac"] = format(self.total_fac, ".2f")
+        item["get_factura_name"] = self.get_factura_name()
+        item["no_fac"] = self.no_fac
+        return item
 
     class Meta:
         verbose_name = "Factura"
@@ -126,7 +140,9 @@ class Cheque_rechazado(ClaseModelo):
 class Abono_Factura(ClaseModelo):
     id_factura = models.ForeignKey(Factura, on_delete=models.CASCADE)
     estado_abono = models.BooleanField(default=True)
-    id_cheque = models.ForeignKey(Cheque, on_delete=models.CASCADE)
+    id_cheque = models.ForeignKey(
+        Cheque, on_delete=models.CASCADE, null=True, blank=True
+    )
     cheque_equivocado = models.ForeignKey(
         Cheque,
         on_delete=models.CASCADE,
@@ -135,6 +151,9 @@ class Abono_Factura(ClaseModelo):
         related_name="%(app_label)s_%(class)s_eq",
     )
     total = models.FloatField(default=0)
+    recibo = models.ForeignKey(
+        "che.Recibo", on_delete=models.CASCADE, blank=True, null=True
+    )
 
     def __str__(self):
         return "{}".format(self.id_factura)
@@ -147,3 +166,20 @@ class Abono_Factura(ClaseModelo):
         verbose_name = "Abono_Factura"
         verbose_name_plural = "Abonos de Facturas"
         db_table = "Abono_factura"
+
+
+class Recibo(models.Model):
+    no_recibo = models.CharField(max_length=30)
+    fecha_creacion = models.DateField(auto_now_add=True, blank=True)
+    factura = models.ForeignKey(
+        Factura, on_delete=models.CASCADE, null=True, blank=True
+    )
+    monto = models.DecimalField(default=0.00, decimal_places=2, max_digits=9)
+
+    def __str__(self):
+        return "{}".format(self.no_recibo)
+
+    class Meta:
+        verbose_name = "Recibo"
+        verbose_name_plural = "Recibos"
+        db_table = "recibo"

@@ -41,7 +41,9 @@
           </tr>
         </thead>
         <tbody>
+
           {% for m in abonos_facturas %}
+          {% if not m.recibo %}
           <tr>
             <td>{{ m.id_cheque }}</td>
             <td>{{ m.id_cheque.fc}}</td>
@@ -51,9 +53,30 @@
             <td>{{ m.id_cheque.status }}</td>
             {% endif %}
           </tr>
+          {% endif %}
           {% endfor %}
         </tbody>
 
+      </table>
+      <table class="table" >
+      <thead>
+      <tr>
+        <th>recibo</th>
+        <th>Fecha ingresado</th>
+        <th>total</th>
+      </tr>
+      </thead>
+      <tbody>
+        {% for k in abonos_facturas %}
+          {% if k.recibo %}
+        <tr>
+          <td>{{ k.recibo.no_recibo }}</td>
+          <td>{{ k.recibo.fecha_creacion  }}</td>
+          <td>{{ k.recibo.monto }}</td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+      </tbody>
       </table>
 
     </div>
