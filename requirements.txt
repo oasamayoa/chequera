@@ -24,7 +24,7 @@ pycparser==2.20
 pylint==2.9.3
 pylint-django==2.4.4
 pylint-plugin-utils==0.6
-PyPDF2==1.26.0
+PyPDF2==1.27.5
 Pyphen==0.10.0
 pytz==2020.1
 reportlab==3.5.49
